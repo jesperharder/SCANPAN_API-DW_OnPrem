@@ -1,0 +1,60 @@
+{
+  "id": "dedf60de-0668-4fe6-9fba-0c4739112860",
+  "name": "SCANPAN Data Warehouse API",
+  "brief": "Exposes Business Central data to a data warehouse via pages and queries.",
+  "description": "This extension enables seamless data extraction from Business Central by exposing tables through pages and queries. Designed for integration with a data warehouse, it supports reporting, analytics, and business intelligence processes by making operational data easily accessible through API endpoints.",
+  "publisher": "SCANPAN",
+  "privacyStatement": "https://www.scanpan.dk",
+  "help": "https://www.scanpan.dk/",
+  "contextSensitiveHelpUrl": "https://www.scanpan.dk/",
+  "version": "1.0.0.0",
+  "runtime": "7.2",
+  "showMyCode": true,
+  "target": "OnPrem",
+  "platform": "18.0.31692.0",
+  "features": [
+    "TranslationFile",
+    "UseLegacyAnalyzerStrategy"
+  ],
+  "idRanges": [
+    {
+      "from": 50090,
+      "to": 50200
+    }
+  ],
+  "preprocessorSymbols": [
+    "CLEAN18"
+  ],
+  "dependencies": [
+    {
+      "id": "63ca2fa4-4f03-4f2b-a480-172fef340d3f",
+      "name": "System Application",
+      "version": "15.0.0.0",
+      "publisher": "Microsoft"
+    },
+    {
+      "id": "437dbf0e-84ff-417a-965d-ed2bb9650972",
+      "name": "Base Application",
+      "version": "15.0.0.0",
+      "publisher": "Microsoft"
+    },
+    {
+      "id": "ac762be1-e90f-4a72-b519-612a5e3ddc2e",
+      "name": "OIOUBL",
+      "version": "18.7.31790.0",
+      "publisher": "Microsoft"
+    },
+    {
+      "id": "77f87193-a56f-4872-9844-63c073203c32",
+      "name": "Scanpan Base",
+      "version": "1.2.208.0",
+      "publisher": "Notora"
+    },
+    {
+      "id": "69ac3231-c282-41ad-963a-6fcf8a96c55d",
+      "name": "SCANPAN CODEBASE Internal Development",
+      "version": "1.0.26.0",
+      "publisher": "SCANPAN"
+    }
+  ]
+}

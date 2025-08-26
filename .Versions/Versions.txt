@@ -1,0 +1,8 @@
+
+
+
+
+/// Date        Name                Version.SubVersion      Description
+/// 2025.07.08  Jesper Harder       001.1                   API page for GLEntries
+/// 2025.07.09  Jesper Harder       001.2                   API page for Dimension Values
+/// 
