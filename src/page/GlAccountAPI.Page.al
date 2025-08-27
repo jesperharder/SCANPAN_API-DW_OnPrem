@@ -31,6 +31,10 @@ page 50098 GlAccountAPI
         {
             repeater(General)
             {
+                field("timestamp"; TimestampHex)
+                {
+                    Caption = 'timestamp';
+                }
                 field(no; Rec."No.")
                 {
                     Caption = 'No.';
@@ -106,11 +110,16 @@ page 50098 GlAccountAPI
     var
         AccountTypeInt: Integer;
         IncomeBalanceInt: Integer;
+        TsMgt: Codeunit "DW Timestamp Mgt.";
+        TimestampHex: Text[18];
 
     trigger OnAfterGetRecord()
     begin
         // Map enum/option til integer for nem downstream-brug
         AccountTypeInt := Rec."Account Type";
         IncomeBalanceInt := Rec."Income/Balance";
+
+        // 8-byte watermark: [secs since 2000] || [SystemId-derived UInt32]
+        TimestampHex := TsMgt.Make8(Rec.SystemModifiedAt, 0);
     end;
 }

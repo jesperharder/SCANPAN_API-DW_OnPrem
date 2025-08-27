@@ -31,9 +31,9 @@ page 50097 DimensionSetEntryAPI
             repeater(General)
             {
                 // 1:1 mod dit SQL-select
-                field(timestamp8; Timestamp8)
+                field("timestamp"; TimestampHex)
                 {
-                    Caption = 'timestamp (8 bytes)';
+                    Caption = 'timestamp';
                 }
                 field(dimensionSetId; Rec."Dimension Set ID") { Caption = 'Dimension Set ID'; }
                 field(dimensionCode; Rec."Dimension Code") { Caption = 'Dimension Code'; }
@@ -50,18 +50,12 @@ page 50097 DimensionSetEntryAPI
             }
         }
     }
-
     var
-        // Vi kan ikke udstille den interne SQL rowversion direkte,
-        // men vi kan levere en stabil 8-bytes Base64/Binary repræsentation til teknisk paritet, hvis du ønsker det.
-        // Her laves et "fake" 8-byte felt baseret på SystemId for wire-kompatibilitet (valgfrit).
-        // Hvis du ikke har brug for det, kan du fjerne hele feltet/funktionen.
-        Timestamp8: Text[12];
+        TsMgt: Codeunit "DW Timestamp Mgt.";
+        TimestampHex: Text[18];
 
     trigger OnAfterGetRecord()
     begin
-        // NB: Dette er KUN til kosmetisk paritet ift. din eksisterende pipeline der forventer et 8-bytes felt.
-        // Brug systemModifiedAt til inkrementelle loads!
-        Timestamp8 := COPYSTR(FORMAT(Rec.SystemModifiedAt, 0, '<Year4><Month,2><Day,2><Hours24,2><Minutes,2><Seconds,2>'), 1, 12);
+        TimestampHex := TsMgt.Make8(Rec.SystemModifiedAt, Rec."Dimension Set ID");
     end;
 }
