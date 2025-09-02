@@ -26,11 +26,6 @@ page 50099 DimnsionValueAPI
         {
             repeater(General)
             {
-                field("timestamp"; TimestampHex) { Caption = 'timestamp'; }
-                field(blocked; Rec.Blocked)
-                {
-                    Caption = 'Blocked';
-                }
                 field("code"; Rec."Code")
                 {
                     Caption = 'Code';
@@ -113,15 +108,11 @@ page 50099 DimnsionValueAPI
     }
     var
         DimensionValueTypeInt: Integer;
-        TsMgt: Codeunit "DW Timestamp Mgt.";
-        TimestampHex: Text[18];
-
+  
     trigger OnAfterGetRecord()
     begin
         // Option-feltet kan tildeles direkte til Integer-variablen
         DimensionValueTypeInt := Rec."Dimension Value Type";
-        // 8-byte watermark: [secs since 2000] || [Dimension Value ID] (big-endian)
-        TimestampHex := TsMgt.Make8(Rec.SystemModifiedAt, Rec."Dimension Value ID");
     end;
 
 }

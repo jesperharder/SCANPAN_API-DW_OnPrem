@@ -63,11 +63,6 @@
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">Page DimensionSetEntryAPI - Control systemModifiedBy - Property Caption</note>
         </trans-unit>
-        <trans-unit id="Page 2133704242 - Control 3354178634 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
-          <source>timestamp</source>
-          <note from="Developer" annotates="general" priority="2"></note>
-          <note from="Xliff Generator" annotates="general" priority="3">Page DimensionSetEntryAPI - Control timestamp - Property Caption</note>
-        </trans-unit>
         <trans-unit id="Page 414002546 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
           <source>DimnsionValueAPI</source>
           <note from="Developer" annotates="general" priority="2"></note>
@@ -77,11 +72,6 @@
           <source>SCANPAN, API, datawarehouse, dw</source>
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">Page DimnsionValueAPI - Property AdditionalSearchTerms</note>
-        </trans-unit>
-        <trans-unit id="Page 414002546 - Control 4247538596 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
-          <source>Blocked</source>
-          <note from="Developer" annotates="general" priority="2"></note>
-          <note from="Xliff Generator" annotates="general" priority="3">Page DimnsionValueAPI - Control blocked - Property Caption</note>
         </trans-unit>
         <trans-unit id="Page 414002546 - Control 707985127 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
           <source>Code</source>
@@ -173,11 +163,6 @@
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">Page DimnsionValueAPI - Control systemModifiedBy - Property Caption</note>
         </trans-unit>
-        <trans-unit id="Page 414002546 - Control 3354178634 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
-          <source>timestamp</source>
-          <note from="Developer" annotates="general" priority="2"></note>
-          <note from="Xliff Generator" annotates="general" priority="3">Page DimnsionValueAPI - Control timestamp - Property Caption</note>
-        </trans-unit>
         <trans-unit id="Page 414002546 - Control 49735062 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
           <source>Totaling</source>
           <note from="Developer" annotates="general" priority="2"></note>
@@ -197,6 +182,11 @@
           <source>Account Category</source>
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">Page GlAccountAPI - Control accountCategory - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Page 3944948886 - Control 3322049358 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Account Category Int</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page GlAccountAPI - Control accountCategoryInt - Property Caption</note>
         </trans-unit>
         <trans-unit id="Page 3944948886 - Control 1486462331 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
           <source>Account Type</source>
@@ -273,11 +263,6 @@
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">Page GlAccountAPI - Control systemModifiedBy - Property Caption</note>
         </trans-unit>
-        <trans-unit id="Page 3944948886 - Control 3354178634 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
-          <source>timestamp</source>
-          <note from="Developer" annotates="general" priority="2"></note>
-          <note from="Xliff Generator" annotates="general" priority="3">Page GlAccountAPI - Control timestamp - Property Caption</note>
-        </trans-unit>
         <trans-unit id="Page 3944948886 - Control 49735062 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
           <source>Totaling</source>
           <note from="Developer" annotates="general" priority="2"></note>
@@ -333,6 +318,11 @@
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">Page GLEntryAPI - Control balAccountType - Property Caption</note>
         </trans-unit>
+        <trans-unit id="Page 3813751521 - Control 2821293359 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Bal. Account Type Int</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page GLEntryAPI - Control balAccountTypeInt - Property Caption</note>
+        </trans-unit>
         <trans-unit id="Page 3813751521 - Control 768536247 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
           <source>Business Unit Code</source>
           <note from="Developer" annotates="general" priority="2"></note>
@@ -373,6 +363,11 @@
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">Page GLEntryAPI - Control documentType - Property Caption</note>
         </trans-unit>
+        <trans-unit id="Page 3813751521 - Control 626296096 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Document Type INT</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page GLEntryAPI - Control documentTypeInt - Property Caption</note>
+        </trans-unit>
         <trans-unit id="Page 3813751521 - Control 2683860767 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
           <source>Entry No.</source>
           <note from="Developer" annotates="general" priority="2"></note>
@@ -392,6 +387,11 @@
           <source>Gen. Posting Type</source>
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">Page GLEntryAPI - Control genPostingType - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Page 3813751521 - Control 3901007849 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Gen. Posting Type Int</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page GLEntryAPI - Control genPostingTypeInt - Property Caption</note>
         </trans-unit>
         <trans-unit id="Page 3813751521 - Control 2078902558 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
           <source>Gen. Prod. Posting Group</source>
@@ -523,6 +523,21 @@
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">Page GLEntryAPI - Control sourceType - Property Caption</note>
         </trans-unit>
+        <trans-unit id="Page 3813751521 - Control 4184824282 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Source Type Int</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page GLEntryAPI - Control sourceTypeInt - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Page 3813751521 - Control 1421298788 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>SystemCreatedAt</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page GLEntryAPI - Control systemCreatedAt - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Page 3813751521 - Control 591346850 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>SystemCreatedBy</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page GLEntryAPI - Control systemCreatedBy - Property Caption</note>
+        </trans-unit>
         <trans-unit id="Page 3813751521 - Control 3427895715 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
           <source>System-Created Entry</source>
           <note from="Developer" annotates="general" priority="2"></note>
@@ -538,6 +553,11 @@
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">Page GLEntryAPI - Control systemModifiedAt - Property Caption</note>
         </trans-unit>
+        <trans-unit id="Page 3813751521 - Control 1436117145 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>SystemModifiedBy</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page GLEntryAPI - Control systemModifiedBy - Property Caption</note>
+        </trans-unit>
         <trans-unit id="Page 3813751521 - Control 3218101617 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
           <source>Tax Area Code</source>
           <note from="Developer" annotates="general" priority="2"></note>
@@ -552,11 +572,6 @@
           <source>Tax Liable</source>
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">Page GLEntryAPI - Control taxLiable - Property Caption</note>
-        </trans-unit>
-        <trans-unit id="Page 3813751521 - Control 3354178634 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
-          <source>timestamp</source>
-          <note from="Developer" annotates="general" priority="2"></note>
-          <note from="Xliff Generator" annotates="general" priority="3">Page GLEntryAPI - Control timestamp - Property Caption</note>
         </trans-unit>
         <trans-unit id="Page 3813751521 - Control 3831374255 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
           <source>Transaction No.</source>

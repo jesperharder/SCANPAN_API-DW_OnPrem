@@ -30,11 +30,6 @@ page 50097 DimensionSetEntryAPI
         {
             repeater(General)
             {
-                // 1:1 mod dit SQL-select
-                field("timestamp"; TimestampHex)
-                {
-                    Caption = 'timestamp';
-                }
                 field(dimensionSetId; Rec."Dimension Set ID") { Caption = 'Dimension Set ID'; }
                 field(dimensionCode; Rec."Dimension Code") { Caption = 'Dimension Code'; }
                 field(dimensionValueCode; Rec."Dimension Value Code") { Caption = 'Dimension Value Code'; }
@@ -50,12 +45,6 @@ page 50097 DimensionSetEntryAPI
             }
         }
     }
-    var
-        TsMgt: Codeunit "DW Timestamp Mgt.";
-        TimestampHex: Text[18];
-
-    trigger OnAfterGetRecord()
-    begin
-        TimestampHex := TsMgt.Make8(Rec.SystemModifiedAt, Rec."Dimension Set ID");
-    end;
+    
+    
 }

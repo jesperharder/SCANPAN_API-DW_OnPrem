@@ -2,7 +2,7 @@ page 50098 GlAccountAPI
 {
     /// <summary>
     /// Date        Name                Version.SubVersion      Description
-    /// 2025.08.20  Jesper Harder       001.3                   API page for G/L Accounts
+    /// 2025.08.20  Jesper Harder       001.4                   API page for G/L Accounts (INT enums + DW timestamp)
     /// </summary>
 
     AdditionalSearchTerms = 'SCANPAN, API, datawarehouse, dw';
@@ -31,78 +31,30 @@ page 50098 GlAccountAPI
         {
             repeater(General)
             {
-                field("timestamp"; TimestampHex)
-                {
-                    Caption = 'timestamp';
-                }
-                field(no; Rec."No.")
-                {
-                    Caption = 'No.';
-                }
-                field(name; Rec.Name)
-                {
-                    Caption = 'Name';
-                }
-                field(blocked; Rec.Blocked)
-                {
-                    Caption = 'Blocked';
-                }
-                field(directPosting; Rec."Direct Posting")
-                {
-                    Caption = 'Direct Posting';
-                }
-                field(accountType; Rec."Account Type")
-                {
-                    Caption = 'Account Type';
-                }
-                field(accountTypeInt; AccountTypeInt)
-                {
-                    Caption = 'Account Type Int';
-                }
-                field(incomeBalance; Rec."Income/Balance")
-                {
-                    Caption = 'Income/Balance';
-                }
-                field(incomeBalanceInt; IncomeBalanceInt)
-                {
-                    Caption = 'Income/Balance Int';
-                }
-                field(accountCategory; Rec."Account Category")
-                {
-                    Caption = 'Account Category';
-                }
-                field(totaling; Rec.Totaling)
-                {
-                    Caption = 'Totaling';
-                }
-                field(indentation; Rec.Indentation)
-                {
-                    Caption = 'Indentation';
-                }
-                field(lastModifiedDateTime; Rec."Last Modified Date Time")
-                {
-                    Caption = 'Last Modified Date Time';
-                }
-                field(systemCreatedAt; Rec.SystemCreatedAt)
-                {
-                    Caption = 'SystemCreatedAt';
-                }
-                field(systemCreatedBy; Rec.SystemCreatedBy)
-                {
-                    Caption = 'SystemCreatedBy';
-                }
-                field(systemId; Rec.SystemId)
-                {
-                    Caption = 'SystemId';
-                }
-                field(systemModifiedAt; Rec.SystemModifiedAt)
-                {
-                    Caption = 'SystemModifiedAt';
-                }
-                field(systemModifiedBy; Rec.SystemModifiedBy)
-                {
-                    Caption = 'SystemModifiedBy';
-                }
+                field(no; Rec."No.") { Caption = 'No.'; }
+                field(name; Rec.Name) { Caption = 'Name'; }
+                field(blocked; Rec.Blocked) { Caption = 'Blocked'; }
+                field(directPosting; Rec."Direct Posting") { Caption = 'Direct Posting'; }
+
+                field(accountType; Rec."Account Type") { Caption = 'Account Type'; }
+                field(accountTypeInt; AccountTypeInt) { Caption = 'Account Type Int'; }
+
+                field(incomeBalance; Rec."Income/Balance") { Caption = 'Income/Balance'; }
+                field(incomeBalanceInt; IncomeBalanceInt) { Caption = 'Income/Balance Int'; }
+
+                field(accountCategory; Rec."Account Category") { Caption = 'Account Category'; }
+                field(accountCategoryInt; AccountCategoryInt) { Caption = 'Account Category Int'; }
+
+                field(totaling; Rec.Totaling) { Caption = 'Totaling'; }
+                field(indentation; Rec.Indentation) { Caption = 'Indentation'; }
+                field(lastModifiedDateTime; Rec."Last Modified Date Time") { Caption = 'Last Modified Date Time'; }
+
+                // Systemfelter
+                field(systemCreatedAt; Rec.SystemCreatedAt) { Caption = 'SystemCreatedAt'; }
+                field(systemCreatedBy; Rec.SystemCreatedBy) { Caption = 'SystemCreatedBy'; }
+                field(systemId; Rec.SystemId) { Caption = 'SystemId'; }
+                field(systemModifiedAt; Rec.SystemModifiedAt) { Caption = 'SystemModifiedAt'; }
+                field(systemModifiedBy; Rec.SystemModifiedBy) { Caption = 'SystemModifiedBy'; }
             }
         }
     }
@@ -110,16 +62,14 @@ page 50098 GlAccountAPI
     var
         AccountTypeInt: Integer;
         IncomeBalanceInt: Integer;
-        TsMgt: Codeunit "DW Timestamp Mgt.";
-        TimestampHex: Text[18];
+        AccountCategoryInt: Integer;
 
     trigger OnAfterGetRecord()
     begin
-        // Map enum/option til integer for nem downstream-brug
+        // Enum/option -> integer spejlfelter
         AccountTypeInt := Rec."Account Type";
         IncomeBalanceInt := Rec."Income/Balance";
-
-        // 8-byte watermark: [secs since 2000] || [SystemId-derived UInt32]
-        TimestampHex := TsMgt.Make8(Rec.SystemModifiedAt, 0);
+        AccountCategoryInt := Rec."Account Category".AsInteger();
     end;
 }
+
