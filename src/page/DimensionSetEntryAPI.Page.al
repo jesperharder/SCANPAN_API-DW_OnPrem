@@ -1,4 +1,4 @@
-page 50097 DimensionSetEntryAPI
+page 50207 DimensionSetEntryAPI
 {
     /// 2025.08.22  Jesper Harder  001.4  API page for Dimension Set Entry (SQL-paritet)
     PageType = API;

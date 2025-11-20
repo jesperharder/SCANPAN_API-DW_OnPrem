@@ -1,4 +1,4 @@
-page 50100 GLEntryAPI
+page 50210 GLEntryAPI
 {
     /// <summary>
     /// Date        Name                Version.SubVersion      Description
@@ -110,4 +110,13 @@ page 50100 GLEntryAPI
         genPostingTypeInt: Integer;
         balAccountTypeInt: Integer;
         sourceTypeInt: Integer;
+
+    trigger OnAfterGetRecord()
+    begin
+        // Enum/option -> integer spejlfelter
+        documentTypeInt := Rec."Document Type".AsInteger();
+        genPostingTypeInt := Rec."Gen. Posting Type".AsInteger();
+        balAccountTypeInt := Rec."Bal. Account Type".AsInteger();
+        sourceTypeInt := Rec."Source Type".AsInteger();
+    end;
 }

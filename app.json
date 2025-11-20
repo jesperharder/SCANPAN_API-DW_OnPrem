@@ -7,7 +7,7 @@
   "privacyStatement": "https://www.scanpan.dk",
   "help": "https://www.scanpan.dk/",
   "contextSensitiveHelpUrl": "https://www.scanpan.dk/",
-  "version": "1.0.0.0",
+  "version": "1.0.0.9",
   "runtime": "7.2",
   "showMyCode": true,
   "target": "OnPrem",
@@ -18,8 +18,8 @@
   ],
   "idRanges": [
     {
-      "from": 50090,
-      "to": 50200
+      "from": 50200,
+      "to": 50299
     }
   ],
   "preprocessorSymbols": [
