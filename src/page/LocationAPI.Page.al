@@ -5,7 +5,7 @@ page 50238 "LocationAPI"
     /// 2025.11.20  Business Central AL Asst.   001.0     API page for Location (table 14)
     /// </summary>
 
-    Caption = 'SPN LocationAPI';
+    Caption = 'LocationAPI';
     AdditionalSearchTerms = 'SCANPAN, API, datawarehouse, dw';
     UsageCategory = Administration;
 

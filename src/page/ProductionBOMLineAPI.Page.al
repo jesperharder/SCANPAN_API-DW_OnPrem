@@ -5,7 +5,7 @@ page 50245 "ProductionBOMLineAPI"
     /// 2025.11.20  Business Central AL Asst.   001.0     API page for Production BOM Line (table 99000772)
     /// </summary>
 
-    Caption = 'SPN ProductionBOMLineAPI';
+    Caption = 'ProductionBOMLineAPI';
     AdditionalSearchTerms = 'SCANPAN, API, datawarehouse, dw';
     UsageCategory = Administration;
 

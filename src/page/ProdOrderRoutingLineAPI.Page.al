@@ -5,7 +5,7 @@ page 50243 "ProdOrderRoutingLineAPI"
     /// 2025.11.20  Business Central AL Asst.   001.0     API page for Prod. Order Routing Line (table 5409)
     /// </summary>
 
-    Caption = 'SPN ProdOrderRoutingLineAPI';
+    Caption = 'ProdOrderRoutingLineAPI';
     AdditionalSearchTerms = 'SCANPAN, API, datawarehouse, dw';
     UsageCategory = Administration;
 

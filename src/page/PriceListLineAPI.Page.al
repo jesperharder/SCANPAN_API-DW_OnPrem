@@ -5,7 +5,7 @@ page 50240 "PriceListLineAPI"
     /// 2025.11.20  Business Central AL Asst.   001.0     API page for Price List Line (table "Price List Line")
     /// </summary>
 
-    Caption = 'SPN PriceListLineAPI';
+    Caption = 'PriceListLineAPI';
     AdditionalSearchTerms = 'SCANPAN, API, datawarehouse, dw';
     UsageCategory = Administration;
 

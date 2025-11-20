@@ -5,7 +5,7 @@ page 50242 "ProdOrderLineAPI"
     /// 2025.11.20  Business Central AL Asst.   001.0     API page for Prod. Order Line (table 5406)
     /// </summary>
 
-    Caption = 'SPN ProdOrderLineAPI';
+    Caption = 'ProdOrderLineAPI';
     AdditionalSearchTerms = 'SCANPAN, API, datawarehouse, dw';
     UsageCategory = Administration;
 

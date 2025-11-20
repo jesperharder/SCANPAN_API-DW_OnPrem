@@ -1,7 +1,7 @@
 page 50227 "ItemBudgetEntry"
 {
     PageType = API;
-    Caption = 'SPN Item Budget Entry API v1';
+    Caption = 'Item Budget Entry API v1';
     APIPublisher = 'spn';
     APIGroup = 'planning';
     APIVersion = 'v1.0';

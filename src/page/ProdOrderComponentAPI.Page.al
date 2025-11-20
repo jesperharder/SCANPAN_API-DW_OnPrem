@@ -5,7 +5,7 @@ page 50241 "ProdOrderComponentAPI"
     /// 2025.11.20  Business Central AL Asst.   001.0     API page for Prod. Order Component (table 5407)
     /// </summary>
 
-    Caption = 'SPN ProdOrderComponentAPI';
+    Caption = 'ProdOrderComponentAPI';
     AdditionalSearchTerms = 'SCANPAN, API, datawarehouse, dw';
     UsageCategory = Administration;
 
