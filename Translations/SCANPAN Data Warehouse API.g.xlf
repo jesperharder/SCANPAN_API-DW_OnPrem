@@ -3344,7 +3344,7 @@
           <note from="Xliff Generator" annotates="general" priority="3">Page ItemAPI - Control vendorNo - Property Caption</note>
         </trans-unit>
         <trans-unit id="Page 3929277232 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
-          <source>SPN Item Budget Entry API v1</source>
+          <source>Item Budget Entry API v1</source>
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">Page ItemBudgetEntry - Property Caption</note>
         </trans-unit>
@@ -4024,7 +4024,7 @@
           <note from="Xliff Generator" annotates="general" priority="3">Page ItemUnitofMeasureAPI - Control width - Property Caption</note>
         </trans-unit>
         <trans-unit id="Page 4191469543 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
-          <source>SPN LocationAPI</source>
+          <source>LocationAPI</source>
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">Page LocationAPI - Property Caption</note>
         </trans-unit>
@@ -4199,7 +4199,7 @@
           <note from="Xliff Generator" annotates="general" priority="3">Page LocationAPI - Control useCrossDocking - Property Caption</note>
         </trans-unit>
         <trans-unit id="Page 1881699290 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
-          <source>SPN MachineCenterAPI</source>
+          <source>MachineCenterAPI</source>
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">Page MachineCenterAPI - Property Caption</note>
         </trans-unit>
@@ -4349,7 +4349,7 @@
           <note from="Xliff Generator" annotates="general" priority="3">Page Object Range Analyzer - Action ShowCustomRangeOnly - Property Caption</note>
         </trans-unit>
         <trans-unit id="Page 1571739595 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
-          <source>SPN PriceListLineAPI</source>
+          <source>PriceListLineAPI</source>
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">Page PriceListLineAPI - Property Caption</note>
         </trans-unit>
@@ -4559,7 +4559,7 @@
           <note from="Xliff Generator" annotates="general" priority="3">Page ProdBOMLineScrapAPI - Control versionCode - Property Caption</note>
         </trans-unit>
         <trans-unit id="Page 3842299444 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
-          <source>SPN ProdOrderComponentAPI</source>
+          <source>ProdOrderComponentAPI</source>
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">Page ProdOrderComponentAPI - Property Caption</note>
         </trans-unit>
@@ -4714,7 +4714,7 @@
           <note from="Xliff Generator" annotates="general" priority="3">Page ProdOrderComponentAPI - Control variantCode - Property Caption</note>
         </trans-unit>
         <trans-unit id="Page 4225719835 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
-          <source>SPN ProdOrderLineAPI</source>
+          <source>ProdOrderLineAPI</source>
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">Page ProdOrderLineAPI - Property Caption</note>
         </trans-unit>
@@ -4859,7 +4859,7 @@
           <note from="Xliff Generator" annotates="general" priority="3">Page ProdOrderLineAPI - Control variantCode - Property Caption</note>
         </trans-unit>
         <trans-unit id="Page 1533169463 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
-          <source>SPN ProdOrderRoutingLineAPI</source>
+          <source>ProdOrderRoutingLineAPI</source>
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">Page ProdOrderRoutingLineAPI - Property Caption</note>
         </trans-unit>
@@ -5049,7 +5049,7 @@
           <note from="Xliff Generator" annotates="general" priority="3">Page ProductionBOMHeaderAPI - Control versionNos - Property Caption</note>
         </trans-unit>
         <trans-unit id="Page 2727657591 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
-          <source>SPN ProductionBOMLineAPI</source>
+          <source>ProductionBOMLineAPI</source>
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">Page ProductionBOMLineAPI - Property Caption</note>
         </trans-unit>
