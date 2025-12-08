@@ -1,5 +1,5 @@
 page 50210 GLEntryAPI
-{
+{ 
     /// <summary>
     /// Date        Name                Version.SubVersion      Description
     /// 2025.07.08  Jesper Harder       001.3                   API page for G/L Entries (DW timestamp + enum INTs + DateTime text)

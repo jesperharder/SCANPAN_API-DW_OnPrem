@@ -1,5 +1,5 @@
 page 50209 GlAccountAPI
-{
+{ 
     /// <summary>
     /// Date        Name                Version.SubVersion      Description
     /// 2025.08.20  Jesper Harder       001.4                   API page for G/L Accounts (INT enums + DW timestamp)

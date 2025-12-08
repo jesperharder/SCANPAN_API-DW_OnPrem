@@ -59,8 +59,8 @@ page 50246 "ProductionOrderAPI"
                 // --- Quantities ---
                 field(quantity; Rec.Quantity) { Caption = 'Quantity'; }
                 //field(quantityBase; Rec."Quantity (Base)")        { Caption = 'Quantity (Base)'; }
-                field(finishedQuantity; Rec."Finished Quantity") { Caption = 'Finished Quantity'; }
-                field(remainingQuantity; Rec."Remaining Quantity") { Caption = 'Remaining Quantity'; }
+                //field(finishedQuantity; Rec."Finished Quantity") { Caption = 'Finished Quantity'; }
+                //field(remainingQuantity; Rec."Remaining Quantity") { Caption = 'Remaining Quantity'; }
                 //field(scrapPercent; Rec."Scrap %")                { Caption = 'Scrap %'; }
 
                 // --- Dates ---
