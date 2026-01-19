@@ -1,11 +1,11 @@
-page 50208 DimnsionValueAPI
+page 50208 DimensionValueAPI
 {
     /// <summary>
     /// Date        Name                Version.SubVersion      Description
     /// 2025.07.08  Jesper Harder       001.2                   API page for Dimension Values
     /// </summary>
 
-    Caption = 'DimnsionValueAPI';
+    Caption = 'DimensionValueAPI';
     AdditionalSearchTerms = 'SCANPAN, API, datawarehouse, dw';
     UsageCategory = Administration;
 

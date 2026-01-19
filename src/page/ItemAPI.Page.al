@@ -3,19 +3,27 @@ page 50224 "ItemAPI"
     PageType = API;
     SourceTable = Item;
 
-    // API signature
-    APIPublisher = 'yourorg';
-    APIGroup = 'inventory';
-    APIVersion = 'v1.0';
+    // API signature (tilpas gerne til jeres standard)
+    APIPublisher = 'scanpan';
+    APIGroup = 'datawarehouse';
+    APIVersion = 'beta', 'v1.0';
     EntityName = 'item';
     EntitySetName = 'items';
 
-    // Use SystemId as the stable OData key
+    // Stable OData key
     ODataKeyFields = SystemId;
 
-    Caption = 'Item API';
+    Caption = 'Item API (DW)';
+    UsageCategory = Administration;
+    AdditionalSearchTerms = 'SCANPAN, API, datawarehouse, dw, item';
+
+    Editable = false;
     DelayedInsert = true;
     Extensible = false;
+
+    InsertAllowed = false;
+    ModifyAllowed = false;
+    DeleteAllowed = false;
 
     layout
     {
@@ -35,6 +43,8 @@ page 50224 "ItemAPI"
 
                 // Classification
                 field(type; Rec.Type) { ApplicationArea = All; Caption = 'type'; }
+                field(typeInt; TypeInt) { ApplicationArea = All; Caption = 'typeInt'; }
+
                 field(itemCategoryCode; Rec."Item Category Code") { ApplicationArea = All; Caption = 'itemCategoryCode'; }
                 field(itemCategoryId; Rec."Item Category Id") { ApplicationArea = All; Caption = 'itemCategoryId'; }
 
@@ -63,7 +73,7 @@ page 50224 "ItemAPI"
                 field(vendorNo; Rec."Vendor No.") { ApplicationArea = All; Caption = 'vendorNo'; }
                 field(gtin; Rec.GTIN) { ApplicationArea = All; Caption = 'gtin'; }
 
-                // Read-only flowfield (safe)
+                // Flowfields / calculated (keep read-only)
                 field(inventory; Rec.Inventory)
                 {
                     ApplicationArea = All;
@@ -71,8 +81,8 @@ page 50224 "ItemAPI"
                     Editable = false;
                 }
 
-                // Additional fields can be added here as needed
-                // NOTO fields from tableextension 51004 "NOTO Item"
+                // Custom fields (fra jeres udvidelser – behold kun dem der faktisk findes i jeres build)
+                // NOTO fields (som du tidligere viste i page-udsnittet)
                 field(itemBrand; Rec."Item Brand") { Caption = 'Item Brand'; }
                 field(productLineCode; Rec."Product Line Code") { Caption = 'Product Line Code'; }
                 field(productUsage; Rec."Product Usage") { Caption = 'Product Usage'; }
@@ -83,12 +93,10 @@ page 50224 "ItemAPI"
                 field(packingMethod; Rec."Packing Method") { Caption = 'Packing Method'; }
                 field(abcdCategory; Rec."ABCD Category") { Caption = 'ABCD Category'; }
                 field(coating; Rec.Coating) { Caption = 'Coating'; }
-                field(quality; Rec.Quality) { Caption = 'Quality'; }                     // Enum NOTOQuality
+                field(quality; Rec.Quality) { Caption = 'Quality'; }
                 field(withLid; Rec."With Lid") { Caption = 'With Lid'; }
-                field(weightClassification; Rec."Weight Classification NOTO")
-                { Caption = 'Weight Classification'; }
+                field(weightClassification; Rec."Weight Classification NOTO") { Caption = 'Weight Classification'; }
 
-                // Calculated / read-only values
                 field(calculatedAvailable; Rec."Calculated Available NOTO")
                 {
                     Caption = 'Calculated Available';
@@ -105,13 +113,33 @@ page 50224 "ItemAPI"
                     Editable = false;
                 }
 
-                // Other
+                // 50000 ItemExt
                 field(itemBodyType; Rec."ItemBodyType")
                 {
-                    Caption = 'Item Body Type'; // Enum "EnumItemBodyType"
+                    Caption = 'Item Body Type';
+                }
+                field(itemBodyTypeInt; ItemBodyTypeInt)
+                {
+                    Caption = 'Item Body Type INT';
                 }
 
+                // System fields (✅ nødvendige for incremental load)
+                field(systemCreatedAt; Rec.SystemCreatedAt) { Caption = 'systemCreatedAt'; }
+                field(systemCreatedBy; Rec.SystemCreatedBy) { Caption = 'systemCreatedBy'; }
+                field(systemModifiedAt; Rec.SystemModifiedAt) { Caption = 'systemModifiedAt'; }
+                field(systemModifiedBy; Rec.SystemModifiedBy) { Caption = 'systemModifiedBy'; }
             }
         }
     }
+
+    var
+        TypeInt: Integer;
+        ItemBodyTypeInt: Integer;
+
+    trigger OnAfterGetRecord()
+    begin
+        // Enum/Option → INT mirrors (DW stability)
+        TypeInt := Rec.Type.AsInteger();
+        ItemBodyTypeInt := Rec."ItemBodyType".AsInteger();
+    end;
 }

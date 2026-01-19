@@ -1,35 +1,35 @@
-/// <summary>
-/// API Page: SPN Item Category API v1 (table 5722 "Item Category").
-/// </summary>
-/// <remarks>
-/// Project comment / version list:
-/// 2024.11   SPN     Initial Item Category API (includes additionalCaption and parent lookups)
-/// Notes:
-/// - Respects table logic (cyclic inheritance, indentation, timestamps, attribute maintenance).
-/// - additionalCaption is a convenience read-only field: "CODE - Description".
-/// </remarks>
 page 50229 "ItemCategoryAPI"
 {
-    PageType = API;
+    /// <summary>
+    /// 2025.12.17  Jesper Harder / DW Suite
+    /// API page for Item Category (table 5722) – DW-friendly (system fields + convenience lookups)
+    /// </summary>
+
     Caption = 'ItemCategoryAPI';
-    APIPublisher = 'spn';
-    APIGroup = 'items';
-    APIVersion = 'v1.0';
+    AdditionalSearchTerms = 'SCANPAN, API, datawarehouse, dw, item category';
+    UsageCategory = Administration;
 
-    EntityName = 'item_category';
-    EntitySetName = 'item_categories';
+    PageType = API;
+    APIPublisher = 'scanpan';
+    APIGroup = 'datawarehouse';
+    APIVersion = 'beta', 'v1.0';
 
-    SourceTable = "Item Category"; // table 5722 as provided
-    ODataKeyFields = SystemId;
+    EntityName = 'itemCategory';
+    EntitySetName = 'itemCategories';
+
+    SourceTable = "Item Category";
+    SourceTableView = sorting(Code) order(ascending);
+
+    // DW: naturlig nøgle (stabil for joins)
+    ODataKeyFields = Code;
+
     DelayedInsert = true;
+    Editable = false;
     Extensible = false;
 
-    InsertAllowed = true;
-    ModifyAllowed = true;
-    DeleteAllowed = true;
-
-    // FYI: There is no standard "AdditionalCaption" property on API pages.
-    // We surface a computed field 'additionalCaption' instead.
+    InsertAllowed = false;
+    ModifyAllowed = false;
+    DeleteAllowed = false;
 
     layout
     {
@@ -37,54 +37,62 @@ page 50229 "ItemCategoryAPI"
         {
             repeater(General)
             {
-                // Identity
-                field(id; Rec.SystemId)
-                {
-                    Caption = 'Id';
-                    Editable = false;
-                }
+                Caption = 'Item Category';
 
-                // Core
-                field(code; Rec.Code)
-                {
-                    Caption = 'Code';
-                }
-                field(description; Rec.Description)
-                {
-                    Caption = 'Description';
-                }
-                field(parentCategory; Rec."Parent Category")
-                {
-                    Caption = 'Parent Category';
-                }
+                // --- Key / identity ---
+                field(code; Rec.Code) { Caption = 'Code'; }
+                field(description; Rec.Description) { Caption = 'Description'; }
+
+                // --- Hierarchy ---
+                field(parentCategory; Rec."Parent Category") { Caption = 'Parent Category'; }
 
                 // Convenience (read-only)
                 field(parentCategoryDescription; ParentDescriptionTxt)
                 {
                     Caption = 'Parent Category Description';
-                    Editable = false;
                 }
-                field(parentCategoryId; ParentSystemId)
+                field(parentCategorySystemId; ParentSystemId)
                 {
-                    Caption = 'Parent Category Id';
-                    Editable = false;
+                    Caption = 'Parent Category SystemId';
                 }
-
-                // "Additional caption" for integrators: CODE - Description
                 field(additionalCaption; AdditionalCaptionTxt)
                 {
                     Caption = 'Additional Caption';
-                    Editable = false;
                 }
+
+                // --- System fields (for incremental loads) ---
+                field(systemId; Rec.SystemId) { Caption = 'SystemId'; }
+                field(systemCreatedAt; Rec.SystemCreatedAt) { Caption = 'SystemCreatedAt'; }
+                field(systemCreatedBy; Rec.SystemCreatedBy) { Caption = 'SystemCreatedBy'; }
+                field(systemModifiedAt; Rec.SystemModifiedAt) { Caption = 'SystemModifiedAt'; }
+                field(systemModifiedBy; Rec.SystemModifiedBy) { Caption = 'SystemModifiedBy'; }
             }
         }
     }
-
-    actions { }
 
     var
         ParentDescriptionTxt: Text[100];
         ParentSystemId: Guid;
         AdditionalCaptionTxt: Text[150];
 
+    trigger OnAfterGetRecord()
+    var
+        ParentCat: Record "Item Category";
+    begin
+        Clear(ParentDescriptionTxt);
+        Clear(ParentSystemId);
+        Clear(AdditionalCaptionTxt);
+
+        // "CODE - Description" convenience
+        if Rec.Description <> '' then
+            AdditionalCaptionTxt := CopyStr(Rec.Code + ' - ' + Rec.Description, 1, MaxStrLen(AdditionalCaptionTxt))
+        else
+            AdditionalCaptionTxt := CopyStr(Rec.Code, 1, MaxStrLen(AdditionalCaptionTxt));
+
+        // Parent lookups
+        if (Rec."Parent Category" <> '') and ParentCat.Get(Rec."Parent Category") then begin
+            ParentDescriptionTxt := CopyStr(ParentCat.Description, 1, MaxStrLen(ParentDescriptionTxt));
+            ParentSystemId := ParentCat.SystemId;
+        end;
+    end;
 }

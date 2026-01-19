@@ -1,31 +1,46 @@
-/// <summary>
-/// API Page: Item Unit of Measure API v1 (table 5404 "Item Unit of Measure").
-/// </summary>
-/// <remarks>
-/// 2024.11  Initial version (no prefix). Includes convenience fields and AdditionalSearchTerms.
-/// Note: Standard table has no enum/option fields, so no integer mirrors are added.
-/// </remarks>
 page 50235 "ItemUnitofMeasureAPI"
 {
-    PageType = API;
-    Caption = 'ItemUnitofMeasureAPI';
-    APIPublisher = 'custom';
-    APIGroup = 'items';
-    APIVersion = 'v1.0';
+    /// <summary>
+    /// 2025.12.17  Jesper Harder / DW Suite
+    /// API page for Item Unit of Measure (table 5404) – DW-friendly
+    /// - Natural key: Item No. + Code
+    /// - Read-only extract
+    /// - Includes system fields for incremental loads
+    /// - Convenience fields: itemDescription, uomDescription, additionalCaption
+    /// </summary>
 
-    EntityName = 'item_unit_of_measure';
-    EntitySetName = 'item_unit_of_measures';
+    Caption = 'ItemUnitofMeasureAPI';
+    AdditionalSearchTerms = 'SCANPAN, API, datawarehouse, dw, item uom, unit of measure, pack size, qty per uom';
+
+    UsageCategory = Administration;
+
+    PageType = API;
+    APIPublisher = 'scanpan';
+    APIGroup = 'datawarehouse';
+    APIVersion = 'beta', 'v1.0';
+
+    EntityName = 'itemUnitOfMeasure';
+    EntitySetName = 'itemUnitOfMeasures';
 
     SourceTable = "Item Unit of Measure";
-    ODataKeyFields = SystemId;
+    SourceTableView = sorting("Item No.", Code) order(ascending);
+
+    // DW: stabil sammensat nøgle
+    ODataKeyFields = "Item No.", Code;
+
     DelayedInsert = true;
     Extensible = false;
 
-    InsertAllowed = true;
-    ModifyAllowed = true;
-    DeleteAllowed = true;
+    // DW extract = read-only
+    Editable = false;
+    InsertAllowed = false;
+    ModifyAllowed = false;
+    DeleteAllowed = false;
 
-    AdditionalSearchTerms = 'Item UOM, Unit, Pack size, Packaging, Qty per UOM, Weight, Dimensions';
+    Permissions =
+        tabledata "Item Unit of Measure" = R,
+        tabledata Item = R,
+        tabledata "Unit of Measure" = R;
 
     layout
     {
@@ -33,46 +48,38 @@ page 50235 "ItemUnitofMeasureAPI"
         {
             repeater(General)
             {
-                // Identity
-                field(id; Rec.SystemId) { Caption = 'Id'; Editable = false; }
-
-                // Core
+                // --- Key ---
                 field(itemNo; Rec."Item No.") { Caption = 'Item No.'; }
                 field(code; Rec.Code) { Caption = 'Code'; }
+
+                // --- Core ---
                 field(qtyPerUnitOfMeasure; Rec."Qty. per Unit of Measure")
                 {
                     Caption = 'Qty. per Unit of Measure';
                     DecimalPlaces = 0 : 5;
                 }
 
-                // Dimensions & weight (present on standard table)
+                // --- Dimensions & weight ---
                 field(length; Rec.Length) { Caption = 'Length'; DecimalPlaces = 0 : 5; }
                 field(width; Rec.Width) { Caption = 'Width'; DecimalPlaces = 0 : 5; }
                 field(height; Rec.Height) { Caption = 'Height'; DecimalPlaces = 0 : 5; }
                 field(cubage; Rec.Cubage) { Caption = 'Cubage'; DecimalPlaces = 0 : 5; }
                 field(weight; Rec.Weight) { Caption = 'Weight'; DecimalPlaces = 0 : 5; }
 
-                // Convenience (read-only)
-                field(itemDescription; ItemDescriptionTxt)
-                {
-                    Caption = 'Item Description';
-                    Editable = false;
-                }
-                field(uomDescription; UomDescriptionTxt)
-                {
-                    Caption = 'UoM Description';
-                    Editable = false;
-                }
-                field(additionalCaption; AdditionalCaptionTxt)
-                {
-                    Caption = 'Additional Caption';
-                    Editable = false;
-                }
+                // --- Convenience (read-only) ---
+                field(itemDescription; ItemDescriptionTxt) { Caption = 'Item Description'; }
+                field(uomDescription; UomDescriptionTxt) { Caption = 'UoM Description'; }
+                field(additionalCaption; AdditionalCaptionTxt) { Caption = 'Additional Caption'; }
+
+                // --- System fields (incremental load) ---
+                field(systemId; Rec.SystemId) { Caption = 'SystemId'; }
+                field(systemCreatedAt; Rec.SystemCreatedAt) { Caption = 'SystemCreatedAt'; }
+                field(systemCreatedBy; Rec.SystemCreatedBy) { Caption = 'SystemCreatedBy'; }
+                field(systemModifiedAt; Rec.SystemModifiedAt) { Caption = 'SystemModifiedAt'; }
+                field(systemModifiedBy; Rec.SystemModifiedBy) { Caption = 'SystemModifiedBy'; }
             }
         }
     }
-
-    actions { }
 
     var
         ItemDescriptionTxt: Text[100];
@@ -84,14 +91,15 @@ page 50235 "ItemUnitofMeasureAPI"
         ItemDescriptionTxt := GetItemDescription(Rec."Item No.");
         UomDescriptionTxt := GetUomDescription(Rec.Code);
 
-        // e.g. "1000 / PCS — 1.00000"
+        // "1000 / PCS — 1.00000"
         AdditionalCaptionTxt :=
             CopyStr(
                 StrSubstNo('%1 / %2 — %3',
                     Rec."Item No.",
                     Rec.Code,
                     Format(Rec."Qty. per Unit of Measure")),
-                1, MaxStrLen(AdditionalCaptionTxt));
+                1,
+                MaxStrLen(AdditionalCaptionTxt));
     end;
 
     local procedure GetItemDescription(ItemNo: Code[20]): Text[100]

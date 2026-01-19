@@ -1,34 +1,42 @@
-/// <summary>
-/// API Page: Item Ledger Entry API v1 (table 32).
-/// </summary>
-/// <remarks>
-/// 2024.11  Initial version (no prefix). Read-only. Adds integer mirrors:
-/// entryTypeInt, documentTypeInt, sourceTypeInt, orderTypeInt, itemTrackingInt.
-/// Also includes convenience fields (itemDescription, locationName, sourceName)
-/// and AdditionalSearchTerms for discoverability.
-/// </remarks>
 page 50234 "ItemLedgerEntryAPI"
 {
-    PageType = API;
-    Caption = 'ItemLedgerEntryAPI';
-    APIPublisher = 'custom';
-    APIGroup = 'items';
-    APIVersion = 'v1.0';
+    /// <summary>
+    /// 2025.12.17  Jesper Harder / DW Suite
+    /// API page for Item Ledger Entry (table 32) – DW-friendly (system fields + enum INT mirrors + convenience lookups)
+    /// </summary>
 
-    EntityName = 'item_ledger_entry';
-    EntitySetName = 'item_ledger_entries';
+    Caption = 'ItemLedgerEntryAPI';
+    AdditionalSearchTerms = 'SCANPAN, API, datawarehouse, dw, Item Ledger, ILE, Stock, Inventory, Lot, Serial, Warehouse, Value Entry';
+    UsageCategory = Administration;
+
+    PageType = API;
+    APIPublisher = 'scanpan';
+    APIGroup = 'datawarehouse';
+    APIVersion = 'beta', 'v1.0';
+
+    EntityName = 'itemLedgerEntry';
+    EntitySetName = 'itemLedgerEntries';
 
     SourceTable = "Item Ledger Entry";
-    ODataKeyFields = SystemId;
+    SourceTableView = sorting("Entry No.") order(ascending);
+
+    // DW: naturlig nøgle (bedst til Synapse upsert)
+    ODataKeyFields = "Entry No.";
+
     DelayedInsert = true;
+    Editable = false;
     Extensible = false;
 
-    // Read-only surface
     InsertAllowed = false;
     ModifyAllowed = false;
     DeleteAllowed = false;
 
-    AdditionalSearchTerms = 'Item Ledger, ILE, Stock, Inventory, Cost, Lot, Serial, Warehouse, Value Entry';
+    Permissions =
+        tabledata "Item Ledger Entry" = R,
+        tabledata Item = R,
+        tabledata Location = R,
+        tabledata Customer = R,
+        tabledata Vendor = R;
 
     layout
     {
@@ -36,69 +44,75 @@ page 50234 "ItemLedgerEntryAPI"
         {
             repeater(General)
             {
-                // Identity
-                field(id; Rec.SystemId) { Caption = 'Id'; Editable = false; }
-                field(entryNo; Rec."Entry No.") { Caption = 'Entry No.'; Editable = false; }
+                Caption = 'Item Ledger Entry';
 
-                // Core
-                field(itemNo; Rec."Item No.") { Caption = 'Item No.'; Editable = false; }
-                field(itemDescription; ItemDescTxt) { Caption = 'Item Description'; Editable = false; }
-                field(postingDate; Rec."Posting Date") { Caption = 'Posting Date'; Editable = false; }
+                // --- Keys / identity ---
+                field(entryNo; Rec."Entry No.") { Caption = 'Entry No.'; }
+                field(systemId; Rec.SystemId) { Caption = 'SystemId'; }
 
-                field(documentType; Rec."Document Type") { Caption = 'Document Type'; Editable = false; }
-                field(documentTypeInt; DocumentTypeInt) { Caption = 'Document Type (Int)'; Editable = false; }
-                field(documentNo; Rec."Document No.") { Caption = 'Document No.'; Editable = false; }
+                // --- Core ---
+                field(itemNo; Rec."Item No.") { Caption = 'Item No.'; }
+                field(itemDescription; ItemDescTxt) { Caption = 'Item Description'; }
+                field(postingDate; Rec."Posting Date") { Caption = 'Posting Date'; }
 
-                field(entryType; Rec."Entry Type") { Caption = 'Entry Type'; Editable = false; }
-                field(entryTypeInt; EntryTypeInt) { Caption = 'Entry Type (Int)'; Editable = false; }
+                field(documentType; Rec."Document Type") { Caption = 'Document Type'; }
+                field(documentTypeInt; DocumentTypeInt) { Caption = 'Document Type INT'; }
+                field(documentNo; Rec."Document No.") { Caption = 'Document No.'; }
 
-                field(sourceType; Rec."Source Type") { Caption = 'Source Type'; Editable = false; }
-                field(sourceTypeInt; SourceTypeInt) { Caption = 'Source Type (Int)'; Editable = false; }
-                field(sourceNo; Rec."Source No.") { Caption = 'Source No.'; Editable = false; }
-                field(sourceName; SourceNameTxt) { Caption = 'Source Name'; Editable = false; }
+                field(entryType; Rec."Entry Type") { Caption = 'Entry Type'; }
+                field(entryTypeInt; EntryTypeInt) { Caption = 'Entry Type INT'; }
 
-                field(locationCode; Rec."Location Code") { Caption = 'Location Code'; Editable = false; }
-                field(locationName; LocationNameTxt) { Caption = 'Location Name'; Editable = false; }
-                field(variantCode; Rec."Variant Code") { Caption = 'Variant Code'; Editable = false; }
+                field(sourceType; Rec."Source Type") { Caption = 'Source Type'; }
+                field(sourceTypeInt; SourceTypeInt) { Caption = 'Source Type INT'; }
+                field(sourceNo; Rec."Source No.") { Caption = 'Source No.'; }
+                field(sourceName; SourceNameTxt) { Caption = 'Source Name'; }
 
-                // Quantities & flags
-                field(quantity; Rec.Quantity) { Caption = 'Quantity'; Editable = false; DecimalPlaces = 0 : 5; }
-                field(remainingQuantity; Rec."Remaining Quantity") { Caption = 'Remaining Quantity'; Editable = false; DecimalPlaces = 0 : 5; }
-                field(invoicedQuantity; Rec."Invoiced Quantity") { Caption = 'Invoiced Quantity'; Editable = false; DecimalPlaces = 0 : 5; }
-                field(open; Rec.Open) { Caption = 'Open'; Editable = false; }
-                field(positive; Rec.Positive) { Caption = 'Positive'; Editable = false; }
+                field(locationCode; Rec."Location Code") { Caption = 'Location Code'; }
+                field(locationName; LocationNameTxt) { Caption = 'Location Name'; }
+                field(variantCode; Rec."Variant Code") { Caption = 'Variant Code'; }
 
-                // Costs (FlowFields)
-                field(costAmountExpected; Rec."Cost Amount (Expected)") { Caption = 'Cost Amount (Expected)'; Editable = false; }
-                field(costAmountActual; Rec."Cost Amount (Actual)") { Caption = 'Cost Amount (Actual)'; Editable = false; }
+                // --- Quantities & flags ---
+                field(quantity; Rec.Quantity) { Caption = 'Quantity'; DecimalPlaces = 0 : 5; }
+                field(remainingQuantity; Rec."Remaining Quantity") { Caption = 'Remaining Quantity'; DecimalPlaces = 0 : 5; }
+                field(invoicedQuantity; Rec."Invoiced Quantity") { Caption = 'Invoiced Quantity'; DecimalPlaces = 0 : 5; }
+                field(open; Rec.Open) { Caption = 'Open'; }
+                field(positive; Rec.Positive) { Caption = 'Positive'; }
 
-                // Tracking
-                field(lotNo; Rec."Lot No.") { Caption = 'Lot No.'; Editable = false; }
-                field(serialNo; Rec."Serial No.") { Caption = 'Serial No.'; Editable = false; }
-                field(itemTracking; Rec."Item Tracking") { Caption = 'Item Tracking'; Editable = false; }
-                field(itemTrackingInt; ItemTrackingInt) { Caption = 'Item Tracking (Int)'; Editable = false; }
+                // --- Costs (FlowFields) ---
+                field(costAmountExpected; Rec."Cost Amount (Expected)") { Caption = 'Cost Amount (Expected)'; }
+                field(costAmountActual; Rec."Cost Amount (Actual)") { Caption = 'Cost Amount (Actual)'; }
 
-                // Dimensions
-                field(globalDimension1Code; Rec."Global Dimension 1 Code") { Caption = 'Global Dimension 1 Code'; Editable = false; }
-                field(globalDimension2Code; Rec."Global Dimension 2 Code") { Caption = 'Global Dimension 2 Code'; Editable = false; }
-                field(dimensionSetId; Rec."Dimension Set ID") { Caption = 'Dimension Set ID'; Editable = false; }
+                // --- Tracking ---
+                field(lotNo; Rec."Lot No.") { Caption = 'Lot No.'; }
+                field(serialNo; Rec."Serial No.") { Caption = 'Serial No.'; }
+                field(itemTracking; Rec."Item Tracking") { Caption = 'Item Tracking'; }
+                field(itemTrackingInt; ItemTrackingInt) { Caption = 'Item Tracking INT'; }
 
-                // Order context (read-only in table)
-                field(orderType; Rec."Order Type") { Caption = 'Order Type'; Editable = false; }
-                field(orderTypeInt; OrderTypeInt) { Caption = 'Order Type (Int)'; Editable = false; }
-                field(orderNo; Rec."Order No.") { Caption = 'Order No.'; Editable = false; }
-                field(orderLineNo; Rec."Order Line No.") { Caption = 'Order Line No.'; Editable = false; }
+                // --- Dimensions ---
+                field(globalDimension1Code; Rec."Global Dimension 1 Code") { Caption = 'Global Dimension 1 Code'; }
+                field(globalDimension2Code; Rec."Global Dimension 2 Code") { Caption = 'Global Dimension 2 Code'; }
+                field(dimensionSetId; Rec."Dimension Set ID") { Caption = 'Dimension Set ID'; }
 
-                // Applied / linkage help
-                field(appliesToEntry; Rec."Applies-to Entry") { Caption = 'Applies-to Entry'; Editable = false; }
+                // --- Order context ---
+                field(orderType; Rec."Order Type") { Caption = 'Order Type'; }
+                field(orderTypeInt; OrderTypeInt) { Caption = 'Order Type INT'; }
+                field(orderNo; Rec."Order No.") { Caption = 'Order No.'; }
+                field(orderLineNo; Rec."Order Line No.") { Caption = 'Order Line No.'; }
+
+                // --- Linkage ---
+                field(appliesToEntry; Rec."Applies-to Entry") { Caption = 'Applies-to Entry'; }
+
+                // --- System fields (for incremental loads) ---
+                field(systemCreatedAt; Rec.SystemCreatedAt) { Caption = 'SystemCreatedAt'; }
+                field(systemCreatedBy; Rec.SystemCreatedBy) { Caption = 'SystemCreatedBy'; }
+                field(systemModifiedAt; Rec.SystemModifiedAt) { Caption = 'SystemModifiedAt'; }
+                field(systemModifiedBy; Rec.SystemModifiedBy) { Caption = 'SystemModifiedBy'; }
             }
         }
     }
 
-    actions { }
-
     var
-        // Integer mirrors (computed)
+        // Enum mirrors
         EntryTypeInt: Integer;
         DocumentTypeInt: Integer;
         SourceTypeInt: Integer;
@@ -112,53 +126,19 @@ page 50234 "ItemLedgerEntryAPI"
 
     trigger OnAfterGetRecord()
     begin
-        // Integer mirrors (explicit mapping for stability across versions)
-        EntryTypeInt := GetEntryTypeInt();
-        DocumentTypeInt := GetDocumentTypeInt();
-        SourceTypeInt := GetSourceTypeInt();
-        OrderTypeInt := GetOrderTypeInt();
-        ItemTrackingInt := GetItemTrackingInt();
+        // Enum -> INT mirrors (stabil DW mapping)
+        EntryTypeInt := Rec."Entry Type".AsInteger();
+        DocumentTypeInt := Rec."Document Type".AsInteger();
+        SourceTypeInt := Rec."Source Type".AsInteger();
+        OrderTypeInt := Rec."Order Type".AsInteger();
+        ItemTrackingInt := Rec."Item Tracking".AsInteger();
 
-        // Convenience text lookups
+        // Convenience lookups
         ItemDescTxt := GetItemDescription(Rec."Item No.");
         LocationNameTxt := GetLocationName(Rec."Location Code");
-        SourceNameTxt := GetSourceName();
+        SourceNameTxt := GetSourceName(Rec."Source Type", Rec."Source No.");
     end;
 
-    // ===== Integer mirror helpers =====
-    local procedure GetEntryTypeInt(): Integer
-    begin
-        // Enum "Item Ledger Entry Type"
-        exit(Rec."Entry Type".AsInteger()); // Use AsInteger() to avoid manual mapping
-        
-    end;
-
-
-    local procedure GetDocumentTypeInt(): Integer
-    begin
-        // Enum "Item Ledger Document Type"
-        exit(rec."Document Type".AsInteger()); // Use AsInteger() to avoid manual mapping
-    end;
-
-    local procedure GetSourceTypeInt(): Integer
-    begin
-        // Enum "Analysis Source Type"
-        exit(Rec."Source Type".AsInteger()); // Use AsInteger() to avoid manual mapping
-    end;
-
-    local procedure GetOrderTypeInt(): Integer
-    begin
-        // Enum "Inventory Order Type"
-        exit(Rec."Order Type".AsInteger()); // Use AsInteger() to avoid manual mapping
-    end;
-
-    local procedure GetItemTrackingInt(): Integer
-    begin
-        // Enum "Item Tracking Entry Type"
-        exit(Rec."Item Tracking".AsInteger()); // Use AsInteger() to avoid manual mapping
-    end;
-
-    // ===== Convenience lookups =====
     local procedure GetItemDescription(ItemNo: Code[20]): Text[100]
     var
         Item: Record Item;
@@ -181,25 +161,27 @@ page 50234 "ItemLedgerEntryAPI"
         exit('');
     end;
 
-    local procedure GetSourceName(): Text[100]
+    local procedure GetSourceName(SourceType: Enum "Analysis Source Type"; SourceNo: Code[20]): Text[100]
     var
         Cust: Record Customer;
         Vend: Record Vendor;
         Item: Record Item;
     begin
-        if Rec."Source No." = '' then
+        if SourceNo = '' then
             exit('');
-        case Rec."Source Type" of
-            Rec."Source Type"::Customer:
-                if Cust.Get(Rec."Source No.") then
+
+        case SourceType of
+            SourceType::Customer:
+                if Cust.Get(SourceNo) then
                     exit(CopyStr(Cust.Name, 1, 100));
-            Rec."Source Type"::Vendor:
-                if Vend.Get(Rec."Source No.") then
+            SourceType::Vendor:
+                if Vend.Get(SourceNo) then
                     exit(CopyStr(Vend.Name, 1, 100));
-            Rec."Source Type"::Item:
-                if Item.Get(Rec."Source No.") then
+            SourceType::Item:
+                if Item.Get(SourceNo) then
                     exit(CopyStr(Item.Description, 1, 100));
         end;
+
         exit('');
     end;
 }

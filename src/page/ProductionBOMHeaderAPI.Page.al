@@ -1,12 +1,12 @@
-page 50244 "ProductionBOMHeaderAPI"
+page 50290 "ProductionBOMHeaderAPI"
 {
     /// <summary>
-    /// Date        Name                        Version   Description
-    /// 2025.11.20  Business Central AL Asst.   001.0     API page for Production BOM Header (table 99000771)
+    /// Date        Name                    Version   Description
+    /// 2026.01.19  Business Central AL     001.0     API page for Production BOM Header (table 99000771)
     /// </summary>
 
-    Caption = 'SPN ProductionBOMHeaderAPI';
-    AdditionalSearchTerms = 'SCANPAN, API, datawarehouse, dw';
+    Caption = 'ProductionBOMHeaderAPI';
+    AdditionalSearchTerms = 'SCANPAN, API, datawarehouse, dw, production bom, bom header, manufacturing';
     UsageCategory = Administration;
 
     PageType = API;
@@ -22,6 +22,8 @@ page 50244 "ProductionBOMHeaderAPI"
 
     SourceTable = "Production BOM Header";
     SourceTableView = sorting("No.") order(ascending);
+
+    // Natural key for this table
     ODataKeyFields = "No.";
 
     layout
@@ -32,39 +34,42 @@ page 50244 "ProductionBOMHeaderAPI"
             {
                 Caption = 'Group';
 
-                // --- Key ---
-                field(no; Rec."No.")                            { Caption = 'No.'; }
+                // --- Key & identity ---
+                field(no; Rec."No.") { Caption = 'No.'; }
 
-                // --- Descriptive ---
-                field(description; Rec.Description)             { Caption = 'Description'; }
+                // --- Descriptions / search ---
+                field(description; Rec.Description) { Caption = 'Description'; }
+                field(description2; Rec."Description 2") { Caption = 'Description 2'; }
+                field(searchName; Rec."Search Name") { Caption = 'Search Name'; }
+
+                // --- UoM / structure ---
                 field(unitOfMeasureCode; Rec."Unit of Measure Code") { Caption = 'Unit of Measure Code'; }
+                field(lowLevelCode; Rec."Low-Level Code") { Caption = 'Low-Level Code'; }
 
-                // --- Status (Enum/Option) + INT-spejl ---
-                field(status; Rec.Status)                       { Caption = 'Status'; }
-                field(statusInt; statusInt)                     { Caption = 'Status INT'; }
+                // FlowField (exists = comments)
+                field(comment; Rec.Comment) { Caption = 'Comment'; }
 
-                // --- Versioning / maintenance ---
-                field(versionNos; Rec."Version Nos.")           { Caption = 'Version Nos.'; }
-                field(lastDateModified; Rec."Last Date Modified"){ Caption = 'Last Date Modified'; }
+                // --- Lifecycle dates ---
+                field(creationDate; Rec."Creation Date") { Caption = 'Creation Date'; }
+                field(lastDateModified; Rec."Last Date Modified") { Caption = 'Last Date Modified'; }
 
-                // --- System fields ---
-                field(systemId; Rec.SystemId)                   { Caption = 'SystemId'; }
-                field(systemCreatedAt; Rec.SystemCreatedAt)     { Caption = 'SystemCreatedAt'; }
-                field(systemCreatedBy; Rec.SystemCreatedBy)     { Caption = 'SystemCreatedBy'; }
-                field(systemModifiedAt; Rec.SystemModifiedAt)   { Caption = 'SystemModifiedAt'; }
-                field(systemModifiedBy; Rec.SystemModifiedBy)   { Caption = 'SystemModifiedBy'; }
+                // --- Status (enum + INT mirror) ---
+                field(status; Rec.Status) { Caption = 'Status'; }
+                field(statusInt; Rec.Status.AsInteger()) { Caption = 'Status (Int)'; }
+
+                // --- Number series ---
+                field(versionNos; Rec."Version Nos.") { Caption = 'Version Nos.'; }
+                field(noSeries; Rec."No. Series") { Caption = 'No. Series'; }
+
+                // --- System audit fields (for incremental loads / lineage) ---
+                field(systemCreatedAt; Rec.SystemCreatedAt) { Caption = 'System Created At'; }
+                field(systemCreatedBy; Rec.SystemCreatedBy) { Caption = 'System Created By'; }
+                field(systemModifiedAt; Rec.SystemModifiedAt) { Caption = 'System Modified At'; }
+                field(systemModifiedBy; Rec.SystemModifiedBy) { Caption = 'System Modified By'; }
+
+                // Optional tracking identity (NOT used as key)
+                field(systemId; Rec.SystemId) { Caption = 'SystemId'; }
             }
         }
     }
-
-    var
-        statusInt: Integer;
-
-    trigger OnAfterGetRecord()
-    begin
-        // Enum/Option -> Integer spejl
-        statusInt := Rec.Status.AsInteger();
-        // Hvis Status er Option i jeres version, kan du alternativt bruge:
-        // statusInt := Rec.Status;
-    end;
 }
