@@ -125,6 +125,15 @@ codeunit 50200 "DW WS Registrar"
         // Calendar / scheduling / time
         // ---------------------------------------------------------------------
         AddApiPage(50200, 'CalendarEntryAPI');
+
+
+        // ---------------------------------------------------------------------
+        // Perfion API
+        /// 2026.01.05  Jesper Harder       002.1                   API page for Perfion
+        // ---------------------------------------------------------------------
+        AddApiPage(50211, 'PerfionItemsAPI');
+        AddApiPage(50225, 'PerfionPricesAPI');
+
     end;
 
     /// <summary>

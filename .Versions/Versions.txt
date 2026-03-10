@@ -6,3 +6,5 @@
 /// 2025.07.08  Jesper Harder       001.1                   API page for GLEntries
 /// 2025.07.09  Jesper Harder       001.2                   API page for Dimension Values
 /// 2025.10.17  Jesper Harder       001.3                   API page for Customer Industy Category 
+/// 2026.01.05  Jesper Harder       002.1                   API page for Perfion Items
+/// 2026.01.05  Jesper Harder       003.1                   API page for Perfion Prices (Price List Line 7001)

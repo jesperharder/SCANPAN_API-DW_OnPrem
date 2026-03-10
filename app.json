@@ -7,7 +7,7 @@
   "privacyStatement": "https://www.scanpan.dk",
   "help": "https://www.scanpan.dk/",
   "contextSensitiveHelpUrl": "https://www.scanpan.dk/",
-  "version": "1.0.0.19",
+  "version": "1.0.0.21",
   "runtime": "7.2",
   "showMyCode": true,
   "target": "OnPrem",

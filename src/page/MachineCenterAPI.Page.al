@@ -4,7 +4,7 @@ page 50239 "MachineCenterAPI"
     /// Date        Name                        Version   Description
     /// 2025.11.20  Business Central AL Asst.   001.0     API page for Machine Center (table 99000758)
     /// </summary>
-
+ 
     Caption = 'MachineCenterAPI';
     AdditionalSearchTerms = 'SCANPAN, API, datawarehouse, dw';
     UsageCategory = Administration;

@@ -27,8 +27,7 @@ page 50213 "CustomerAPI"
     layout
     {
         area(content)
-        {
-            repeater(Group)
+        {             repeater(Group)
             {
                 Caption = 'Customer Fields';
 
