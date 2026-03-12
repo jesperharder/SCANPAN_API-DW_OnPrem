@@ -32,10 +32,10 @@ page 50224 "ItemAPI"
                 // ---------------------------------------------------------
                 // Identity
                 // ---------------------------------------------------------
-                field(id; Rec.SystemId) { ApplicationArea = All; Caption = 'id'; }
+                field(systemId; Rec.SystemId) { ApplicationArea = All; Caption = 'systemId'; }
                 field(number; Rec."No.") { ApplicationArea = All; Caption = 'number'; }
                 field(number2; Rec."No. 2") { ApplicationArea = All; Caption = 'number2'; }
-                field(legacyId; Rec.Id) { ApplicationArea = All; Caption = 'legacyId'; }
+                //field(legacyId; Rec.Id) { ApplicationArea = All; Caption = 'legacyId'; }
 
                 // ---------------------------------------------------------
                 // Descriptions
@@ -113,12 +113,6 @@ page 50224 "ItemAPI"
                 // ---------------------------------------------------------
                 field(vendorNo; Rec."Vendor No.") { ApplicationArea = All; Caption = 'vendorNo'; }
                 field(vendorItemNo; Rec."Vendor Item No.") { ApplicationArea = All; Caption = 'vendorItemNo'; }
-                field(itemVendorName; Rec."Item Vendor Name")
-                {
-                    ApplicationArea = All;
-                    Caption = 'itemVendorName';
-                    Editable = false;
-                }
                 field(leadTimeCalculation; Rec."Lead Time Calculation") { ApplicationArea = All; Caption = 'leadTimeCalculation'; }
                 field(purchasingCode; Rec."Purchasing Code") { ApplicationArea = All; Caption = 'purchasingCode'; }
                 field(gtin; Rec.GTIN) { ApplicationArea = All; Caption = 'gtin'; }
@@ -253,25 +247,9 @@ page 50224 "ItemAPI"
                 field(lastTimeModified; Rec."Last Time Modified") { ApplicationArea = All; Caption = 'lastTimeModified'; }
 
                 // ---------------------------------------------------------
-                // FlowFilters
-                // ---------------------------------------------------------
-                field(dateFilter; Rec."Date Filter") { ApplicationArea = All; Caption = 'dateFilter'; }
-                field(globalDimension1Filter; Rec."Global Dimension 1 Filter") { ApplicationArea = All; Caption = 'globalDimension1Filter'; }
-                field(globalDimension2Filter; Rec."Global Dimension 2 Filter") { ApplicationArea = All; Caption = 'globalDimension2Filter'; }
-                field(locationFilter; Rec."Location Filter") { ApplicationArea = All; Caption = 'locationFilter'; }
-                field(dropShipmentFilter; Rec."Drop Shipment Filter") { ApplicationArea = All; Caption = 'dropShipmentFilter'; }
-                field(variantFilter; Rec."Variant Filter") { ApplicationArea = All; Caption = 'variantFilter'; }
-                field(unitOfMeasureFilter; Rec."Unit of Measure Filter") { ApplicationArea = All; Caption = 'unitOfMeasureFilter'; }
-                field(lotNoFilter; Rec."Lot No. Filter") { ApplicationArea = All; Caption = 'lotNoFilter'; }
-                field(serialNoFilter; Rec."Serial No. Filter") { ApplicationArea = All; Caption = 'serialNoFilter'; }
-                field(packageNoFilter; Rec."Package No. Filter") { ApplicationArea = All; Caption = 'packageNoFilter'; }
-                field(binFilter; Rec."Bin Filter") { ApplicationArea = All; Caption = 'binFilter'; }
-                field(productionForecastName; Rec."Production Forecast Name") { ApplicationArea = All; Caption = 'productionForecastName'; }
-                field(componentForecast; Rec."Component Forecast") { ApplicationArea = All; Caption = 'componentForecast'; }
-
-                // ---------------------------------------------------------
                 // FlowFields / calculated
                 // ---------------------------------------------------------
+                /*
                 field(assemblyBom; Rec."Assembly BOM")
                 {
                     ApplicationArea = All;
@@ -470,12 +448,6 @@ page 50224 "ItemAPI"
                     Caption = 'scheduledReceiptQty';
                     Editable = false;
                 }
-                field(scheduledNeedQty; Rec."Scheduled Need (Qty.)")
-                {
-                    ApplicationArea = All;
-                    Caption = 'scheduledNeedQty';
-                    Editable = false;
-                }
                 field(reservedQtyOnProdOrder; Rec."Reserved Qty. on Prod. Order")
                 {
                     ApplicationArea = All;
@@ -534,12 +506,6 @@ page 50224 "ItemAPI"
                 {
                     ApplicationArea = All;
                     Caption = 'transOrdShipmentQty';
-                    Editable = false;
-                }
-                field(transRyomAuningQty; Rec."Trans. RYOM-AUNING (Qty.)")
-                {
-                    ApplicationArea = All;
-                    Caption = 'transRyomAuningQty';
                     Editable = false;
                 }
                 field(qtyAssignedToShip; Rec."Qty. Assigned to ship")
@@ -662,13 +628,8 @@ page 50224 "ItemAPI"
                     Caption = 'purchReqReleaseQty';
                     Editable = false;
                 }
-                field(picture; Rec.Picture)
-                {
-                    ApplicationArea = All;
-                    Caption = 'picture';
-                    Editable = false;
-                }
-
+                */
+                
                 // ---------------------------------------------------------
                 // Custom fields - NOTO + ItemExt
                 // ---------------------------------------------------------
@@ -706,9 +667,6 @@ page 50224 "ItemAPI"
                     Editable = false;
                 }
 
-                field(customsType; Rec.CustomsType) { ApplicationArea = All; Caption = 'customsType'; }
-                field(customsTypeInt; CustomsTypeInt) { ApplicationArea = All; Caption = 'customsTypeInt'; }
-
                 field(itemBodyType; Rec."ItemBodyType")
                 {
                     ApplicationArea = All;
@@ -745,12 +703,10 @@ page 50224 "ItemAPI"
         ManufacturingPolicyInt: Integer;
         OrderTrackingPolicyInt: Integer;
         QualityInt: Integer;
-        CustomsTypeInt: Integer;
         ItemBodyTypeInt: Integer;
 
     trigger OnAfterGetRecord()
     begin
-        // Enum / Option -> INT mirrors (DW stability)
         TypeInt := Rec.Type.AsInteger();
 
         PriceProfitCalculationInt := Rec."Price/Profit Calculation";
@@ -766,156 +722,6 @@ page 50224 "ItemAPI"
         OrderTrackingPolicyInt := Rec."Order Tracking Policy".AsInteger();
 
         QualityInt := Rec.Quality.AsInteger();
-        CustomsTypeInt := Rec.CustomsType.AsInteger();
         ItemBodyTypeInt := Rec."ItemBodyType".AsInteger();
     end;
 }
-
-
-/*
-page 50224 "ItemAPI"
-{
-    PageType = API;
-    SourceTable = Item;
-
-    // API signature (tilpas gerne til jeres standard)
-    APIPublisher = 'scanpan';
-    APIGroup = 'datawarehouse';
-    APIVersion = 'beta', 'v1.0';
-    EntityName = 'item';
-    EntitySetName = 'items';
-
-    // Stable OData key
-    ODataKeyFields = SystemId;
-
-    Caption = 'Item API (DW)';
-    UsageCategory = Administration;
-    AdditionalSearchTerms = 'SCANPAN, API, datawarehouse, dw, item';
-
-    Editable = false;
-    DelayedInsert = true;
-    Extensible = false;
-
-    InsertAllowed = false;
-    ModifyAllowed = false;
-    DeleteAllowed = false;
-
-    layout
-    {
-        area(content)
-        {
-            repeater(General)
-            {
-                // Identity
-                field(id; Rec.SystemId) { ApplicationArea = All; Caption = 'id'; }
-                field(number; Rec."No.") { ApplicationArea = All; Caption = 'number'; }
-                field(number2; Rec."No. 2") { ApplicationArea = All; Caption = 'number2'; }
-
-                // Descriptions
-                field(description; Rec.Description) { ApplicationArea = All; Caption = 'description'; }
-                field(description2; Rec."Description 2") { ApplicationArea = All; Caption = 'description2'; }
-                field(searchDescription; Rec."Search Description") { ApplicationArea = All; Caption = 'searchDescription'; }
-
-                // Classification
-                field(type; Rec.Type) { ApplicationArea = All; Caption = 'type'; }
-                field(typeInt; TypeInt) { ApplicationArea = All; Caption = 'typeInt'; }
-
-                field(itemCategoryCode; Rec."Item Category Code") { ApplicationArea = All; Caption = 'itemCategoryCode'; }
-                field(itemCategoryId; Rec."Item Category Id") { ApplicationArea = All; Caption = 'itemCategoryId'; }
-
-                // Posting & tax
-                field(inventoryPostingGroup; Rec."Inventory Posting Group") { ApplicationArea = All; Caption = 'inventoryPostingGroup'; }
-                field(genProdPostingGroup; Rec."Gen. Prod. Posting Group") { ApplicationArea = All; Caption = 'genProdPostingGroup'; }
-                field(vatProdPostingGroup; Rec."VAT Prod. Posting Group") { ApplicationArea = All; Caption = 'vatProdPostingGroup'; }
-                field(taxGroupCode; Rec."Tax Group Code") { ApplicationArea = All; Caption = 'taxGroupCode'; }
-                field(taxGroupId; Rec."Tax Group Id") { ApplicationArea = All; Caption = 'taxGroupId'; }
-
-                // Units of measure
-                field(baseUnitOfMeasure; Rec."Base Unit of Measure") { ApplicationArea = All; Caption = 'baseUnitOfMeasure'; }
-                field(unitOfMeasureId; Rec."Unit of Measure Id") { ApplicationArea = All; Caption = 'unitOfMeasureId'; }
-
-                // Prices / costs
-                field(unitPrice; Rec."Unit Price") { ApplicationArea = All; Caption = 'unitPrice'; }
-                field(unitCost; Rec."Unit Cost") { ApplicationArea = All; Caption = 'unitCost'; }
-                field(priceIncludesVAT; Rec."Price Includes VAT") { ApplicationArea = All; Caption = 'priceIncludesVAT'; }
-
-                // Operational flags
-                field(blocked; Rec.Blocked) { ApplicationArea = All; Caption = 'blocked'; }
-                field(salesBlocked; Rec."Sales Blocked") { ApplicationArea = All; Caption = 'salesBlocked'; }
-                field(purchasingBlocked; Rec."Purchasing Blocked") { ApplicationArea = All; Caption = 'purchasingBlocked'; }
-
-                // Vendor & identifiers
-                field(vendorNo; Rec."Vendor No.") { ApplicationArea = All; Caption = 'vendorNo'; }
-                field(gtin; Rec.GTIN) { ApplicationArea = All; Caption = 'gtin'; }
-
-                // Flowfields / calculated (keep read-only)
-                field(inventory; Rec.Inventory)
-                {
-                    ApplicationArea = All;
-                    Caption = 'inventory';
-                    Editable = false;
-                }
-
-                // Custom fields (fra jeres udvidelser – behold kun dem der faktisk findes i jeres build)
-                // NOTO fields (som du tidligere viste i page-udsnittet)
-                field(itemBrand; Rec."Item Brand") { Caption = 'Item Brand'; }
-                field(productLineCode; Rec."Product Line Code") { Caption = 'Product Line Code'; }
-                field(productUsage; Rec."Product Usage") { Caption = 'Product Usage'; }
-                field(productGroupCode; Rec."Prod. Group Code") { Caption = 'Product Group Code'; }
-                field(itemSize; Rec."Item Size") { Caption = 'Item Size'; }
-                field(itemSizeUnit; Rec."Item Size Unit") { Caption = 'Item Size Unit'; }
-                field(itemFeature; Rec."Item Feature") { Caption = 'Item Feature'; }
-                field(packingMethod; Rec."Packing Method") { Caption = 'Packing Method'; }
-                field(abcdCategory; Rec."ABCD Category") { Caption = 'ABCD Category'; }
-                field(coating; Rec.Coating) { Caption = 'Coating'; }
-                field(quality; Rec.Quality) { Caption = 'Quality'; }
-                field(withLid; Rec."With Lid") { Caption = 'With Lid'; }
-                field(weightClassification; Rec."Weight Classification NOTO") { Caption = 'Weight Classification'; }
-
-                field(calculatedAvailable; Rec."Calculated Available NOTO")
-                {
-                    Caption = 'Calculated Available';
-                    Editable = false;
-                }
-                field(calculatedAvailableExternal; Rec."Calculated Available Ext. NOTO")
-                {
-                    Caption = 'Calculated Available External';
-                    Editable = false;
-                }
-                field(calculatedAvailableDate; Rec."Calculated Available Date NOTO")
-                {
-                    Caption = 'Calculated Available Date';
-                    Editable = false;
-                }
-
-                // 50000 ItemExt
-                field(itemBodyType; Rec."ItemBodyType")
-                {
-                    Caption = 'Item Body Type';
-                }
-                field(itemBodyTypeInt; ItemBodyTypeInt)
-                {
-                    Caption = 'Item Body Type INT';
-                }
-
-                // System fields (✅ nødvendige for incremental load)
-                field(systemCreatedAt; Rec.SystemCreatedAt) { Caption = 'systemCreatedAt'; }
-                field(systemCreatedBy; Rec.SystemCreatedBy) { Caption = 'systemCreatedBy'; }
-                field(systemModifiedAt; Rec.SystemModifiedAt) { Caption = 'systemModifiedAt'; }
-                field(systemModifiedBy; Rec.SystemModifiedBy) { Caption = 'systemModifiedBy'; }
-            }
-        }
-    }
-
-    var
-        TypeInt: Integer;
-        ItemBodyTypeInt: Integer;
-
-    trigger OnAfterGetRecord()
-    begin
-        // Enum/Option → INT mirrors (DW stability)
-        TypeInt := Rec.Type.AsInteger();
-        ItemBodyTypeInt := Rec."ItemBodyType".AsInteger();
-    end;
-}
-*/
