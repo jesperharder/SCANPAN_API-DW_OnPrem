@@ -72,6 +72,7 @@ codeunit 50200 "DW WS Registrar"
         AddApiPage(50202, 'CapacityLedgerEntryAPI');
         AddApiPage(50239, 'MachineCenterAPI');
         AddApiPage(50282, 'WorkCenterAPI');
+        AddApiPage(50283, 'WorkCenterGroupAPI');
 
         AddApiPage(50290, 'ProductionBOMHeaderAPI');
         AddApiPage(50245, 'ProductionBOMLineAPI');
@@ -116,6 +117,7 @@ codeunit 50200 "DW WS Registrar"
         // ---------------------------------------------------------------------
         // Teams / Misc / Reference tables
         // ---------------------------------------------------------------------
+        AddApiPage(50269, 'ScrapAPI');
         AddApiPage(50268, 'StopAPI');
         AddApiPage(50273, 'TariffNumberAPI');
         AddApiPage(50274, 'TeamAPI');

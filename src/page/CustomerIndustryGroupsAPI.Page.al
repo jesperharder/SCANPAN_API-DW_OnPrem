@@ -1,22 +1,13 @@
 page 50206 "CustomerIndustryGroupsAPI"
 {
-    // API Page: CustomerIndustryGroups
     /// <summary>
-    /// 2025.10.17  Jesper Harder       001.3                   API page for Customer Industry Category
+    /// 2025.10.17  Jesper Harder       001.4
+    /// API page for Customer Industry Groups based on Contact Industry Group.
+    /// Exposes customer-related industry group classification for DW/integration usage.
     /// </summary>
-    /// <remarks>
-    /// This API page exposes Customer Industry Groups based on the "Contact Industry Group" table.
-    /// It retrieves related customer information through the contact's business relations.
-    /// The page includes fields for Customer No., Customer Name, Industry Group Code, and Industry Group Name.
-    /// Permissions are set to allow read access to necessary tables.
-    /// The OnAfterGetRecord trigger populates additional fields by looking up related records.
-    /// This page is intended for integration scenarios where customer industry categorization is required.
-    /// It ensures that the industry group name is fetched from the "Industry Group" table and links customers via contacts.
-    /// </remarks>
-    /// 
 
     Caption = 'Customer Industry Groups';
-    AdditionalSearchTerms = 'SCANPAN, Customer Industry Category, API, Contact Industry Group, Industry Group, Customer, Contact Business Relation';
+    AdditionalSearchTerms = 'SCANPAN, Customer Industry Group, API, Contact Industry Group, Industry Group, Customer, Contact Business Relation';
     PageType = API;
     APIPublisher = 'spn';
     APIGroup = 'dimension';
@@ -25,12 +16,14 @@ page 50206 "CustomerIndustryGroupsAPI"
     EntitySetName = 'customerIndustryGroups';
     SourceTable = "Contact Industry Group";
     DelayedInsert = true;
+
     Permissions =
         tabledata "Industry Group" = R,
         tabledata "Contact Industry Group" = R,
         tabledata Contact = R,
         tabledata "Contact Business Relation" = R,
-        tabledata Customer = R;
+        tabledata Customer = R,
+        tabledata "Marketing Setup" = R;
 
     layout
     {
@@ -38,21 +31,29 @@ page 50206 "CustomerIndustryGroupsAPI"
         {
             repeater(Group)
             {
-                field("customer_no"; CustomerNo)
+                field(contactNo; Rec."Contact No.")
+                {
+                    Caption = 'Contact No.';
+                }
+                field(customerNo; CustomerNo)
                 {
                     Caption = 'Customer No.';
                 }
-                field("customer_name"; CustomerName)
+                field(customerName; CustomerName)
                 {
                     Caption = 'Customer Name';
                 }
-                field("industry_group_code"; Rec."Industry Group Code")
+                field(industryGroupCode; Rec."Industry Group Code")
                 {
                     Caption = 'Industry Group Code';
                 }
-                field("industry_group_name"; IndustryGroupName)
+                field(industryGroupName; IndustryGroupName)
                 {
                     Caption = 'Industry Group Name';
+                }
+                field(relationCode; RelationCode)
+                {
+                    Caption = 'Relation Code';
                 }
             }
         }
@@ -60,41 +61,35 @@ page 50206 "CustomerIndustryGroupsAPI"
 
     trigger OnAfterGetRecord()
     var
-        Contact: Record Contact;
         ContactBusRel: Record "Contact Business Relation";
         Customer: Record Customer;
         IndustryGroup: Record "Industry Group";
         RMSetup: Record "Marketing Setup";
     begin
-        // Clear temporary fields before processing
         Clear(CustomerNo);
         Clear(CustomerName);
         Clear(IndustryGroupName);
+        Clear(RelationCode);
 
-        // Get the industry group name from the Industry Group table
+        // Resolve industry group name
         if IndustryGroup.Get(Rec."Industry Group Code") then
-            IndustryGroupName := IndustryGroup.Description
-        else
-            IndustryGroupName := Rec."Industry Group Code"; // Fallback to code if description not found
+            IndustryGroupName := IndustryGroup.Description;
 
-        // Lookup related customer based on the contact
-        if Contact.Get(Rec."Contact No.") then begin
+        // Resolve relation code and related customer defensively
+        if RMSetup.Get() then begin
+            RelationCode := RMSetup."Bus. Rel. Code for Customers";
 
-            // Retrieve Marketing Setup to get correct Business Relation Code for customers
-            if not RMSetup.Get() then
-                Error('Marketing Setup not found');
+            if RelationCode <> '' then begin
+                ContactBusRel.Reset();
+                ContactBusRel.SetRange("Contact No.", Rec."Contact No.");
+                ContactBusRel.SetRange("Business Relation Code", RelationCode);
 
-            // Filter Contact Business Relation for customer-related link
-            ContactBusRel.Reset();
-            ContactBusRel.SetRange("Contact No.", Contact."No.");
-            ContactBusRel.SetRange("Business Relation Code", RMSetup."Bus. Rel. Code for Customers");
-
-            // Find first valid customer match
-            if ContactBusRel.FindFirst() then
-                if Customer.Get(ContactBusRel."No.") then begin
-                    CustomerNo := Customer."No.";
-                    CustomerName := Customer.Name;
-                end;
+                if ContactBusRel.FindFirst() then
+                    if Customer.Get(ContactBusRel."No.") then begin
+                        CustomerNo := Customer."No.";
+                        CustomerName := Customer.Name;
+                    end;
+            end;
         end;
     end;
 
@@ -102,4 +97,5 @@ page 50206 "CustomerIndustryGroupsAPI"
         CustomerNo: Code[20];
         CustomerName: Text[100];
         IndustryGroupName: Text[100];
+        RelationCode: Code[20];
 }

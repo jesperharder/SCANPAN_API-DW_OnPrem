@@ -35,11 +35,15 @@ page 50276 "TransferHeaderAPI"
                 // --- Key ---
                 field(no; Rec."No.")                                      { Caption = 'No.'; }
 
-                // --- Locations / bins ---
+                // --- Status ---
+                field(status; Rec.Status)                                 { Caption = 'Status'; }
+                field(statusInt; statusInt)                               { Caption = 'Status INT'; }
+
+                // --- Locations ---
                 field(transferFromCode; Rec."Transfer-from Code")         { Caption = 'Transfer-from Code'; }
-                //field(transferFromBinCode; Rec."Transfer-from Bin Code")  { Caption = 'Transfer-from Bin Code'; }
+                field(transferFromName; Rec."Transfer-from Name")         { Caption = 'Transfer-from Name'; }
                 field(transferToCode; Rec."Transfer-to Code")             { Caption = 'Transfer-to Code'; }
-                //field(transferToBinCode; Rec."Transfer-to Bin Code")      { Caption = 'Transfer-to Bin Code'; }
+                field(transferToName; Rec."Transfer-to Name")             { Caption = 'Transfer-to Name'; }
                 field(inTransitCode; Rec."In-Transit Code")               { Caption = 'In-Transit Code'; }
                 field(directTransfer; Rec."Direct Transfer")              { Caption = 'Direct Transfer'; }
 
@@ -52,11 +56,19 @@ page 50276 "TransferHeaderAPI"
                 field(shipmentMethodCode; Rec."Shipment Method Code")     { Caption = 'Shipment Method Code'; }
                 field(shippingAgentCode; Rec."Shipping Agent Code")       { Caption = 'Shipping Agent Code'; }
                 field(shippingAgentServiceCode; Rec."Shipping Agent Service Code") { Caption = 'Shipping Agent Service Code'; }
+                field(shippingTime; Format(Rec."Shipping Time"))          { Caption = 'Shipping Time'; }
+                field(outboundWhseHandlingTime; Format(Rec."Outbound Whse. Handling Time")) { Caption = 'Outbound Whse. Handling Time'; }
+                field(inboundWhseHandlingTime; Format(Rec."Inbound Whse. Handling Time"))   { Caption = 'Inbound Whse. Handling Time'; }
 
-                // --- Responsibility / dimensions ---
+                // --- References / responsibility / dimensions ---
+                field(externalDocumentNo; Rec."External Document No.")    { Caption = 'External Document No.'; }
                 field(assignedUserId; Rec."Assigned User ID")             { Caption = 'Assigned User ID'; }
                 field(shortcutDim1Code; Rec."Shortcut Dimension 1 Code")  { Caption = 'Shortcut Dimension 1 Code'; }
                 field(shortcutDim2Code; Rec."Shortcut Dimension 2 Code")  { Caption = 'Shortcut Dimension 2 Code'; }
+
+                // --- Completion flags ---
+                field(completelyShipped; Rec."Completely Shipped")        { Caption = 'Completely Shipped'; }
+                field(completelyReceived; Rec."Completely Received")      { Caption = 'Completely Received'; }
 
                 // --- System fields ---
                 field(systemId; Rec.SystemId)                             { Caption = 'SystemId'; }
@@ -68,7 +80,12 @@ page 50276 "TransferHeaderAPI"
         }
     }
 
-    // Ingen Option/Enum-felter i standard → ingen INT-spejle.
-    // Hvis jeres miljø har egne Option/Enum-felter via tableextensions, så tilføj <felt>Int
-    // og map i OnAfterGetRecord() med .AsInteger() (eller direkte ved Option).
+    var
+        statusInt: Integer;
+
+    trigger OnAfterGetRecord()
+    begin
+        // Status er Option i standard Transfer Header
+        statusInt := Rec.Status;
+    end;
 }

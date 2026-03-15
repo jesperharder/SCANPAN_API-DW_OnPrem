@@ -53,6 +53,7 @@ page 50261 "SalesInvLineAPI"
                 field(locationCode; Rec."Location Code")                      { Caption = 'Location Code'; }
                 field(binCode; Rec."Bin Code")                                { Caption = 'Bin Code'; }
                 field(unitOfMeasureCode; Rec."Unit of Measure Code")          { Caption = 'Unit of Measure Code'; }
+                field(yearCodeText; Rec."Yearcode Text")          { Caption = 'Yearcode Text'; }
 
                 // --- Quantities & pricing ---
                 field(quantity; Rec.Quantity)                                 { Caption = 'Quantity'; }
