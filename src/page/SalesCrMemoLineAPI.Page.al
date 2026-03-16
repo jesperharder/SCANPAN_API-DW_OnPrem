@@ -48,6 +48,7 @@ page 50258 "SalesCrMemoLineAPI"
                 field(variantCode; Rec."Variant Code")                        { Caption = 'Variant Code'; }
                 field(description; Rec.Description)                           { Caption = 'Description'; }
                 field(description2; Rec."Description 2")                      { Caption = 'Description 2'; }
+                field("yearcodeText"; Rec."Yearcode Text")                    { Caption = 'Yearcode Text'; }
 
                 // --- Location / bin / UoM ---
                 field(locationCode; Rec."Location Code")                      { Caption = 'Location Code'; }
