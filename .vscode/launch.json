@@ -3,6 +3,27 @@
     
     "version": "0.2.0",
        "configurations": [
+    {
+      "name": "BC25 DevUserPwd (NavUserPassword)",
+      "type": "al",
+      "request": "launch",
+      "environmentType": "OnPrem",
+
+      "server": "http://10.0.16.28",
+      "serverInstance": "DevUserPwd",
+      "port": 7149,
+
+      "authentication": "UserPassword",
+      "launchBrowser": true,
+
+      "schemaUpdateMode": "Synchronize",
+      "breakOnError": true,
+      "breakOnRecordWrite": false,
+      "enableSqlInformationDebugger": true,
+      "enableLongRunningSqlStatements": true,
+      "longRunningSqlStatementsThreshold": 500,
+      "numberOfSqlStatements": 10
+    },
         {
         "name": "Publish BC_TEST",
         "request": "launch",
