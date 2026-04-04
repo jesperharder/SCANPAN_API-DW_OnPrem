@@ -3,6 +3,7 @@ page 50242 "ProdOrderLineAPI"
     /// <summary>
     /// Date        Name                        Version   Description
     /// 2025.11.20  Business Central AL Asst.   001.0     API page for Prod. Order Line (table 5406)
+    /// 2026.04.04  Codex                       001.1     Added datetime and dimension fields for DW/API parity
     /// </summary>
 
     Caption = 'ProdOrderLineAPI';
@@ -32,48 +33,53 @@ page 50242 "ProdOrderLineAPI"
             {
                 Caption = 'Group';
 
-                // --- OData key ---
-                field(systemId; Rec.SystemId)                         { Caption = 'SystemId'; }
+                // OData key
+                field(systemId; Rec.SystemId) { Caption = 'SystemId'; }
 
-                // --- Header/relations ---
-                field(status; Rec.Status)                             { Caption = 'Status'; }
-                field(statusInt; statusInt)                           { Caption = 'Status INT'; }
+                // Header/relations
+                field(status; Rec.Status) { Caption = 'Status'; }
+                field(statusInt; statusInt) { Caption = 'Status INT'; }
 
-                field(prodOrderNo; Rec."Prod. Order No.")             { Caption = 'Prod. Order No.'; }
-                field(lineNo; Rec."Line No.")                         { Caption = 'Line No.'; }
+                field(prodOrderNo; Rec."Prod. Order No.") { Caption = 'Prod. Order No.'; }
+                field(lineNo; Rec."Line No.") { Caption = 'Line No.'; }
 
-                // --- Item identity ---
-                field(itemNo; Rec."Item No.")                         { Caption = 'Item No.'; }
-                field(variantCode; Rec."Variant Code")                { Caption = 'Variant Code'; }
-                field(description; Rec.Description)                   { Caption = 'Description'; }
-                field(unitOfMeasureCode; Rec."Unit of Measure Code")  { Caption = 'Unit of Measure Code'; }
+                // Item identity
+                field(itemNo; Rec."Item No.") { Caption = 'Item No.'; }
+                field(variantCode; Rec."Variant Code") { Caption = 'Variant Code'; }
+                field(description; Rec.Description) { Caption = 'Description'; }
+                field(unitOfMeasureCode; Rec."Unit of Measure Code") { Caption = 'Unit of Measure Code'; }
 
-                // --- Location/bin ---
-                field(locationCode; Rec."Location Code")              { Caption = 'Location Code'; }
-                field(binCode; Rec."Bin Code")                        { Caption = 'Bin Code'; }
+                // Location/bin
+                field(locationCode; Rec."Location Code") { Caption = 'Location Code'; }
+                field(binCode; Rec."Bin Code") { Caption = 'Bin Code'; }
 
-                // --- BOM / Routing reference ---
-                field(productionBOMNo; Rec."Production BOM No.")      { Caption = 'Production BOM No.'; }
-                field(routingNo; Rec."Routing No.")                   { Caption = 'Routing No.'; }
-                field(routingRefNo; Rec."Routing Reference No.")      { Caption = 'Routing Reference No.'; }
+                // BOM / Routing reference
+                field(productionBOMNo; Rec."Production BOM No.") { Caption = 'Production BOM No.'; }
+                field(routingNo; Rec."Routing No.") { Caption = 'Routing No.'; }
+                field(routingRefNo; Rec."Routing Reference No.") { Caption = 'Routing Reference No.'; }
 
-                // --- Quantities ---
-                field(quantity; Rec.Quantity)                         { Caption = 'Quantity'; }
-                field(quantityBase; Rec."Quantity (Base)")            { Caption = 'Quantity (Base)'; }
-                field(remainingQuantity; Rec."Remaining Quantity")    { Caption = 'Remaining Quantity'; }
-                field(finishedQuantity; Rec."Finished Quantity")      { Caption = 'Finished Quantity'; }
-                field(scrapPercent; Rec."Scrap %")                    { Caption = 'Scrap %'; }
+                // Quantities
+                field(quantity; Rec.Quantity) { Caption = 'Quantity'; }
+                field(quantityBase; Rec."Quantity (Base)") { Caption = 'Quantity (Base)'; }
+                field(remainingQuantity; Rec."Remaining Quantity") { Caption = 'Remaining Quantity'; }
+                field(finishedQuantity; Rec."Finished Quantity") { Caption = 'Finished Quantity'; }
+                field(scrapPercent; Rec."Scrap %") { Caption = 'Scrap %'; }
 
-                // --- Dates ---
-                field(startingDate; Rec."Starting Date")              { Caption = 'Starting Date'; }
-                field(endingDate; Rec."Ending Date")                  { Caption = 'Ending Date'; }
-                field(dueDate; Rec."Due Date")                        { Caption = 'Due Date'; }
+                // Dates
+                field(startingDate; Rec."Starting Date") { Caption = 'Starting Date'; }
+                field(endingDate; Rec."Ending Date") { Caption = 'Ending Date'; }
+                field(dueDate; Rec."Due Date") { Caption = 'Due Date'; }
+                field(startingDateTime; Rec."Starting Date-Time") { Caption = 'Starting Date-Time'; }
+                field(endingDateTime; Rec."Ending Date-Time") { Caption = 'Ending Date-Time'; }
 
-                // --- System fields (audit) ---
-                field(systemCreatedAt; Rec.SystemCreatedAt)           { Caption = 'SystemCreatedAt'; }
-                field(systemCreatedBy; Rec.SystemCreatedBy)           { Caption = 'SystemCreatedBy'; }
-                field(systemModifiedAt; Rec.SystemModifiedAt)         { Caption = 'SystemModifiedAt'; }
-                field(systemModifiedBy; Rec.SystemModifiedBy)         { Caption = 'SystemModifiedBy'; }
+                // Dimensions
+                field(dimensionSetId; Rec."Dimension Set ID") { Caption = 'Dimension Set ID'; }
+
+                // System fields (audit)
+                field(systemCreatedAt; Rec.SystemCreatedAt) { Caption = 'SystemCreatedAt'; }
+                field(systemCreatedBy; Rec.SystemCreatedBy) { Caption = 'SystemCreatedBy'; }
+                field(systemModifiedAt; Rec.SystemModifiedAt) { Caption = 'SystemModifiedAt'; }
+                field(systemModifiedBy; Rec.SystemModifiedBy) { Caption = 'SystemModifiedBy'; }
             }
         }
     }
@@ -83,9 +89,9 @@ page 50242 "ProdOrderLineAPI"
 
     trigger OnAfterGetRecord()
     begin
-        // Enum/Option -> Integer spejl
+        // Enum/Option -> Integer mirror
         statusInt := Rec.Status.AsInteger();
-        // Tilføj flere spejle her, hvis I har ekstra Option/Enum-felter via tableextensions:
+        // Add more mirrors here if needed for custom enum/option fields:
         // myEnumInt := Rec."My Enum Field".AsInteger();
         // myOptionInt := Rec."My Option Field";
     end;
