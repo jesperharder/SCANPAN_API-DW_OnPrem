@@ -54,6 +54,7 @@ page 50262 "SalesLineAPI"
                 field(purchOrderLineNo; Rec."Purch. Order Line No.") { Caption = 'Purch. Order Line No.'; }
                 field(specialOrderPurchaseNo; Rec."Special Order Purchase No.") { Caption = 'Special Order Purchase No.'; }
                 field(specialOrderPurchLineNo; Rec."Special Order Purch. Line No.") { Caption = 'Special Order Purch. Line No.'; }
+                field(usedCampaignNOTO; Rec."Used Campaign NOTO") { Caption = 'Used Campaign NOTO'; }
                 field(attachedToLineNo; Rec."Attached to Line No.") { Caption = 'Attached to Line No.'; }
 
                 // --- Line identity ---

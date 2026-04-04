@@ -11148,6 +11148,11 @@
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">Page SalesLineAPI - Control unitVolume - Property Caption</note>
         </trans-unit>
+        <trans-unit id="Page 2609020394 - Control 3012074973 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Used Campaign NOTO</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page SalesLineAPI - Control usedCampaignNOTO - Property Caption</note>
+        </trans-unit>
         <trans-unit id="Page 2609020394 - Control 783251086 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
           <source>Variant Code</source>
           <note from="Developer" annotates="general" priority="2"></note>
