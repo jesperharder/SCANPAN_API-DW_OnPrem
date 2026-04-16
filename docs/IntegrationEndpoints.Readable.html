@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+  <meta charset="utf-8" />
+  <title>SCANPAN Integration Endpoints</title>
+  <style>
+    :root {
+      --text: #1f2937;
+      --muted: #5b6472;
+      --line: #d7dde5;
+      --accent: #0f5c7a;
+      --accent-soft: #eaf4f8;
+      --bg: #ffffff;
+      --panel: #f7f9fb;
+      --code: #f3f5f7;
+    }
+
+    @page {
+      size: A4;
+      margin: 18mm 16mm 18mm 16mm;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Calibri, Arial, sans-serif;
+      color: var(--text);
+      background: var(--bg);
+      line-height: 1.45;
+      font-size: 11pt;
+    }
+
+    .page {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 18px 10px 28px 10px;
+    }
+
+    h1, h2, h3 {
+      color: #102a43;
+      margin: 0 0 10px 0;
+      page-break-after: avoid;
+    }
+
+    h1 {
+      font-size: 24pt;
+      letter-spacing: 0.2px;
+    }
+
+    h2 {
+      font-size: 16pt;
+      margin-top: 24px;
+      padding-top: 8px;
+      border-top: 2px solid var(--line);
+    }
+
+    h3 {
+      font-size: 12.5pt;
+      margin-top: 18px;
+    }
+
+    p {
+      margin: 0 0 10px 0;
+    }
+
+    ul, ol {
+      margin: 6px 0 12px 20px;
+    }
+
+    li {
+      margin: 4px 0;
+    }
+
+    .lead {
+      font-size: 12pt;
+      color: var(--muted);
+      margin-bottom: 18px;
+    }
+
+    .meta {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin: 18px 0 22px 0;
+    }
+
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 12px 14px;
+      page-break-inside: avoid;
+    }
+
+    .card h3 {
+      margin-top: 0;
+    }
+
+    .tagline {
+      display: inline-block;
+      background: var(--accent-soft);
+      color: var(--accent);
+      font-weight: 600;
+      border-radius: 999px;
+      padding: 4px 10px;
+      margin-bottom: 10px;
+      font-size: 10pt;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      margin: 14px 0 18px 0;
+    }
+
+    .note {
+      border-left: 4px solid var(--accent);
+      background: var(--accent-soft);
+      padding: 10px 12px;
+      margin: 12px 0;
+      page-break-inside: avoid;
+    }
+
+    code {
+      font-family: Consolas, "Courier New", monospace;
+      background: var(--code);
+      padding: 1px 4px;
+      border-radius: 4px;
+      font-size: 10pt;
+    }
+
+    pre {
+      background: var(--code);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 12px;
+      overflow: hidden;
+      white-space: pre-wrap;
+      word-break: break-word;
+      font-size: 10pt;
+      page-break-inside: avoid;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 12px 0 14px 0;
+      page-break-inside: avoid;
+    }
+
+    th, td {
+      border: 1px solid var(--line);
+      padding: 8px 9px;
+      vertical-align: top;
+      text-align: left;
+    }
+
+    th {
+      background: var(--panel);
+    }
+
+    .small {
+      color: var(--muted);
+      font-size: 9.5pt;
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="tagline">SCANPAN API-DW OnPrem</div>
+    <h1>Integration Endpoints</h1>
+    <p class="lead">
+      Læsevenlig oversigt over de tre operationelle integrationssider i Business Central:
+      <code>AuningStockDW</code>, <code>PerfionItemsDW</code> og <code>PerfionPricesDW</code>.
+    </p>
+
+    <div class="meta">
+      <div class="card">
+        <h3>Formål</h3>
+        <p>Dokumentet beskriver forretningsformål, teknisk design, drift i BC og de vigtigste beregningsregler.</p>
+      </div>
+      <div class="card">
+        <h3>Status</h3>
+        <p>Version pr. 2026-04-16. Dokumentet dækker den aktuelle registrering og logik i repoet.</p>
+      </div>
+    </div>
+
+    <h2>Samlet overblik</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Service</th>
+          <th>Formål</th>
+          <th>Datakilde</th>
+          <th>Mønster</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>AuningStockDW</code></td>
+          <td>Snapshot af aktuelt lager til eCommerce og integration</td>
+          <td><code>Item</code> med snapshotfelter</td>
+          <td>Job Queue beregner, OData eksponerer</td>
+        </tr>
+        <tr>
+          <td><code>PerfionItemsDW</code></td>
+          <td>Kurateret varemaster til Perfion-relateret eksport</td>
+          <td><code>Item</code> plus relaterede tabeller</td>
+          <td>Direkte OData med enrichment i siden</td>
+        </tr>
+        <tr>
+          <td><code>PerfionPricesDW</code></td>
+          <td>Kurateret prisfeed med gyldige priser og kampagnepris</td>
+          <td><code>Price List Line</code> og <code>Campaign</code></td>
+          <td>Temporary dataset bygget ved kald</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="note">
+      Perfion-området har fortsat de to custom API-sider <code>PerfionItemsAPI</code> og <code>PerfionPricesAPI</code> i appen.
+      Den aktuelle operative publicering til DW-flowet sker dog via OData-siderne.
+    </div>
+
+    <h2>1. AUNING Stock</h2>
+    <div class="grid-3">
+      <div class="card">
+        <h3>Scope</h3>
+        <ul>
+          <li>Lokation: <code>AUNING</code></li>
+          <li>Kun inventory items</li>
+          <li>Produktbogføringsgrupper: <code>INTERN|EKSTERN|BRUND</code></li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Felter</h3>
+        <ul>
+          <li><code>itemNo</code></li>
+          <li><code>description</code></li>
+          <li><code>auningStockOnHand</code></li>
+          <li><code>auningStockAvailable</code></li>
+          <li><code>auningStockUpdatedAt</code></li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Driftsmønster</h3>
+        <ul>
+          <li>Snapshot beregnes af Job Queue</li>
+          <li>Gemmes på <code>Item</code></li>
+          <li>Vises også i FactBox på Item Card</li>
+        </ul>
+      </div>
+    </div>
+
+    <h3>Beregning</h3>
+    <p>
+      <code>AUNING Stock On Hand</code> beregnes fra <code>Item.Inventory</code> pr. lokation og variant.
+      <code>AUNING Stock Available</code> beregnes via <code>Warehouse Availability Mgt.</code> og kan reduceres med en bufferprocent.
+    </p>
+    <ul>
+      <li>Blank variant og eksplicitte varianter summeres</li>
+      <li>Alle mængder rundes ned til heltal</li>
+      <li>Negative værdier clamps til <code>0</code></li>
+      <li>Ét fælles timestamp gemmes for hele kørslen</li>
+    </ul>
+
+    <h3>Job Queue-parametre</h3>
+    <pre>GenProdPostingGroupFilter=INTERN|EKSTERN|BRUND
+GenProdPostingGroupFilter=INTERN|EKSTERN|BRUND;AvailableReductionPct=10</pre>
+    <p>
+      <code>AvailableReductionPct=0</code> betyder ingen ekstra reduktion.
+      <code>AvailableReductionPct=10</code> betyder 10% reduktion af den beregnede disponibele beholdning.
+    </p>
+
+    <h3>Operationelt lag i BC</h3>
+    <ul>
+      <li>Planlægges som Job Queue mod <code>codeunit 50042 "Auning Stock Update"</code></li>
+      <li>Ved manuel kørsel med UI vises progress-dialog</li>
+      <li>Snapshotfriskhed kan kontrolleres direkte på Item Card FactBox</li>
+    </ul>
+
+    <h2>2. Perfion Items</h2>
+    <p>
+      <code>PerfionItemsDW</code> leverer en kurateret item-master til integration. Siden læser direkte fra <code>Item</code>,
+      men beriger hver række med data fra relaterede tabeller.
+    </p>
+
+    <h3>Basefilter</h3>
+    <ul>
+      <li><code>Gen. Prod. Posting Group = INTERN|EKSTERN|BRUND</code></li>
+      <li><code>ABCD Category &lt;&gt; E</code> og <code>&lt;&gt; D</code></li>
+      <li><code>Product Usage &lt;&gt; PRODUCTION</code> og <code>&lt;&gt; MARKETING</code></li>
+      <li><code>Prod. Group Code &lt;&gt; RÅVARE</code></li>
+    </ul>
+
+    <h3>Berigelse pr. række</h3>
+    <ul>
+      <li>Type som både integer og tekst</li>
+      <li>Barcodes for <code>STK</code>, <code>INNER</code> og <code>MASTER</code></li>
+      <li>Oversatte beskrivelser i flere sprog</li>
+      <li>Fallback til <code>Item.Description</code> for dansk tekst</li>
+      <li>Mål, vægt og quantity per unit of measure for tre UoM-niveauer</li>
+    </ul>
+
+    <h3>Datakilder</h3>
+    <ul>
+      <li><code>Item</code></li>
+      <li><code>Item Reference</code></li>
+      <li><code>Item Translation</code></li>
+      <li><code>Item Unit of Measure</code></li>
+    </ul>
+
+    <h2>3. Perfion Prices</h2>
+    <p>
+      <code>PerfionPricesDW</code> er et kurateret prisfeed. Siden bygger et midlertidigt datasæt ved hvert kald og returnerer
+      den foretrukne gyldige prislinje for i dag plus eventuel kampagnepris.
+    </p>
+
+    <h3>Udvælgelseslogik</h3>
+    <ol>
+      <li>Kun aktive prislinjer for dags dato tages med</li>
+      <li>Kun <code>Asset Type = Item</code> og <code>Source Type = Customer Price Group</code> bruges som basis</li>
+      <li>Der beholdes én række pr. kombination af item, sales code, valuta og UoM</li>
+      <li>Seneste <code>Starting Date</code> vinder</li>
+      <li>Ved samme startdato vinder laveste <code>Unit Price</code></li>
+    </ol>
+
+    <h3>Kampagnelogik</h3>
+    <ul>
+      <li>Søger kampagnelinjer i <code>Price List Line</code> med <code>Source Type = Campaign</code></li>
+      <li>Matcher mod salgskode via <code>Campaign."Customer Price Group NOTO"</code></li>
+      <li>Vælger laveste gyldige kampagnepris</li>
+      <li>Ved lighed vinder seneste <code>Starting Date</code></li>
+    </ul>
+
+    <div class="note">
+      Den nuværende deduplikeringsnøgle inkluderer ikke <code>Minimum Quantity</code>. Derfor er endpointet designet som et
+      kurateret prisfeed og ikke som et fuldt tier-prisudtræk.
+    </div>
+
+    <h2>Publicering og rettigheder</h2>
+    <p>
+      Publiceringen styres centralt af <code>DW WS Registrar</code>, som rydder gamle web service-rækker og opretter én
+      kanonisk publicering pr. side.
+    </p>
+    <ul>
+      <li><code>AuningStockDW</code></li>
+      <li><code>PerfionItemsDW</code></li>
+      <li><code>PerfionPricesDW</code></li>
+    </ul>
+    <p>
+      Integrationbrugeren skal have adgang til både siderne og de underliggende tabeller via de relevante permission sets.
+    </p>
+
+    <h2>Schema-stabilitet</h2>
+    <div class="note">
+      Tekniske feltnavne på installerede tabeller er schema-kontrakter i BC. Caption-ændringer er sikre, men omdøbning af
+      tekniske feltnavne er ikke sikker under normal <code>Synchronize</code>.
+    </div>
+    <ul>
+      <li>Business Central opfatter et teknisk feltrename som fjernelse plus ny oprettelse</li>
+      <li>Det kræver upgrade-strategi eller tvungen sync i et kontrolleret ikke-produktionsscenario</li>
+      <li>Det gælder også snapshotfelter, selv om indholdet kan genberegnes</li>
+    </ul>
+
+    <h2>Kodeeksempel</h2>
+    <p class="small">Uddrag fra stock-normaliseringen:</p>
+    <pre>local procedure NormalizeAvailableQuantity(AvailableQuantity: Decimal; AvailableReductionPct: Decimal): Decimal
+var
+    ReducedAvailableQuantity: Decimal;
+begin
+    ReducedAvailableQuantity := AvailableQuantity;
+    if AvailableReductionPct &gt; 0 then
+        ReducedAvailableQuantity := ReducedAvailableQuantity * (100 - AvailableReductionPct) / 100;
+
+    exit(NormalizeQuantity(ReducedAvailableQuantity));
+end;</pre>
+    <p>
+      Forklaring: den beregnede disponible beholdning reduceres kun, hvis parameteren er større end <code>0</code>.
+      Derefter normaliseres resultatet til heltal og minimum <code>0</code>.
+    </p>
+
+    <h2>Primære filer</h2>
+    <ul>
+      <li><code>src/codeunit/AuningStockUpdate.Codeunit.al</code></li>
+      <li><code>src/table/DWItemAuningStock.TableExt.al</code></li>
+      <li><code>src/page/AuningStockOData.Page.al</code></li>
+      <li><code>src/page/AuningStockFactBox.Page.al</code></li>
+      <li><code>src/page/DWItemCardAuningStock.PageExt.al</code></li>
+      <li><code>src/page/PerfionItemsOData.Page.al</code></li>
+      <li><code>src/page/PerfionPricesOData.Page.al</code></li>
+      <li><code>src/page/PerfionItemsAPI.Page.al</code></li>
+      <li><code>src/page/PerfionPricesAPI.Page.al</code></li>
+      <li><code>src/codeunit/DWWSRegistrar.Codeunit.al</code></li>
+    </ul>
+  </div>
+</body>
+</html>

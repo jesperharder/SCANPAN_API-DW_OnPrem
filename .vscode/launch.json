@@ -16,7 +16,7 @@
       "authentication": "UserPassword",
       "launchBrowser": true,
 
-      "schemaUpdateMode": "Synchronize",
+      "schemaUpdateMode": "Synchronize", // Synchronize or Recreate
       "breakOnError": true,
       "breakOnRecordWrite": false,
       "enableSqlInformationDebugger": true,

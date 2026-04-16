@@ -7,7 +7,7 @@
   "privacyStatement": "https://www.scanpan.dk",
   "help": "https://www.scanpan.dk/",
   "contextSensitiveHelpUrl": "https://www.scanpan.dk/",
-  "version": "1.0.0.36",
+  "version": "1.0.0.40",
   "runtime": "7.2",
   "showMyCode": true,
   "target": "OnPrem",
@@ -17,6 +17,10 @@
     "UseLegacyAnalyzerStrategy"
   ],
   "idRanges": [
+    {
+      "from": 50042,
+      "to": 50050
+    },
     {
       "from": 50200,
       "to": 50299

@@ -58,6 +58,7 @@ codeunit 50200 "DW WS Registrar"
         AddApiPage(50224, 'ItemAPI');
         AddApiPage(50227, 'ItemBudgetEntryAPI'); // planning/budget but item-centric in DW
         AddApiPage(50229, 'ItemCategoryAPI');
+        AddPublishedPage(50233, 'AuningStockDW');
         AddApiPage(50234, 'ItemLedgerEntryAPI');
         AddApiPage(50235, 'ItemUnitofMeasureAPI');
         AddApiPage(50236, 'ItemReferenceAPI');
@@ -133,8 +134,10 @@ codeunit 50200 "DW WS Registrar"
         // Perfion API
         /// 2026.01.05  Jesper Harder       002.1                   API page for Perfion
         // ---------------------------------------------------------------------
-        AddApiPage(50211, 'PerfionItemsAPI');
-        AddApiPage(50225, 'PerfionPricesAPI');
+        RemovePublishedPage(50211);
+        AddPublishedPage(50226, 'PerfionItemsDW');
+        RemovePublishedPage(50225);
+        AddPublishedPage(50228, 'PerfionPricesDW');
 
     end;
 
@@ -145,12 +148,23 @@ codeunit 50200 "DW WS Registrar"
     /// </summary>
     local procedure AddApiPage(PageId: Integer; PageName: Text[250])
     var
-        WS: Record "Tenant Web Service";
         ServiceName: Text[250];
     begin
         ServiceName := GetDwServiceName(PageName); // camelCase + 'DW'
+        RemovePublishedPage(PageId);
+        InsertDesiredRow(PageId, ServiceName);
+    end;
 
-        // 1) Remove ALL existing rows for this PageId (any casing / names)
+    local procedure AddPublishedPage(PageId: Integer; ServiceName: Text[250])
+    begin
+        RemovePublishedPage(PageId);
+        InsertDesiredRow(PageId, ServiceName);
+    end;
+
+    local procedure RemovePublishedPage(PageId: Integer)
+    var
+        WS: Record "Tenant Web Service";
+    begin
         WS.Reset();
         WS.SetRange("Object Type", WS."Object Type"::Page);
         WS.SetRange("Object ID", PageId);
@@ -158,9 +172,6 @@ codeunit 50200 "DW WS Registrar"
             repeat
                 WS.Delete(true);
             until WS.Next() = 0;
-
-        // 2) Insert the single canonical row with exact casing
-        InsertDesiredRow(PageId, ServiceName);
     end;
 
     /// <summary>

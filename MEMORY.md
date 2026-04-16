@@ -41,3 +41,59 @@
 ## Samarbejdsnote
 - Hold altid fokus paa det rigtige arbejdsomraade.
 - Hvis brugeren henviser til databaseprojektet, saa arbejd i databaseprojektets filer og ikke i en lokal placeholder i API-projektet.
+
+## Perfion API
+- `page 50211 "PerfionItemsAPI"` er en `PageType = API`-side med route baseret paa:
+  - `APIPublisher = 'harder'`
+  - `APIGroup = 'perfion'`
+  - `APIVersion = 'v1.0'`
+  - `EntitySetName = 'perfionItems'`
+- Test den via custom API-endpoint under `.../api/harder/perfion/v1.0/...` og ikke som klassisk `ODataV4` web service fra Web Services-siden.
+- Relevante integrationstilladelser findes i permission set `PERFION API READ`.
+- Klassisk `ODataV4` for Perfion Items koerer nu via `page 50226 "PerfionItemsOData"` med service-navnet `PerfionItemsDW`.
+- `DW WS Registrar` rydder gammel publicering for `page 50211` og publicerer `PerfionItemsDW` paa `page 50226`.
+- Klassisk `ODataV4` for Perfion Prices koerer nu via `page 50228 "PerfionPricesOData"` med service-navnet `PerfionPricesDW`.
+- `page 50225 "PerfionPricesAPI"` er beholdt som custom API under `/api/harder/perfion/v1.0/perfionPrices`.
+
+## Lager til eCommerce
+- I dette workspace er eksisterende OData-moennster en almindelig `List`-side publiceret som web service, ikke en `PageType = API`-side.
+- `page 50228 "PerfionPricesOData"` viser et relevant moenster for OData-udtraek med `SourceTableTemporary = true` og opbygning af et curated datasæt i `OnOpenPage`.
+- `page 50234 "ItemLedgerEntryAPI"` viser, at repoet allerede eksponerer de centrale poster for fysisk lager, herunder `Quantity`, `Remaining Quantity`, `Reserved Quantity`, `Open`, `Location Code` og `Variant Code`.
+- Til eCommerce boer `stock-at-hand` og `stock-available` behandles som to forskellige begreber:
+  - `stock-at-hand`: fysisk lager nu baseret paa postede lagerposter.
+  - `stock-available`: salgbart lager nu efter fradrag af reservationer/forpligtelser.
+- Hvis man senere vil vise forventet fremtidig disponibel beholdning, boer det vaere et separat felt eller endpoint og ikke blandes sammen med "available now".
+- Aktuel forretningsafgraensning: lager for eCommerce skal beregnes kun for lokation `AUNING`.
+- Lokale Base App-symboler (BC 18.18) bekraefter relevante standardobjekter:
+  - `codeunit 5790 "Available to Promise"` med standardmetoder til `CalcAvailableInventory`, `CalcGrossRequirement`, `CalcReservedRequirement`, `CalcScheduledReceipt` og `QtyAvailabletoPromise`.
+  - `codeunit 5530 "Calc. Item Availability"` til opbygning af `Inventory Event Buffer` ud fra supply/demand.
+  - `codeunit 7314 "Warehouse Availability Mgt."` med `CalcInvtAvailQty`, som tager hoejde for warehouse-styring paa lokationer uden directed put-away and pick.
+  - Standard schedulering sker via Job Queue; `table 472 "Job Queue Entry"` kan koere `Codeunit`-objekter via `codeunit 449 "Job Queue Start Codeunit"`.
+- Objekt-governance i dette repo skal behandles paa to niveauer:
+  - app-range: `50042-50050` og `50200-50299`
+  - type-specifik praktisk allocation:
+    - `page`: `50200-50290`
+    - nye API-codeunits: `50042-50050`
+    - historiske eksisterende codeunits i repoet ligger stadig i `50200`, `50291`, `50292`
+    - `table`, `tableextension`, `permissionset`: brug ledige slots i den lave del af rangen efter opslag i central inventory
+- Undgaa at placere nye codeunits i page-bandet. Brug `50042-50050` til nye API-codeunits, medmindre governance bevidst aendres.
+- Implementeret model i dette repo:
+  - `tableextension 50231 "DW Item Auning Stock"` tilfoejer felterne `AUNING Stock On Hand`, `AUNING Stock Available` og `AUNING Stock Updated At` paa `Item`.
+  - `codeunit 50042 "Auning Stock Update"` er job queue-egnet (`TableNo = "Job Queue Entry"`) og opdaterer felterne for alle inventory-items.
+  - Beregningen bruger standard `Warehouse Availability Mgt.` for disponibelt lager og summerer baade blank variant og opsatte item-varianter.
+  - `page 50233 "AuningStockOData"` er den klassiske OData-side, publiceret som service-navn `AuningStockDW`, og eksponerer `auningStockOnHand`, `auningStockAvailable` og `auningStockUpdatedAt`.
+  - `page 50237 "AuningStockFactBox"` viser snapshotfelterne i sidebjælken som `CardPart`.
+  - `pageextension 50232 "DW Item Card Auning Stock"` indsætter FactBox'en paa `Item Card`.
+  - `permissionset 50231 "AUNING STOCK READ"` giver laeseadgang til OData-siden og `Item`-data.
+  - OData-siden er aktuelt afgraenset til `Gen. Prod. Posting Group` = `INTERN|EKSTERN|BRUND`.
+  - Job Queue-parameter til codeunit `50042` kan styre samme filter via:
+    - `GenProdPostingGroupFilter=INTERN|EKSTERN|BRUND`
+    - `AvailableReductionPct=<decimal>`
+  - Hvis parameteren udelades, bruges standardfilteret `INTERN|EKSTERN|BRUND`.
+  - Snapshotfelter og OData-felter rundes ned til hele tal, og negative vaerdier clamps til `0`.
+  - AL-koden holdes paa engelsk for tekniske objekt-, felt-, parameter- og OData-navne; eventuelle lokale brugeroversaettelser haandteres via translationsfiler uden for koden.
+- Samlet system- og driftsbeskrivelse for de tre operationelle integrationssider ligger i:
+  - `docs\IntegrationEndpoints.md`
+  - laesevenlig HTML/PDF distributionsversion ligger i:
+    - `docs\IntegrationEndpoints.Readable.html`
+    - `docs\IntegrationEndpoints.pdf`

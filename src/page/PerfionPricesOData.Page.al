@@ -1,54 +1,43 @@
-page 50225 "PerfionPricesAPI"
+page 50228 "PerfionPricesOData"
 {
-    /// <summary>
-    /// Date        Name                Version   Description
-    /// 2026.01.05  Jesper Harder       003.1     API page for Perfion Prices (Price List Line 7001)
-    /// </summary>
+    Caption = 'Perfion Prices OData';
+    AdditionalSearchTerms = 'SCANPAN, OData, Perfion, dw, price, pricelist';
+    UsageCategory = Administration;
 
-    PageType = API;
-    DelayedInsert = true; // vigtigt for performance ved større datamængder
-    Editable = false;
-
-    Caption = 'perfionPrices';
-    AdditionalSearchTerms = 'SCANPAN, API, Perfion, dw, price, pricelist';
-
-    APIPublisher = 'harder';
-    APIGroup = 'perfion';
-    APIVersion = 'v1.0';
-    EntityName = 'perfionPrice';
-    EntitySetName = 'perfionPrices';
-
-    SourceTable = "Price List Line"; // 7001
+    PageType = List;
+    SourceTable = "Price List Line";
     SourceTableTemporary = true;
-
     ODataKeyFields = SystemId;
+
+    Editable = false;
+    InsertAllowed = false;
+    ModifyAllowed = false;
+    DeleteAllowed = false;
+
+    Permissions =
+        tabledata "Price List Line" = R,
+        tabledata Campaign = R;
 
     layout
     {
-        area(Content)
+        area(content)
         {
             repeater(General)
             {
                 field(systemId; Rec.SystemId) { Caption = 'systemId'; }
                 field(priceListCode; Rec."Price List Code") { Caption = 'priceListCode'; }
                 field(lineNo; Rec."Line No.") { Caption = 'lineNo'; }
-
                 field(itemNo; Rec."Asset No.") { Caption = 'itemNo'; }
                 field(salesCode; Rec."Source No.") { Caption = 'salesCode'; }
                 field(currencyCode; Rec."Currency Code") { Caption = 'currencyCode'; }
-
                 field(unitListPrice; Rec."Unit List Price") { Caption = 'unitListPrice'; }
                 field(unitPrice; Rec."Unit Price") { Caption = 'unitPrice'; }
-
                 field(startingDate; Rec."Starting Date") { Caption = 'startingDate'; }
                 field(endingDate; Rec."Ending Date") { Caption = 'endingDate'; }
-
                 field(unitOfMeasureCode; Rec."Unit of Measure Code") { Caption = 'unitOfMeasureCode'; }
                 field(minimumQuantity; Rec."Minimum Quantity") { Caption = 'minimumQuantity'; }
-
                 field(status; StatusInt) { Caption = 'status'; }
                 field(statusText; StatusText) { Caption = 'statusText'; }
-
                 field(campaignPrice; CampaignPrice) { Caption = 'campaignPrice'; }
                 field(campaignId; CampaignId) { Caption = 'campaignId'; }
             }
@@ -57,7 +46,6 @@ page 50225 "PerfionPricesAPI"
 
     trigger OnInit()
     begin
-        // Default: kampagner er med (som SQL-viewet).
         IncludeCampaignPrices := true;
     end;
 
@@ -94,11 +82,8 @@ page 50225 "PerfionPricesAPI"
     var
         StatusInt: Integer;
         StatusText: Text[30];
-
         CampaignPrice: Decimal;
         CampaignId: Code[20];
-
-        // SWITCH (default = TRUE)
         IncludeCampaignPrices: Boolean;
 
     local procedure BuildLatestValidPricesForToday()
@@ -106,41 +91,30 @@ page 50225 "PerfionPricesAPI"
         SP: Record "Price List Line";
         Existing: Record "Price List Line" temporary;
         TodayDate: Date;
-
         FilterItemNo: Text;
         FilterSalesCode: Text;
         FilterCurrency: Text;
         FilterUoM: Text;
         FilterPriceListCode: Text;
         FilterMinQty: Text;
-
         ReplaceExisting: Boolean;
     begin
         TodayDate := Today;
 
-        // OData filters (fra request)
         FilterItemNo := Rec.GetFilter("Asset No.");
         FilterSalesCode := Rec.GetFilter("Source No.");
         FilterCurrency := Rec.GetFilter("Currency Code");
         FilterUoM := Rec.GetFilter("Unit of Measure Code");
         FilterPriceListCode := Rec.GetFilter("Price List Code");
-
-        // NYT: Minimum Quantity filter (så Perfion kan spørge fx = 0)
         FilterMinQty := Rec.GetFilter("Minimum Quantity");
 
-        // --------- Base-scope + kun aktive linjer
         SP.Reset();
         SP.SetRange("Asset Type", SP."Asset Type"::Item);
         SP.SetRange("Source Type", SP."Source Type"::"Customer Price Group");
-
-        // Kun aktive linjer (som aftalt)
         SP.SetRange(Status, SP.Status::Active);
-
-        // Gyldighed pr dags dato
         SP.SetFilter("Starting Date", '..%1', TodayDate);
         SP.SetFilter("Ending Date", '%1..|%2', TodayDate, 0D);
 
-        // OData filters (hvis angivet)
         if FilterItemNo <> '' then
             SP.SetFilter("Asset No.", FilterItemNo);
         if FilterSalesCode <> '' then
@@ -151,24 +125,17 @@ page 50225 "PerfionPricesAPI"
             SP.SetFilter("Unit of Measure Code", FilterUoM);
         if FilterPriceListCode <> '' then
             SP.SetFilter("Price List Code", FilterPriceListCode);
-
-        // NYT: respekter OData filter på Minimum Quantity
         if FilterMinQty <> '' then
             SP.SetFilter("Minimum Quantity", FilterMinQty);
 
-        // Dedupe pr kombination og vælg seneste Starting Date
         if SP.FindSet() then begin
             repeat
                 Existing.Reset();
                 Existing.Copy(Rec, true);
-
                 Existing.SetRange("Asset No.", SP."Asset No.");
                 Existing.SetRange("Source No.", SP."Source No.");
                 Existing.SetRange("Currency Code", SP."Currency Code");
                 Existing.SetRange("Unit of Measure Code", SP."Unit of Measure Code");
-
-                // NB: Minimum Quantity indgår IKKE i kombinationen (som før).
-                // Hvis du ønsker “1 pr kombination inkl. MinQty”, så sig til.
 
                 if not Existing.FindFirst() then begin
                     Rec := SP;
@@ -180,7 +147,6 @@ page 50225 "PerfionPricesAPI"
                         ReplaceExisting := true
                     else
                         if SP."Starting Date" = Existing."Starting Date" then begin
-                            // Tie-break: laveste Unit Price ved samme startdato
                             if (SP."Unit Price" <> 0) and (Existing."Unit Price" <> 0) then begin
                                 if SP."Unit Price" < Existing."Unit Price" then
                                     ReplaceExisting := true;
@@ -203,7 +169,6 @@ page 50225 "PerfionPricesAPI"
         end;
     end;
 
-    // Kampagne-logik (kun kaldt hvis IncludeCampaignPrices = true)
     local procedure TryGetBestCampaignPrice(
         ItemNo: Code[20];
         SalesCode: Code[20];
@@ -228,10 +193,7 @@ page 50225 "PerfionPricesAPI"
         CA.SetRange("Asset Type", CA."Asset Type"::Item);
         CA.SetRange("Asset No.", ItemNo);
         CA.SetRange("Source Type", CA."Source Type"::Campaign);
-
-        // Kun aktive kampagnelinjer også
         CA.SetRange(Status, CA.Status::Active);
-
         CA.SetFilter("Starting Date", '..%1', AsOfDate);
         CA.SetFilter("Ending Date", '%1..|%2', AsOfDate, 0D);
 
@@ -292,9 +254,7 @@ page 50225 "PerfionPricesAPI"
         CA.SetRange("Asset No.", ItemNo);
         CA.SetRange("Source Type", CA."Source Type"::Campaign);
         CA.SetRange("Source No.", CampaignNo);
-
         CA.SetRange(Status, CA.Status::Active);
-
         CA.SetFilter("Starting Date", '..%1', AsOfDate);
         CA.SetFilter("Ending Date", '%1..|%2', AsOfDate, 0D);
 
