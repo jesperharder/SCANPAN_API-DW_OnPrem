@@ -97,3 +97,27 @@
   - laesevenlig HTML/PDF distributionsversion ligger i:
     - `docs\IntegrationEndpoints.Readable.html`
     - `docs\IntegrationEndpoints.pdf`
+- Komplet kolonneopdelt feltoversigt for de tre operationelle endpoints ligger i:
+  - `docs\PerfionAuningFieldOverview.md`
+  - `docs\PerfionAuningFieldOverview.xlsx`
+- De operative endpoints for denne integration er:
+  - `AuningStockDW`
+  - `PerfionItemsDW`
+  - `PerfionPricesDW`
+- Dette workspace skal behandles som versionsfoelsomt mellem BC18 og BC25:
+  - lokale symbolpakker og nuvaerende compile-kontekst har vaeret BC18 (`Base Application 18.18.x`)
+  - mindst felterne `Sent as Email`, `Last Email Notif Cleared` og `Last Email Sent Status` er ikke sikre at bruge paa BC18 i `Sales Header` og `Sales Invoice Header`
+  - publish mod BC18 og BC25 kan derfor ikke antages at virke med identisk kode uden versionsstyring i kildekoden eller separat leverance
+- `PerfionPricesDW` er et kurateret prisfeed og ikke et raadt udtraek:
+  - kun `Asset Type = Item`
+  - kun `Source Type = Customer Price Group` for basispris
+  - kun `Status = Active`
+  - kun linjer gyldige pr. `Today`
+  - deduplikerer paa `Asset No. + Source No. + Currency Code + Unit of Measure Code`
+  - vaelger seneste `Starting Date`, derefter laveste `Unit Price`
+  - `Minimum Quantity` respekteres som request-filter, men indgaar ikke i dedupe-noeglen
+- `campaignPrice` og `campaignId` i `PerfionPricesDW` beregnes separat:
+  - kampagnelinjer hentes fra `Price List Line` med `Source Type = Campaign`
+  - kampagne matcher via `Campaign."Customer Price Group NOTO" = salesCode`
+  - laveste kampagnepris vinder
+  - ved samme pris vinder seneste `Starting Date`

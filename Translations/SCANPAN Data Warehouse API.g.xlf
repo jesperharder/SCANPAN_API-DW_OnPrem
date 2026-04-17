@@ -9573,16 +9573,6 @@
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">Page SalesHeaderAPI - Control languageCode - Property Caption</note>
         </trans-unit>
-        <trans-unit id="Page 3363772265 - Control 504458160 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
-          <source>Last Email Notif Cleared</source>
-          <note from="Developer" annotates="general" priority="2"></note>
-          <note from="Xliff Generator" annotates="general" priority="3">Page SalesHeaderAPI - Control lastEmailNotifCleared - Property Caption</note>
-        </trans-unit>
-        <trans-unit id="Page 3363772265 - Control 2583731978 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
-          <source>Last Email Sent Status</source>
-          <note from="Developer" annotates="general" priority="2"></note>
-          <note from="Xliff Generator" annotates="general" priority="3">Page SalesHeaderAPI - Control lastEmailSentStatus - Property Caption</note>
-        </trans-unit>
         <trans-unit id="Page 3363772265 - Control 3070153959 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
           <source>Last Email Sent Status INT</source>
           <note from="Developer" annotates="general" priority="2"></note>
@@ -9912,11 +9902,6 @@
           <source>Sell-to Post Code</source>
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">Page SalesHeaderAPI - Control sellToPostCode - Property Caption</note>
-        </trans-unit>
-        <trans-unit id="Page 3363772265 - Control 1361563790 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
-          <source>Sent as Email</source>
-          <note from="Developer" annotates="general" priority="2"></note>
-          <note from="Xliff Generator" annotates="general" priority="3">Page SalesHeaderAPI - Control sentAsEmail - Property Caption</note>
         </trans-unit>
         <trans-unit id="Page 3363772265 - Control 3993500854 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
           <source>Ship</source>
@@ -10358,16 +10343,6 @@
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">Page SalesInvHeaderAPI - Control languageCode - Property Caption</note>
         </trans-unit>
-        <trans-unit id="Page 2797834434 - Control 504458160 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
-          <source>Last Email Notif Cleared</source>
-          <note from="Developer" annotates="general" priority="2"></note>
-          <note from="Xliff Generator" annotates="general" priority="3">Page SalesInvHeaderAPI - Control lastEmailNotifCleared - Property Caption</note>
-        </trans-unit>
-        <trans-unit id="Page 2797834434 - Control 2583731978 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
-          <source>Last Email Sent Status</source>
-          <note from="Developer" annotates="general" priority="2"></note>
-          <note from="Xliff Generator" annotates="general" priority="3">Page SalesInvHeaderAPI - Control lastEmailSentStatus - Property Caption</note>
-        </trans-unit>
         <trans-unit id="Page 2797834434 - Control 3070153959 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
           <source>Last Email Sent Status Int</source>
           <note from="Developer" annotates="general" priority="2"></note>
@@ -10577,11 +10552,6 @@
           <source>Sell-to Post Code</source>
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">Page SalesInvHeaderAPI - Control sellToPostCode - Property Caption</note>
-        </trans-unit>
-        <trans-unit id="Page 2797834434 - Control 1361563790 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
-          <source>Sent as Email</source>
-          <note from="Developer" annotates="general" priority="2"></note>
-          <note from="Xliff Generator" annotates="general" priority="3">Page SalesInvHeaderAPI - Control sentAsEmail - Property Caption</note>
         </trans-unit>
         <trans-unit id="Page 2797834434 - Control 3656808776 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
           <source>Shipment Date</source>

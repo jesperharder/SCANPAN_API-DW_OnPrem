@@ -146,5 +146,21 @@
         "enableLongRunningSqlStatements": true,
         "enableSqlInformationDebugger": true
     },
+        {
+      "name": "BC25 Test UserPwd",
+      "type": "al",
+      "request": "launch",
+      "environmentType": "OnPrem",
+      "server": "http://SRVBCAPP2",
+      "serverInstance": "BC25TestUserPwd",
+      "port": 7346,
+      "authentication": "UserPassword",
+      "startupCompany": "SCANPAN Danmark",
+      "launchBrowser": true,
+      "schemaUpdateMode": "Synchronize",
+      "breakOnError": true,
+      "enableLongRunningSqlStatements": true,
+      "enableSqlInformationDebugger": true
+    }
     ]
 }

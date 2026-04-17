@@ -179,8 +179,8 @@ page 50259 "SalesHeaderAPI"
                 field(combineShipments; Rec."Combine Shipments") { Caption = 'Combine Shipments'; }
                 field(correction; Rec.Correction) { Caption = 'Correction'; }
                 field(onHold; Rec."On Hold") { Caption = 'On Hold'; }
-                field(sentAsEmail; Rec."Sent as Email") { Caption = 'Sent as Email'; }
-                field(lastEmailNotifCleared; Rec."Last Email Notif Cleared") { Caption = 'Last Email Notif Cleared'; }
+                //field(sentAsEmail; Rec."Sent as Email") { Caption = 'Sent as Email'; }
+                //field(lastEmailNotifCleared; Rec."Last Email Notif Cleared") { Caption = 'Last Email Notif Cleared'; }
                 field(isTest; Rec.IsTest) { Caption = 'IsTest'; }
                 field(packageTrackingNo; Rec."Package Tracking No.") { Caption = 'Package Tracking No.'; }
                 field(shippingAgentCode; Rec."Shipping Agent Code") { Caption = 'Shipping Agent Code'; }
@@ -207,7 +207,7 @@ page 50259 "SalesHeaderAPI"
                 field(icStatus; Rec."IC Status") { Caption = 'IC Status'; }
                 field(icDirection; Rec."IC Direction") { Caption = 'IC Direction'; }
                 field(jobQueueStatus; Rec."Job Queue Status") { Caption = 'Job Queue Status'; }
-                field(lastEmailSentStatus; Rec."Last Email Sent Status") { Caption = 'Last Email Sent Status'; }
+                //field(lastEmailSentStatus; Rec."Last Email Sent Status") { Caption = 'Last Email Sent Status'; }
                 field(priceCalculationMethod; Rec."Price Calculation Method") { Caption = 'Price Calculation Method'; }
                 field(shippingAdvice; Rec."Shipping Advice") { Caption = 'Shipping Advice'; }
 
@@ -246,7 +246,7 @@ page 50259 "SalesHeaderAPI"
         InvoiceDiscountCalculationInt := Rec."Invoice Discount Calculation";
         ICDirectionInt := Rec."IC Direction";
         JobQueueStatusInt := Rec."Job Queue Status";
-        LastEmailSentStatusInt := Rec."Last Email Sent Status";
+        //LastEmailSentStatusInt := Rec."Last Email Sent Status";
     end;
 
     var

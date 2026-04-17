@@ -136,8 +136,8 @@ page 50260 "SalesInvHeaderAPI"
                 field(cancelled; Rec.Cancelled) { Caption = 'Cancelled'; }
                 field(corrective; Rec.Corrective) { Caption = 'Corrective'; }
                 field(reversed; Rec.Reversed) { Caption = 'Reversed'; }
-                field(sentAsEmail; Rec."Sent as Email") { Caption = 'Sent as Email'; }
-                field(lastEmailNotifCleared; Rec."Last Email Notif Cleared") { Caption = 'Last Email Notif Cleared'; }
+                //field(sentAsEmail; Rec."Sent as Email") { Caption = 'Sent as Email'; }
+                //field(lastEmailNotifCleared; Rec."Last Email Notif Cleared") { Caption = 'Last Email Notif Cleared'; }
                 field(prepaymentInvoice; Rec."Prepayment Invoice") { Caption = 'Prepayment Invoice'; }
                 field(prepaymentOrderNo; Rec."Prepayment Order No.") { Caption = 'Prepayment Order No.'; }
                 field(prepaymentNoSeries; Rec."Prepayment No. Series") { Caption = 'Prepayment No. Series'; }
@@ -159,7 +159,7 @@ page 50260 "SalesInvHeaderAPI"
                 field(appliesToDocType; Rec."Applies-to Doc. Type") { Caption = 'Applies-to Doc. Type'; }
                 field(balAccountType; Rec."Bal. Account Type") { Caption = 'Bal. Account Type'; }
                 field(invoiceDiscountCalculation; Rec."Invoice Discount Calculation") { Caption = 'Invoice Discount Calculation'; }
-                field(lastEmailSentStatus; Rec."Last Email Sent Status") { Caption = 'Last Email Sent Status'; }
+                //field(lastEmailSentStatus; Rec."Last Email Sent Status") { Caption = 'Last Email Sent Status'; }
                 field(documentExchangeStatus; Rec."Document Exchange Status") { Caption = 'Document Exchange Status'; }
                 field(priceCalculationMethod; Rec."Price Calculation Method") { Caption = 'Price Calculation Method'; }
 
@@ -188,7 +188,7 @@ page 50260 "SalesInvHeaderAPI"
         PriceCalculationMethodInt := Rec."Price Calculation Method".AsInteger();
 
         InvoiceDiscountCalculationInt := Rec."Invoice Discount Calculation";
-        LastEmailSentStatusInt := Rec."Last Email Sent Status";
+        //LastEmailSentStatusInt := Rec."Last Email Sent Status";
     end;
 
     var

@@ -1,5 +1,5 @@
 page 50228 "PerfionPricesOData"
-{
+{ 
     Caption = 'Perfion Prices OData';
     AdditionalSearchTerms = 'SCANPAN, OData, Perfion, dw, price, pricelist';
     UsageCategory = Administration;
