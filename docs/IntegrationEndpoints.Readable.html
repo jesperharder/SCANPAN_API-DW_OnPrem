@@ -181,7 +181,7 @@
       </div>
       <div class="card">
         <h3>Status</h3>
-        <p>Version pr. 2026-04-16. Dokumentet dækker den aktuelle registrering og logik i repoet.</p>
+        <p>Version pr. 2026-04-17. Dokumentet dækker den aktuelle registrering og logik i repoet.</p>
       </div>
     </div>
 
@@ -266,15 +266,19 @@
 
     <h3>Job Queue-parametre</h3>
     <pre>GenProdPostingGroupFilter=INTERN|EKSTERN|BRUND
-GenProdPostingGroupFilter=INTERN|EKSTERN|BRUND;AvailableReductionPct=10</pre>
+GenProdPostingGroupFilter=INTERN|EKSTERN|BRUND;AvailableReductionPct=10
+GenProdPostingGroupFilter=INTERN|EKSTERN|BRUND;AvailableReductionPct=10;ScheduledMinute=50</pre>
     <p>
       <code>AvailableReductionPct=0</code> betyder ingen ekstra reduktion.
       <code>AvailableReductionPct=10</code> betyder 10% reduktion af den beregnede disponibele beholdning.
+      <code>ScheduledMinute=50</code> betyder, at jobbet selv normaliserer sig til hourly recurring på alle dage og kun udfører lageropdateringen i minut <code>50</code>.
+      Hvis jobbet genstartes eller driver væk fra det konfigurerede minut, justeres næste kørsel tilbage til næste <code>XX:50</code>.
     </p>
 
     <h3>Operationelt lag i BC</h3>
     <ul>
       <li>Planlægges som Job Queue mod <code>codeunit 50042 "Auning Stock Update"</code></li>
+      <li>Med <code>ScheduledMinute</code> håndhæver codeuniten selv hourly schedule på alle dage</li>
       <li>Ved manuel kørsel med UI vises progress-dialog</li>
       <li>Snapshotfriskhed kan kontrolleres direkte på Item Card FactBox</li>
     </ul>

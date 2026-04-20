@@ -3,7 +3,15 @@ codeunit 50042 "Auning Stock Update"
     TableNo = "Job Queue Entry";
 
     trigger OnRun()
+    var
+        ScheduledMinute: Integer;
     begin
+        if TryGetScheduledMinute("Parameter String", ScheduledMinute) then begin
+            EnsureRecurringSchedule(Rec, ScheduledMinute);
+            if not IsScheduledExecutionMinute(CurrentDateTime, ScheduledMinute) then
+                exit;
+        end;
+
         UpdateAllItems("Parameter String");
     end;
 
@@ -12,7 +20,9 @@ codeunit 50042 "Auning Stock Update"
         DefaultGenProdPostingGroupFilterLbl: Label 'INTERN|EKSTERN|BRUND', Locked = true;
         GenProdPostingGroupFilterTokLbl: Label 'GenProdPostingGroupFilter', Locked = true;
         AvailableReductionPctTokLbl: Label 'AvailableReductionPct', Locked = true;
+        ScheduledMinuteTokLbl: Label 'ScheduledMinute', Locked = true;
         InvalidDecimalParameterErr: Label 'Parameter %1 has invalid value %2.', Comment = '%1=parameter name, %2=value';
+        InvalidIntegerParameterErr: Label 'Parameter %1 has invalid value %2.', Comment = '%1=parameter name, %2=value';
         ProgressDialog: Dialog;
         ProgressDialogLbl: Label 'Updating AUNING stock\\Total items: #1#########\\Processed:   #2#########\\Current item: #3############################', Locked = true;
         ProgressTotalItemCount: Integer;
@@ -75,18 +85,21 @@ codeunit 50042 "Auning Stock Update"
     local procedure CalculateItemStock(Item: Record Item; Location: Record Location; AvailableReductionPct: Decimal; var OnHandQty: Decimal; var AvailableQty: Decimal)
     var
         ItemVariant: Record "Item Variant";
+        SalesDemandWindowStartDate: Date;
+        SalesDemandWindowEndDate: Date;
     begin
+        SalesDemandWindowStartDate := WorkDate();
+        SalesDemandWindowEndDate := CalcDate('<+30D>', SalesDemandWindowStartDate);
+
         OnHandQty := CalculateVariantOnHand(Item, Location.Code, '');
-        AvailableQty := CalculateVariantAvailable(Item, Location, '');
+        AvailableQty := CalculateVariantAvailable(Item, Location.Code, '', SalesDemandWindowStartDate, SalesDemandWindowEndDate);
 
         ItemVariant.SetRange("Item No.", Item."No.");
-        if not ItemVariant.FindSet() then
-            exit;
-
-        repeat
-            OnHandQty += CalculateVariantOnHand(Item, Location.Code, ItemVariant.Code);
-            AvailableQty += CalculateVariantAvailable(Item, Location, ItemVariant.Code);
-        until ItemVariant.Next() = 0;
+        if ItemVariant.FindSet() then
+            repeat
+                OnHandQty += CalculateVariantOnHand(Item, Location.Code, ItemVariant.Code);
+                AvailableQty += CalculateVariantAvailable(Item, Location.Code, ItemVariant.Code, SalesDemandWindowStartDate, SalesDemandWindowEndDate);
+            until ItemVariant.Next() = 0;
 
         OnHandQty := NormalizeQuantity(OnHandQty);
         AvailableQty := NormalizeAvailableQuantity(AvailableQty, AvailableReductionPct);
@@ -104,14 +117,49 @@ codeunit 50042 "Auning Stock Update"
         exit(ItemForCalc.Inventory);
     end;
 
-    local procedure CalculateVariantAvailable(Item: Record Item; Location: Record Location; VariantCode: Code[10]): Decimal
+    local procedure CalculateVariantAvailable(Item: Record Item; LocationCode: Code[10]; VariantCode: Code[10]; SalesDemandWindowStartDate: Date; SalesDemandWindowEndDate: Date): Decimal
     var
-        WarehouseActivityLine: Record "Warehouse Activity Line";
-        ItemForCalc: Record Item;
-        WarehouseAvailabilityMgt: Codeunit "Warehouse Availability Mgt.";
+        SalesDemandQty: Decimal;
     begin
-        ItemForCalc.Copy(Item);
-        exit(WarehouseAvailabilityMgt.CalcInvtAvailQty(ItemForCalc, Location, VariantCode, WarehouseActivityLine));
+        SalesDemandQty := CalculateVariantSalesDemand(Item."No.", LocationCode, VariantCode, SalesDemandWindowStartDate, SalesDemandWindowEndDate);
+        exit(CalculateVariantOnHand(Item, LocationCode, VariantCode) - SalesDemandQty);
+    end;
+
+    local procedure CalculateVariantSalesDemand(ItemNo: Code[20]; LocationCode: Code[10]; VariantCode: Code[10]; SalesDemandWindowStartDate: Date; SalesDemandWindowEndDate: Date): Decimal
+    var
+        SalesHeader: Record "Sales Header";
+        SalesLine: Record "Sales Line";
+        LastSalesDocumentNo: Code[20];
+        SalesDemandQty: Decimal;
+        IncludeSalesDocument: Boolean;
+    begin
+        SalesLine.SetRange("Document Type", SalesLine."Document Type"::Order);
+        SalesLine.SetRange(Type, SalesLine.Type::Item);
+        SalesLine.SetRange("No.", ItemNo);
+        SalesLine.SetRange("Location Code", LocationCode);
+        SalesLine.SetRange("Variant Code", VariantCode);
+        SalesLine.SetFilter("Outstanding Qty. (Base)", '>0');
+        SalesLine.SetRange("Shipment Date", SalesDemandWindowStartDate, SalesDemandWindowEndDate);
+
+        if not SalesLine.FindSet() then
+            exit(0);
+
+        repeat
+            if SalesLine."Document No." <> LastSalesDocumentNo then begin
+                if not SalesHeader.Get(SalesHeader."Document Type"::Order, SalesLine."Document No.") then
+                    Error('Sales header %1 %2 does not exist.', SalesHeader."Document Type"::Order, SalesLine."Document No.");
+
+                LastSalesDocumentNo := SalesLine."Document No.";
+                IncludeSalesDocument :=
+                  (SalesHeader.Status = SalesHeader.Status::Open) or
+                  (SalesHeader.Status = SalesHeader.Status::Released);
+            end;
+
+            if IncludeSalesDocument then
+                SalesDemandQty += SalesLine."Outstanding Qty. (Base)";
+        until SalesLine.Next() = 0;
+
+        exit(SalesDemandQty);
     end;
 
     local procedure GetGenProdPostingGroupFilter(ParameterString: Text): Text
@@ -147,6 +195,93 @@ codeunit 50042 "Auning Stock Update"
             Error(InvalidDecimalParameterErr, AvailableReductionPctTokLbl, ParameterValue);
 
         exit(ReductionPct);
+    end;
+
+    local procedure TryGetScheduledMinute(ParameterString: Text; var ScheduledMinute: Integer): Boolean
+    var
+        ParameterValue: Text;
+    begin
+        if ParameterString = '' then
+            exit(false);
+
+        ParameterValue := GetParameterValue(ParameterString, ScheduledMinuteTokLbl);
+        if ParameterValue = '' then
+            exit(false);
+
+        if not Evaluate(ScheduledMinute, ParameterValue) then
+            Error(InvalidIntegerParameterErr, ScheduledMinuteTokLbl, ParameterValue);
+
+        if (ScheduledMinute < 0) or (ScheduledMinute > 59) then
+            Error(InvalidIntegerParameterErr, ScheduledMinuteTokLbl, ParameterValue);
+
+        exit(true);
+    end;
+
+    local procedure EnsureRecurringSchedule(var JobQueueEntry: Record "Job Queue Entry"; ScheduledMinute: Integer)
+    var
+        ExpectedStartingTime: Time;
+        IsModified: Boolean;
+    begin
+        JobQueueEntry.RefreshLocked();
+        ExpectedStartingTime := CreateHourMinuteTime(0, ScheduledMinute);
+
+        if not JobQueueEntry."Run on Mondays" then begin
+            JobQueueEntry.Validate("Run on Mondays", true);
+            IsModified := true;
+        end;
+
+        if not JobQueueEntry."Run on Tuesdays" then begin
+            JobQueueEntry.Validate("Run on Tuesdays", true);
+            IsModified := true;
+        end;
+
+        if not JobQueueEntry."Run on Wednesdays" then begin
+            JobQueueEntry.Validate("Run on Wednesdays", true);
+            IsModified := true;
+        end;
+
+        if not JobQueueEntry."Run on Thursdays" then begin
+            JobQueueEntry.Validate("Run on Thursdays", true);
+            IsModified := true;
+        end;
+
+        if not JobQueueEntry."Run on Fridays" then begin
+            JobQueueEntry.Validate("Run on Fridays", true);
+            IsModified := true;
+        end;
+
+        if not JobQueueEntry."Run on Saturdays" then begin
+            JobQueueEntry.Validate("Run on Saturdays", true);
+            IsModified := true;
+        end;
+
+        if not JobQueueEntry."Run on Sundays" then begin
+            JobQueueEntry.Validate("Run on Sundays", true);
+            IsModified := true;
+        end;
+
+        if JobQueueEntry."No. of Minutes between Runs" <> 60 then begin
+            JobQueueEntry.Validate("No. of Minutes between Runs", 60);
+            IsModified := true;
+        end;
+
+        if JobQueueEntry."Starting Time" <> ExpectedStartingTime then begin
+            JobQueueEntry.Validate("Starting Time", ExpectedStartingTime);
+            IsModified := true;
+        end;
+
+        if JobQueueEntry."Ending Time" <> 0T then begin
+            JobQueueEntry.Validate("Ending Time", 0T);
+            IsModified := true;
+        end;
+
+        if JobQueueEntry."Manual Recurrence" then begin
+            JobQueueEntry."Manual Recurrence" := false;
+            IsModified := true;
+        end;
+
+        if IsModified then
+            JobQueueEntry.Modify(true);
     end;
 
     local procedure GetParameterValue(ParameterString: Text; ParameterName: Text): Text
@@ -217,5 +352,108 @@ codeunit 50042 "Auning Stock Update"
             exit;
 
         ProgressDialog.Close();
+    end;
+
+    local procedure IsScheduledExecutionMinute(RunAt: DateTime; ScheduledMinute: Integer): Boolean
+    begin
+        exit(GetTimeMinute(DT2Time(RunAt)) = ScheduledMinute);
+    end;
+
+    local procedure GetAlignedRunTimeAtOrAfter(BaseMoment: DateTime; ScheduledMinute: Integer): DateTime
+    begin
+        if GetTimeMinute(DT2Time(BaseMoment)) = ScheduledMinute then
+            exit(BaseMoment);
+
+        exit(GetNextAlignedRunTimeAfter(BaseMoment, ScheduledMinute));
+    end;
+
+    local procedure GetNextAlignedRunTimeAfter(BaseMoment: DateTime; ScheduledMinute: Integer): DateTime
+    var
+        JobQueueDispatcher: Codeunit "Job Queue Dispatcher";
+        CurrentTime: Time;
+        Candidate: DateTime;
+    begin
+        CurrentTime := DT2Time(BaseMoment);
+        Candidate := CreateDateTime(DT2Date(BaseMoment), CreateHourMinuteTime(GetTimeHour(CurrentTime), ScheduledMinute));
+
+        if GetTimeMinute(CurrentTime) >= ScheduledMinute then
+            exit(JobQueueDispatcher.AddMinutesToDateTime(Candidate, 60));
+
+        exit(Candidate);
+    end;
+
+    local procedure CreateHourMinuteTime(HourValue: Integer; MinuteValue: Integer): Time
+    var
+        TimeValue: Time;
+        TimeText: Text;
+    begin
+        TimeText := StrSubstNo('%1:%2:00', GetTwoDigitIntegerText(HourValue), GetTwoDigitIntegerText(MinuteValue));
+        if not Evaluate(TimeValue, TimeText) then
+            Error('Time value %1 is invalid.', TimeText);
+
+        exit(TimeValue);
+    end;
+
+    local procedure GetTwoDigitIntegerText(Value: Integer): Text
+    begin
+        if Value < 10 then
+            exit('0' + Format(Value));
+
+        exit(Format(Value));
+    end;
+
+    local procedure GetTimeHour(TimeValue: Time): Integer
+    var
+        HourValue: Integer;
+    begin
+        if not Evaluate(HourValue, Format(TimeValue, 0, '<Hours24,2>')) then
+            Error('Time value %1 has an invalid hour component.', TimeValue);
+
+        exit(HourValue);
+    end;
+
+    local procedure GetTimeMinute(TimeValue: Time): Integer
+    var
+        MinuteValue: Integer;
+    begin
+        if not Evaluate(MinuteValue, Format(TimeValue, 0, '<Minutes,2>')) then
+            Error('Time value %1 has an invalid minute component.', TimeValue);
+
+        exit(MinuteValue);
+    end;
+
+    local procedure TryGetScheduledMinuteFromJobQueueEntry(JobQueueEntry: Record "Job Queue Entry"; var ScheduledMinute: Integer): Boolean
+    begin
+        if JobQueueEntry."Object Type to Run" <> JobQueueEntry."Object Type to Run"::Codeunit then
+            exit(false);
+
+        if JobQueueEntry."Object ID to Run" <> CODEUNIT::"Auning Stock Update" then
+            exit(false);
+
+        exit(TryGetScheduledMinute(JobQueueEntry."Parameter String", ScheduledMinute));
+    end;
+
+    [EventSubscriber(ObjectType::Codeunit, Codeunit::"Job Queue Dispatcher", 'OnBeforeCalcNextRunTimeForRecurringJob', '', false, false)]
+    local procedure OnBeforeCalcNextRunTimeForRecurringJob(JobQueueEntry: Record "Job Queue Entry"; StartingDateTime: DateTime; var NewRunDateTime: DateTime; var IsHandled: Boolean)
+    var
+        ScheduledMinute: Integer;
+    begin
+        if not TryGetScheduledMinuteFromJobQueueEntry(JobQueueEntry, ScheduledMinute) then
+            exit;
+
+        NewRunDateTime := GetNextAlignedRunTimeAfter(StartingDateTime, ScheduledMinute);
+        IsHandled := true;
+    end;
+
+    [EventSubscriber(ObjectType::Codeunit, Codeunit::"Job Queue Dispatcher", 'OnCalcInitialRunTimeOnAfterCalcEarliestPossibleRunTime', '', false, false)]
+    local procedure OnCalcInitialRunTimeOnAfterCalcEarliestPossibleRunTime(var JobQueueEntry: Record "Job Queue Entry"; var EarliestPossibleRunTime: DateTime; var IsHandled: Boolean)
+    var
+        ScheduledMinute: Integer;
+    begin
+        if not TryGetScheduledMinuteFromJobQueueEntry(JobQueueEntry, ScheduledMinute) then
+            exit;
+
+        EarliestPossibleRunTime := GetAlignedRunTimeAtOrAfter(EarliestPossibleRunTime, ScheduledMinute);
+        IsHandled := true;
     end;
 }

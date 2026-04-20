@@ -80,6 +80,9 @@
 - Implementeret model i dette repo:
   - `tableextension 50231 "DW Item Auning Stock"` tilfoejer felterne `AUNING Stock On Hand`, `AUNING Stock Available` og `AUNING Stock Updated At` paa `Item`.
   - `codeunit 50042 "Auning Stock Update"` er job queue-egnet (`TableNo = "Job Queue Entry"`) og opdaterer felterne for alle inventory-items.
+  - `codeunit 50042 "Auning Stock Update"` kan nu selv haandhaeve en hourly schedule via job queue-parameteren `ScheduledMinute=<0..59>`.
+  - Naar `ScheduledMinute` er sat, normaliserer `CU 50042` sin Job Queue-opsaetning til hourly recurring paa alle ugens dage, ankrer `Starting Time` til `00:<minute>`, og skipper selve lageropdateringen, hvis dispatcher starter uden for det tilladte minut.
+  - Naar `ScheduledMinute` er sat, beregnes baade initial start og naeste recurring-run i `CU 50042` via subscribers mod `Job Queue Dispatcher`, saa schedule driver tilbage til naeste `XX:<minute>` efter restart eller anden tidsdrift.
   - Beregningen bruger standard `Warehouse Availability Mgt.` for disponibelt lager og summerer baade blank variant og opsatte item-varianter.
   - `page 50233 "AuningStockOData"` er den klassiske OData-side, publiceret som service-navn `AuningStockDW`, og eksponerer `auningStockOnHand`, `auningStockAvailable` og `auningStockUpdatedAt`.
   - `page 50237 "AuningStockFactBox"` viser snapshotfelterne i sidebjælken som `CardPart`.
@@ -92,6 +95,16 @@
   - Hvis parameteren udelades, bruges standardfilteret `INTERN|EKSTERN|BRUND`.
   - Snapshotfelter og OData-felter rundes ned til hele tal, og negative vaerdier clamps til `0`.
   - AL-koden holdes paa engelsk for tekniske objekt-, felt-, parameter- og OData-navne; eventuelle lokale brugeroversaettelser haandteres via translationsfiler uden for koden.
+  - Afklaret ny forretningsregel for mulig fremtidig AUNING-beregning:
+    - alle salgsordrer til lokation `AUNING` skal medtages i et loebende 30-dages vindue
+    - baade `Open` og `Released` salgsordrer skal medtages
+    - `Shipment Date` er valgt som datofelt for det loebende 30-dages vindue
+    - disse salgsordrelinjer skal fratraekkes lager i `AUNING`
+    - logikken skal undgaa dobbeltfradrag ved ikke at kombinere egen salgsordre-efterspoergsel med standard warehouse availability for samme demand
+    - oevrig eksisterende parameterlogik i `CU 50042` skal bevares, herunder mindst:
+      - `GenProdPostingGroupFilter`
+      - `AvailableReductionPct`
+      - `ScheduledMinute`
 - Samlet system- og driftsbeskrivelse for de tre operationelle integrationssider ligger i:
   - `docs\IntegrationEndpoints.md`
   - laesevenlig HTML/PDF distributionsversion ligger i:
@@ -121,3 +134,11 @@
   - kampagne matcher via `Campaign."Customer Price Group NOTO" = salesCode`
   - laveste kampagnepris vinder
   - ved samme pris vinder seneste `Starting Date`
+
+## Seneste implementering
+- `CU 50042` beregner nu `AUNING Stock Available` som `On Hand - sales-order demand` inden for et rullende 30-dages vindue paa `Shipment Date`.
+- Salgsordrebehovet hentes fra `Sales Line."Outstanding Qty. (Base)"` for lokation `AUNING`, baade `Open` og `Released`.
+- Eksisterende parameterlogik er bevaret for:
+  - `GenProdPostingGroupFilter`
+  - `AvailableReductionPct`
+  - `ScheduledMinute`

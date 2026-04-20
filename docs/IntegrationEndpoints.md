@@ -138,8 +138,9 @@ The codeunit:
 
 `AUNING Stock Available`
 
-- calculated with `codeunit "Warehouse Availability Mgt."`
-- uses `CalcInvtAvailQty(...)`
+- calculated from `AUNING Stock On Hand`
+- subtracts sales-order demand within a rolling 30-day `Shipment Date` window
+- includes both `Open` and `Released` sales orders for location `AUNING`
 - calculated per variant and summed
 - optionally reduced by a configured percentage
 - rounded down to a whole number
@@ -151,6 +152,7 @@ The codeunit supports the following parameter tokens:
 
 - `GenProdPostingGroupFilter`
 - `AvailableReductionPct`
+- `ScheduledMinute`
 
 Examples:
 
@@ -162,10 +164,16 @@ GenProdPostingGroupFilter=INTERN|EKSTERN|BRUND
 GenProdPostingGroupFilter=INTERN|EKSTERN|BRUND;AvailableReductionPct=10
 ```
 
+```text
+GenProdPostingGroupFilter=INTERN|EKSTERN|BRUND;AvailableReductionPct=10;ScheduledMinute=50
+```
+
 Interpretation:
 
 - `AvailableReductionPct=0` means no additional reduction
 - `AvailableReductionPct=10` means reduce calculated available stock by 10%
+- `ScheduledMinute=50` means the job self-normalizes to an hourly recurring schedule for all days and only performs the stock update when the dispatcher starts it during minute `50`
+- if the job is restarted or otherwise drifts away from the configured minute, the next calculated run is aligned back to the next `XX:50`
 
 ### BC user interface support
 
@@ -454,7 +462,7 @@ end;
 
 What this does:
 
-- starts from the calculated BC available quantity
+- starts from the calculated AUNING stock after 30-day sales-order demand has been subtracted
 - applies a percentage reduction only when the parameter is above `0`
 - sends the result through `NormalizeQuantity(...)`
 
