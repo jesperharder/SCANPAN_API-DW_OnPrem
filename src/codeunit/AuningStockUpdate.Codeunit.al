@@ -8,7 +8,7 @@ codeunit 50042 "Auning Stock Update"
     begin
         if TryGetScheduledMinute("Parameter String", ScheduledMinute) then begin
             EnsureRecurringSchedule(Rec, ScheduledMinute);
-            if not IsScheduledExecutionMinute(CurrentDateTime, ScheduledMinute) then
+            if (not GuiAllowed) and (not IsScheduledExecutionMinute(CurrentDateTime, ScheduledMinute)) then
                 exit;
         end;
 
@@ -85,20 +85,18 @@ codeunit 50042 "Auning Stock Update"
     local procedure CalculateItemStock(Item: Record Item; Location: Record Location; AvailableReductionPct: Decimal; var OnHandQty: Decimal; var AvailableQty: Decimal)
     var
         ItemVariant: Record "Item Variant";
-        SalesDemandWindowStartDate: Date;
         SalesDemandWindowEndDate: Date;
     begin
-        SalesDemandWindowStartDate := WorkDate();
-        SalesDemandWindowEndDate := CalcDate('<+30D>', SalesDemandWindowStartDate);
+        SalesDemandWindowEndDate := CalcDate('<+30D>', WorkDate());
 
         OnHandQty := CalculateVariantOnHand(Item, Location.Code, '');
-        AvailableQty := CalculateVariantAvailable(Item, Location.Code, '', SalesDemandWindowStartDate, SalesDemandWindowEndDate);
+        AvailableQty := CalculateVariantAvailable(Item, Location.Code, '', SalesDemandWindowEndDate);
 
         ItemVariant.SetRange("Item No.", Item."No.");
         if ItemVariant.FindSet() then
             repeat
                 OnHandQty += CalculateVariantOnHand(Item, Location.Code, ItemVariant.Code);
-                AvailableQty += CalculateVariantAvailable(Item, Location.Code, ItemVariant.Code, SalesDemandWindowStartDate, SalesDemandWindowEndDate);
+                AvailableQty += CalculateVariantAvailable(Item, Location.Code, ItemVariant.Code, SalesDemandWindowEndDate);
             until ItemVariant.Next() = 0;
 
         OnHandQty := NormalizeQuantity(OnHandQty);
@@ -117,15 +115,15 @@ codeunit 50042 "Auning Stock Update"
         exit(ItemForCalc.Inventory);
     end;
 
-    local procedure CalculateVariantAvailable(Item: Record Item; LocationCode: Code[10]; VariantCode: Code[10]; SalesDemandWindowStartDate: Date; SalesDemandWindowEndDate: Date): Decimal
+    local procedure CalculateVariantAvailable(Item: Record Item; LocationCode: Code[10]; VariantCode: Code[10]; SalesDemandWindowEndDate: Date): Decimal
     var
         SalesDemandQty: Decimal;
     begin
-        SalesDemandQty := CalculateVariantSalesDemand(Item."No.", LocationCode, VariantCode, SalesDemandWindowStartDate, SalesDemandWindowEndDate);
+        SalesDemandQty := CalculateVariantSalesDemand(Item."No.", LocationCode, VariantCode, SalesDemandWindowEndDate);
         exit(CalculateVariantOnHand(Item, LocationCode, VariantCode) - SalesDemandQty);
     end;
 
-    local procedure CalculateVariantSalesDemand(ItemNo: Code[20]; LocationCode: Code[10]; VariantCode: Code[10]; SalesDemandWindowStartDate: Date; SalesDemandWindowEndDate: Date): Decimal
+    local procedure CalculateVariantSalesDemand(ItemNo: Code[20]; LocationCode: Code[10]; VariantCode: Code[10]; SalesDemandWindowEndDate: Date): Decimal
     var
         SalesHeader: Record "Sales Header";
         SalesLine: Record "Sales Line";
@@ -139,7 +137,7 @@ codeunit 50042 "Auning Stock Update"
         SalesLine.SetRange("Location Code", LocationCode);
         SalesLine.SetRange("Variant Code", VariantCode);
         SalesLine.SetFilter("Outstanding Qty. (Base)", '>0');
-        SalesLine.SetRange("Shipment Date", SalesDemandWindowStartDate, SalesDemandWindowEndDate);
+        SalesLine.SetFilter("Shipment Date", '..%1', SalesDemandWindowEndDate);
 
         if not SalesLine.FindSet() then
             exit(0);
@@ -224,6 +222,11 @@ codeunit 50042 "Auning Stock Update"
     begin
         JobQueueEntry.RefreshLocked();
         ExpectedStartingTime := CreateHourMinuteTime(0, ScheduledMinute);
+
+        if not JobQueueEntry."Recurring Job" then begin
+            JobQueueEntry.Validate("Recurring Job", true);
+            IsModified := true;
+        end;
 
         if not JobQueueEntry."Run on Mondays" then begin
             JobQueueEntry.Validate("Run on Mondays", true);

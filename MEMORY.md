@@ -138,7 +138,12 @@
 ## Seneste implementering
 - `CU 50042` beregner nu `AUNING Stock Available` som `On Hand - sales-order demand` inden for et rullende 30-dages vindue paa `Shipment Date`.
 - Salgsordrebehovet hentes fra `Sales Line."Outstanding Qty. (Base)"` for lokation `AUNING`, baade `Open` og `Released`.
+- Fortolkningen af 30-dages-vinduet er korrigeret:
+  - alle stadig udestaaende salgslinjer med `Shipment Date <= WorkDate + 30D` skal med
+  - backlog med `Shipment Date` foer `WorkDate` skal altsaa ogsaa medtaelles
 - Eksisterende parameterlogik er bevaret for:
   - `GenProdPostingGroupFilter`
   - `AvailableReductionPct`
   - `ScheduledMinute`
+- `ScheduledMinute` maa ikke blokere manuelle UI-runs; minut-guard'en gaelder kun baggrundskoersel uden UI.
+- `CU 50042` scheduler-normalisering skal ogsaa saette `Job Queue Entry."Recurring Job" = true`; ellers kan BC fejle efter koersel, selv om `No. of Minutes between Runs` og ugedage er sat.

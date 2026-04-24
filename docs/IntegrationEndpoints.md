@@ -139,7 +139,8 @@ The codeunit:
 `AUNING Stock Available`
 
 - calculated from `AUNING Stock On Hand`
-- subtracts sales-order demand within a rolling 30-day `Shipment Date` window
+- subtracts outstanding sales-order demand with `Shipment Date` up to `WorkDate + 30D`
+- includes overdue demand with `Shipment Date` before `WorkDate`
 - includes both `Open` and `Released` sales orders for location `AUNING`
 - calculated per variant and summed
 - optionally reduced by a configured percentage
