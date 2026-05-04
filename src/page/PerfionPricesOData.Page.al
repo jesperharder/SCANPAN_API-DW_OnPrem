@@ -1,13 +1,13 @@
 page 50228 "PerfionPricesOData"
-{ 
+{
     Caption = 'Perfion Prices OData';
-    AdditionalSearchTerms = 'SCANPAN, OData, Perfion, dw, price, pricelist';
+    AdditionalSearchTerms = 'SCANPAN, OData, Perfion, price, pricelist';
     UsageCategory = Administration;
 
     PageType = List;
-    SourceTable = "Price List Line";
+    SourceTable = Item;
     SourceTableTemporary = true;
-    ODataKeyFields = SystemId;
+    ODataKeyFields = "No.";
 
     Editable = false;
     InsertAllowed = false;
@@ -25,250 +25,374 @@ page 50228 "PerfionPricesOData"
             repeater(General)
             {
                 field(systemId; Rec.SystemId) { Caption = 'systemId'; }
-                field(priceListCode; Rec."Price List Code") { Caption = 'priceListCode'; }
-                field(lineNo; Rec."Line No.") { Caption = 'lineNo'; }
-                field(itemNo; Rec."Asset No.") { Caption = 'itemNo'; }
-                field(salesCode; Rec."Source No.") { Caption = 'salesCode'; }
-                field(currencyCode; Rec."Currency Code") { Caption = 'currencyCode'; }
-                field(unitListPrice; Rec."Unit List Price") { Caption = 'unitListPrice'; }
-                field(unitPrice; Rec."Unit Price") { Caption = 'unitPrice'; }
-                field(startingDate; Rec."Starting Date") { Caption = 'startingDate'; }
-                field(endingDate; Rec."Ending Date") { Caption = 'endingDate'; }
-                field(unitOfMeasureCode; Rec."Unit of Measure Code") { Caption = 'unitOfMeasureCode'; }
-                field(minimumQuantity; Rec."Minimum Quantity") { Caption = 'minimumQuantity'; }
-                field(status; StatusInt) { Caption = 'status'; }
-                field(statusText; StatusText) { Caption = 'statusText'; }
-                field(campaignPrice; CampaignPrice) { Caption = 'campaignPrice'; }
-                field(campaignId; CampaignId) { Caption = 'campaignId'; }
+                field(itemNo; Rec."No.") { Caption = 'itemNo'; }
+
+                field(priceAmazonDeEurStk; PriceAmazonDeEurStk) { Caption = 'priceAmazonDeEurStk'; }
+                field(recommendedPriceAmazonDeEurStk; RecommendedPriceAmazonDeEurStk) { Caption = 'recommendedPriceAmazonDeEurStk'; }
+                field(campaignPriceAmazonDeEurStk; CampaignPriceAmazonDeEurStk) { Caption = 'campaignPriceAmazonDeEurStk'; }
+                field(priceAmazonEsEurStk; PriceAmazonEsEurStk) { Caption = 'priceAmazonEsEurStk'; }
+                field(recommendedPriceAmazonEsEurStk; RecommendedPriceAmazonEsEurStk) { Caption = 'recommendedPriceAmazonEsEurStk'; }
+                field(campaignPriceAmazonEsEurStk; CampaignPriceAmazonEsEurStk) { Caption = 'campaignPriceAmazonEsEurStk'; }
+                field(priceAuUsdBase; PriceAuUsdBase) { Caption = 'priceAuUsdBase'; }
+                field(recommendedPriceAuUsdBase; RecommendedPriceAuUsdBase) { Caption = 'recommendedPriceAuUsdBase'; }
+                field(campaignPriceAuUsdBase; CampaignPriceAuUsdBase) { Caption = 'campaignPriceAuUsdBase'; }
+                field(priceAuUsdCdu; PriceAuUsdCdu) { Caption = 'priceAuUsdCdu'; }
+                field(recommendedPriceAuUsdCdu; RecommendedPriceAuUsdCdu) { Caption = 'recommendedPriceAuUsdCdu'; }
+                field(campaignPriceAuUsdCdu; CampaignPriceAuUsdCdu) { Caption = 'campaignPriceAuUsdCdu'; }
+                field(priceAuUsdStk; PriceAuUsdStk) { Caption = 'priceAuUsdStk'; }
+                field(recommendedPriceAuUsdStk; RecommendedPriceAuUsdStk) { Caption = 'recommendedPriceAuUsdStk'; }
+                field(campaignPriceAuUsdStk; CampaignPriceAuUsdStk) { Caption = 'campaignPriceAuUsdStk'; }
+                field(priceAusLcyStk; PriceAusLcyStk) { Caption = 'priceAusLcyStk'; }
+                field(recommendedPriceAusLcyStk; RecommendedPriceAusLcyStk) { Caption = 'recommendedPriceAusLcyStk'; }
+                field(campaignPriceAusLcyStk; CampaignPriceAusLcyStk) { Caption = 'campaignPriceAusLcyStk'; }
+                field(priceDkLcyStk; PriceDkLcyStk) { Caption = 'priceDkLcyStk'; }
+                field(recommendedPriceDkLcyStk; RecommendedPriceDkLcyStk) { Caption = 'recommendedPriceDkLcyStk'; }
+                field(campaignPriceDkLcyStk; CampaignPriceDkLcyStk) { Caption = 'campaignPriceDkLcyStk'; }
+                field(priceExpEurBase; PriceExpEurBase) { Caption = 'priceExpEurBase'; }
+                field(recommendedPriceExpEurBase; RecommendedPriceExpEurBase) { Caption = 'recommendedPriceExpEurBase'; }
+                field(campaignPriceExpEurBase; CampaignPriceExpEurBase) { Caption = 'campaignPriceExpEurBase'; }
+                field(priceExpEurStk; PriceExpEurStk) { Caption = 'priceExpEurStk'; }
+                field(recommendedPriceExpEurStk; RecommendedPriceExpEurStk) { Caption = 'recommendedPriceExpEurStk'; }
+                field(campaignPriceExpEurStk; CampaignPriceExpEurStk) { Caption = 'campaignPriceExpEurStk'; }
+                field(priceFobUsdStk; PriceFobUsdStk) { Caption = 'priceFobUsdStk'; }
+                field(recommendedPriceFobUsdStk; RecommendedPriceFobUsdStk) { Caption = 'recommendedPriceFobUsdStk'; }
+                field(campaignPriceFobUsdStk; CampaignPriceFobUsdStk) { Caption = 'campaignPriceFobUsdStk'; }
+                field(priceIncLcyStk; PriceIncLcyStk) { Caption = 'priceIncLcyStk'; }
+                field(recommendedPriceIncLcyStk; RecommendedPriceIncLcyStk) { Caption = 'recommendedPriceIncLcyStk'; }
+                field(campaignPriceIncLcyStk; CampaignPriceIncLcyStk) { Caption = 'campaignPriceIncLcyStk'; }
+                field(priceRrpEurBase; PriceRrpEurBase) { Caption = 'priceRrpEurBase'; }
+                field(recommendedPriceRrpEurBase; RecommendedPriceRrpEurBase) { Caption = 'recommendedPriceRrpEurBase'; }
+                field(campaignPriceRrpEurBase; CampaignPriceRrpEurBase) { Caption = 'campaignPriceRrpEurBase'; }
+                field(priceRrpEurStk; PriceRrpEurStk) { Caption = 'priceRrpEurStk'; }
+                field(recommendedPriceRrpEurStk; RecommendedPriceRrpEurStk) { Caption = 'recommendedPriceRrpEurStk'; }
+                field(campaignPriceRrpEurStk; CampaignPriceRrpEurStk) { Caption = 'campaignPriceRrpEurStk'; }
+                field(priceSaUsdStk; PriceSaUsdStk) { Caption = 'priceSaUsdStk'; }
+                field(recommendedPriceSaUsdStk; RecommendedPriceSaUsdStk) { Caption = 'recommendedPriceSaUsdStk'; }
+                field(campaignPriceSaUsdStk; CampaignPriceSaUsdStk) { Caption = 'campaignPriceSaUsdStk'; }
+                field(priceSapEurStk; PriceSapEurStk) { Caption = 'priceSapEurStk'; }
+                field(recommendedPriceSapEurStk; RecommendedPriceSapEurStk) { Caption = 'recommendedPriceSapEurStk'; }
+                field(campaignPriceSapEurStk; CampaignPriceSapEurStk) { Caption = 'campaignPriceSapEurStk'; }
+                field(priceVgrowUsdStk; PriceVgrowUsdStk) { Caption = 'priceVgrowUsdStk'; }
+                field(recommendedPriceVgrowUsdStk; RecommendedPriceVgrowUsdStk) { Caption = 'recommendedPriceVgrowUsdStk'; }
+                field(campaignPriceVgrowUsdStk; CampaignPriceVgrowUsdStk) { Caption = 'campaignPriceVgrowUsdStk'; }
+                field(priceWebDeEurStk; PriceWebDeEurStk) { Caption = 'priceWebDeEurStk'; }
+                field(recommendedPriceWebDeEurStk; RecommendedPriceWebDeEurStk) { Caption = 'recommendedPriceWebDeEurStk'; }
+                field(campaignPriceWebDeEurStk; CampaignPriceWebDeEurStk) { Caption = 'campaignPriceWebDeEurStk'; }
+                field(priceWebDkLcyStk; PriceWebDkLcyStk) { Caption = 'priceWebDkLcyStk'; }
+                field(recommendedPriceWebDkLcyStk; RecommendedPriceWebDkLcyStk) { Caption = 'recommendedPriceWebDkLcyStk'; }
+                field(campaignPriceWebDkLcyStk; CampaignPriceWebDkLcyStk) { Caption = 'campaignPriceWebDkLcyStk'; }
+                field(priceWebNlEurStk; PriceWebNlEurStk) { Caption = 'priceWebNlEurStk'; }
+                field(recommendedPriceWebNlEurStk; RecommendedPriceWebNlEurStk) { Caption = 'recommendedPriceWebNlEurStk'; }
+                field(campaignPriceWebNlEurStk; CampaignPriceWebNlEurStk) { Caption = 'campaignPriceWebNlEurStk'; }
             }
         }
     }
 
-    trigger OnInit()
-    begin
-        IncludeCampaignPrices := true;
-    end;
-
     trigger OnOpenPage()
     begin
-        Rec.Reset();
-        Rec.DeleteAll();
-        BuildLatestValidPricesForToday();
+        BuildItemRowsForToday();
         Rec.Reset();
     end;
 
     trigger OnAfterGetRecord()
     begin
-        StatusInt := Rec.Status.AsInteger();
-        StatusText := Format(Rec.Status);
-
-        if IncludeCampaignPrices then begin
-            CampaignPrice := 0;
-            CampaignId := '';
-            TryGetBestCampaignPrice(
-                Rec."Asset No.",
-                Rec."Source No.",
-                Rec."Currency Code",
-                Rec."Unit of Measure Code",
-                Today,
-                CampaignPrice,
-                CampaignId);
-        end else begin
-            CampaignPrice := 0;
-            CampaignId := '';
-        end;
+        SetPriceFieldsForItem(Rec."No.");
     end;
 
     var
-        StatusInt: Integer;
-        StatusText: Text[30];
-        CampaignPrice: Decimal;
-        CampaignId: Code[20];
-        IncludeCampaignPrices: Boolean;
+        PriceAmazonDeEurStk: Decimal;
+        RecommendedPriceAmazonDeEurStk: Decimal;
+        CampaignPriceAmazonDeEurStk: Decimal;
+        PriceAmazonEsEurStk: Decimal;
+        RecommendedPriceAmazonEsEurStk: Decimal;
+        CampaignPriceAmazonEsEurStk: Decimal;
+        PriceAuUsdBase: Decimal;
+        RecommendedPriceAuUsdBase: Decimal;
+        CampaignPriceAuUsdBase: Decimal;
+        PriceAuUsdCdu: Decimal;
+        RecommendedPriceAuUsdCdu: Decimal;
+        CampaignPriceAuUsdCdu: Decimal;
+        PriceAuUsdStk: Decimal;
+        RecommendedPriceAuUsdStk: Decimal;
+        CampaignPriceAuUsdStk: Decimal;
+        PriceAusLcyStk: Decimal;
+        RecommendedPriceAusLcyStk: Decimal;
+        CampaignPriceAusLcyStk: Decimal;
+        PriceDkLcyStk: Decimal;
+        RecommendedPriceDkLcyStk: Decimal;
+        CampaignPriceDkLcyStk: Decimal;
+        PriceExpEurBase: Decimal;
+        RecommendedPriceExpEurBase: Decimal;
+        CampaignPriceExpEurBase: Decimal;
+        PriceExpEurStk: Decimal;
+        RecommendedPriceExpEurStk: Decimal;
+        CampaignPriceExpEurStk: Decimal;
+        PriceFobUsdStk: Decimal;
+        RecommendedPriceFobUsdStk: Decimal;
+        CampaignPriceFobUsdStk: Decimal;
+        PriceIncLcyStk: Decimal;
+        RecommendedPriceIncLcyStk: Decimal;
+        CampaignPriceIncLcyStk: Decimal;
+        PriceRrpEurBase: Decimal;
+        RecommendedPriceRrpEurBase: Decimal;
+        CampaignPriceRrpEurBase: Decimal;
+        PriceRrpEurStk: Decimal;
+        RecommendedPriceRrpEurStk: Decimal;
+        CampaignPriceRrpEurStk: Decimal;
+        PriceSaUsdStk: Decimal;
+        RecommendedPriceSaUsdStk: Decimal;
+        CampaignPriceSaUsdStk: Decimal;
+        PriceSapEurStk: Decimal;
+        RecommendedPriceSapEurStk: Decimal;
+        CampaignPriceSapEurStk: Decimal;
+        PriceVgrowUsdStk: Decimal;
+        RecommendedPriceVgrowUsdStk: Decimal;
+        CampaignPriceVgrowUsdStk: Decimal;
+        PriceWebDeEurStk: Decimal;
+        RecommendedPriceWebDeEurStk: Decimal;
+        CampaignPriceWebDeEurStk: Decimal;
+        PriceWebDkLcyStk: Decimal;
+        RecommendedPriceWebDkLcyStk: Decimal;
+        CampaignPriceWebDkLcyStk: Decimal;
+        PriceWebNlEurStk: Decimal;
+        RecommendedPriceWebNlEurStk: Decimal;
+        CampaignPriceWebNlEurStk: Decimal;
 
-    local procedure BuildLatestValidPricesForToday()
+    local procedure BuildItemRowsForToday()
     var
-        SP: Record "Price List Line";
-        Existing: Record "Price List Line" temporary;
-        TodayDate: Date;
+        ItemRec: Record Item;
+        PriceLine: Record "Price List Line";
         FilterItemNo: Text;
-        FilterSalesCode: Text;
-        FilterCurrency: Text;
-        FilterUoM: Text;
-        FilterPriceListCode: Text;
-        FilterMinQty: Text;
-        ReplaceExisting: Boolean;
     begin
-        TodayDate := Today;
+        FilterItemNo := Rec.GetFilter("No.");
 
-        FilterItemNo := Rec.GetFilter("Asset No.");
-        FilterSalesCode := Rec.GetFilter("Source No.");
-        FilterCurrency := Rec.GetFilter("Currency Code");
-        FilterUoM := Rec.GetFilter("Unit of Measure Code");
-        FilterPriceListCode := Rec.GetFilter("Price List Code");
-        FilterMinQty := Rec.GetFilter("Minimum Quantity");
+        Rec.Reset();
+        Rec.DeleteAll();
 
-        SP.Reset();
-        SP.SetRange("Asset Type", SP."Asset Type"::Item);
-        SP.SetRange("Source Type", SP."Source Type"::"Customer Price Group");
-        SP.SetRange(Status, SP.Status::Active);
-        SP.SetFilter("Starting Date", '..%1', TodayDate);
-        SP.SetFilter("Ending Date", '%1..|%2', TodayDate, 0D);
+        if FilterItemNo <> '' then begin
+            ItemRec.Reset();
+            ItemRec.SetFilter("No.", FilterItemNo);
 
-        if FilterItemNo <> '' then
-            SP.SetFilter("Asset No.", FilterItemNo);
-        if FilterSalesCode <> '' then
-            SP.SetFilter("Source No.", FilterSalesCode);
-        if FilterCurrency <> '' then
-            SP.SetFilter("Currency Code", FilterCurrency);
-        if FilterUoM <> '' then
-            SP.SetFilter("Unit of Measure Code", FilterUoM);
-        if FilterPriceListCode <> '' then
-            SP.SetFilter("Price List Code", FilterPriceListCode);
-        if FilterMinQty <> '' then
-            SP.SetFilter("Minimum Quantity", FilterMinQty);
-
-        if SP.FindSet() then begin
-            repeat
-                Existing.Reset();
-                Existing.Copy(Rec, true);
-                Existing.SetRange("Asset No.", SP."Asset No.");
-                Existing.SetRange("Source No.", SP."Source No.");
-                Existing.SetRange("Currency Code", SP."Currency Code");
-                Existing.SetRange("Unit of Measure Code", SP."Unit of Measure Code");
-
-                if not Existing.FindFirst() then begin
-                    Rec := SP;
-                    Rec.Insert();
-                end else begin
-                    ReplaceExisting := false;
-
-                    if SP."Starting Date" > Existing."Starting Date" then
-                        ReplaceExisting := true
-                    else
-                        if SP."Starting Date" = Existing."Starting Date" then begin
-                            if (SP."Unit Price" <> 0) and (Existing."Unit Price" <> 0) then begin
-                                if SP."Unit Price" < Existing."Unit Price" then
-                                    ReplaceExisting := true;
-                            end else
-                                if (Existing."Unit Price" = 0) and (SP."Unit Price" <> 0) then
-                                    ReplaceExisting := true;
-                        end;
-
-                    if ReplaceExisting then begin
-                        Rec.Reset();
-                        Rec.SetRange(SystemId, Existing.SystemId);
-                        if Rec.FindFirst() then
-                            Rec.Delete();
-
-                        Rec := SP;
-                        Rec.Insert();
-                    end;
-                end;
-            until SP.Next() = 0;
+            if ItemRec.FindSet() then
+                repeat
+                    if HasAnyExposedPriceLine(ItemRec."No.") then
+                        InsertItemRow(ItemRec."No.");
+                until ItemRec.Next() = 0;
+            exit;
         end;
+
+        PriceLine.Reset();
+        PriceLine.SetRange("Asset Type", PriceLine."Asset Type"::Item);
+        PriceLine.SetRange("Source Type", PriceLine."Source Type"::"Customer Price Group");
+        PriceLine.SetRange(Status, PriceLine.Status::Active);
+        PriceLine.SetFilter("Starting Date", '..%1', Today);
+        PriceLine.SetFilter("Ending Date", '%1..|%2', Today, 0D);
+
+        if PriceLine.FindSet() then
+            repeat
+                if IsExposedPriceCombination(PriceLine."Source No.", GetExportCurrencyCode(PriceLine."Currency Code"), PriceLine."Unit of Measure Code") then begin
+                    InsertItemRow(PriceLine."Asset No.");
+                end;
+            until PriceLine.Next() = 0;
     end;
 
-    local procedure TryGetBestCampaignPrice(
-        ItemNo: Code[20];
-        SalesCode: Code[20];
-        CurrencyCode: Code[10];
-        UoMCode: Code[10];
-        AsOfDate: Date;
-        var BestPrice: Decimal;
-        var BestCampaignId: Code[20]
-    ): Boolean
+    local procedure HasAnyExposedPriceLine(ItemNo: Code[20]): Boolean
     var
-        CA: Record "Price List Line";
-        Camp: Record Campaign;
-        Found: Boolean;
-        CandidateStart: Date;
-        CurrentBestStart: Date;
-        Ok: Boolean;
+        PriceLine: Record "Price List Line";
     begin
-        BestPrice := 0;
-        BestCampaignId := '';
-        Found := false;
+        PriceLine.Reset();
+        PriceLine.SetRange("Asset Type", PriceLine."Asset Type"::Item);
+        PriceLine.SetRange("Asset No.", ItemNo);
+        PriceLine.SetRange(Status, PriceLine.Status::Active);
+        PriceLine.SetFilter("Starting Date", '..%1', Today);
+        PriceLine.SetFilter("Ending Date", '%1..|%2', Today, 0D);
 
-        CA.SetRange("Asset Type", CA."Asset Type"::Item);
-        CA.SetRange("Asset No.", ItemNo);
-        CA.SetRange("Source Type", CA."Source Type"::Campaign);
-        CA.SetRange(Status, CA.Status::Active);
-        CA.SetFilter("Starting Date", '..%1', AsOfDate);
-        CA.SetFilter("Ending Date", '%1..|%2', AsOfDate, 0D);
-
-        if CurrencyCode <> '' then
-            CA.SetRange("Currency Code", CurrencyCode);
-        if UoMCode <> '' then
-            CA.SetRange("Unit of Measure Code", UoMCode);
-
-        if CA.FindSet() then begin
+        if PriceLine.FindSet() then
             repeat
-                Ok := false;
+                if IsExposedPriceCombination(PriceLine."Source No.", GetExportCurrencyCode(PriceLine."Currency Code"), PriceLine."Unit of Measure Code") then
+                    exit(true);
+            until PriceLine.Next() = 0;
 
-                if Camp.Get(CA."Source No.") then
-                    if Camp."Customer Price Group NOTO" = SalesCode then
-                        Ok := true;
+        exit(false);
+    end;
 
-                if Ok then begin
-                    if not Found then begin
-                        BestPrice := CA."Unit Price";
-                        BestCampaignId := CA."Source No.";
-                        Found := true;
-                    end else begin
-                        if CA."Unit Price" < BestPrice then begin
-                            BestPrice := CA."Unit Price";
-                            BestCampaignId := CA."Source No.";
-                        end else
-                            if CA."Unit Price" = BestPrice then begin
-                                CandidateStart := CA."Starting Date";
-                                CurrentBestStart := GetCampaignStartDate(BestCampaignId, ItemNo, SalesCode, CurrencyCode, UoMCode, AsOfDate);
+    local procedure InsertItemRow(ItemNo: Code[20])
+    begin
+        if Rec.Get(ItemNo) then
+            exit;
 
-                                if CandidateStart > CurrentBestStart then
-                                    BestCampaignId := CA."Source No.";
-                            end;
-                    end;
+        Rec.Init();
+        Rec.SystemId := CreateGuid();
+        Rec."No." := ItemNo;
+        Rec.Insert();
+    end;
+
+    local procedure SetPriceFieldsForItem(ItemNo: Code[20])
+    begin
+        SetPriceSet(ItemNo, 'AMAZON.DE', 'EUR', 'STK', PriceAmazonDeEurStk, RecommendedPriceAmazonDeEurStk, CampaignPriceAmazonDeEurStk);
+        SetPriceSet(ItemNo, 'AMAZON.ES', 'EUR', 'STK', PriceAmazonEsEurStk, RecommendedPriceAmazonEsEurStk, CampaignPriceAmazonEsEurStk);
+        SetPriceSet(ItemNo, 'AU', 'USD', 'BASE', PriceAuUsdBase, RecommendedPriceAuUsdBase, CampaignPriceAuUsdBase);
+        SetPriceSet(ItemNo, 'AU', 'USD', 'CDU', PriceAuUsdCdu, RecommendedPriceAuUsdCdu, CampaignPriceAuUsdCdu);
+        SetPriceSet(ItemNo, 'AU', 'USD', 'STK', PriceAuUsdStk, RecommendedPriceAuUsdStk, CampaignPriceAuUsdStk);
+        SetPriceSet(ItemNo, 'AUS', 'LCY', 'STK', PriceAusLcyStk, RecommendedPriceAusLcyStk, CampaignPriceAusLcyStk);
+        SetPriceSet(ItemNo, 'DK', 'LCY', 'STK', PriceDkLcyStk, RecommendedPriceDkLcyStk, CampaignPriceDkLcyStk);
+        SetPriceSet(ItemNo, 'EXP', 'EUR', 'BASE', PriceExpEurBase, RecommendedPriceExpEurBase, CampaignPriceExpEurBase);
+        SetPriceSet(ItemNo, 'EXP', 'EUR', 'STK', PriceExpEurStk, RecommendedPriceExpEurStk, CampaignPriceExpEurStk);
+        SetPriceSet(ItemNo, 'FOB', 'USD', 'STK', PriceFobUsdStk, RecommendedPriceFobUsdStk, CampaignPriceFobUsdStk);
+        SetPriceSet(ItemNo, 'INC', 'LCY', 'STK', PriceIncLcyStk, RecommendedPriceIncLcyStk, CampaignPriceIncLcyStk);
+        SetPriceSet(ItemNo, 'RRP', 'EUR', 'BASE', PriceRrpEurBase, RecommendedPriceRrpEurBase, CampaignPriceRrpEurBase);
+        SetPriceSet(ItemNo, 'RRP', 'EUR', 'STK', PriceRrpEurStk, RecommendedPriceRrpEurStk, CampaignPriceRrpEurStk);
+        SetPriceSet(ItemNo, 'SA', 'USD', 'STK', PriceSaUsdStk, RecommendedPriceSaUsdStk, CampaignPriceSaUsdStk);
+        SetPriceSet(ItemNo, 'SAP', 'EUR', 'STK', PriceSapEurStk, RecommendedPriceSapEurStk, CampaignPriceSapEurStk);
+        SetPriceSet(ItemNo, 'VGROW', 'USD', 'STK', PriceVgrowUsdStk, RecommendedPriceVgrowUsdStk, CampaignPriceVgrowUsdStk);
+        SetPriceSet(ItemNo, 'WEB-DE', 'EUR', 'STK', PriceWebDeEurStk, RecommendedPriceWebDeEurStk, CampaignPriceWebDeEurStk);
+        SetPriceSet(ItemNo, 'WEB-DK', 'LCY', 'STK', PriceWebDkLcyStk, RecommendedPriceWebDkLcyStk, CampaignPriceWebDkLcyStk);
+        SetPriceSet(ItemNo, 'WEB-NL', 'EUR', 'STK', PriceWebNlEurStk, RecommendedPriceWebNlEurStk, CampaignPriceWebNlEurStk);
+    end;
+
+    local procedure SetPriceSet(ItemNo: Code[20]; SourceNo: Code[20]; CurrencyCode: Code[10]; UoMCode: Code[10]; var PriceValue: Decimal; var RecommendedPriceValue: Decimal; var CampaignPriceValue: Decimal)
+    begin
+        PriceValue := 0;
+        RecommendedPriceValue := 0;
+        CampaignPriceValue := 0;
+
+        TryGetPreferredCustomerPrice(ItemNo, SourceNo, CurrencyCode, UoMCode, Today, PriceValue, RecommendedPriceValue);
+        TryGetBestCampaignPrice(ItemNo, SourceNo, CurrencyCode, UoMCode, Today, CampaignPriceValue);
+    end;
+
+    local procedure TryGetPreferredCustomerPrice(ItemNo: Code[20]; SourceNo: Code[20]; CurrencyCode: Code[10]; UoMCode: Code[10]; AsOfDate: Date; var PriceValue: Decimal; var RecommendedPriceValue: Decimal): Boolean
+    var
+        PriceLine: Record "Price List Line";
+        BestPriceLine: Record "Price List Line";
+        Found: Boolean;
+    begin
+        ApplyCommonPriceFilters(PriceLine, ItemNo, CurrencyCode, UoMCode, AsOfDate);
+        PriceLine.SetRange("Source Type", PriceLine."Source Type"::"Customer Price Group");
+        PriceLine.SetRange("Source No.", SourceNo);
+
+        if PriceLine.FindSet() then
+            repeat
+                if (not Found) or IsBetterPriceLine(PriceLine, BestPriceLine) then begin
+                    BestPriceLine := PriceLine;
+                    Found := true;
                 end;
-            until CA.Next() = 0;
+            until PriceLine.Next() = 0;
+
+        if Found then begin
+            PriceValue := BestPriceLine."Unit Price";
+            RecommendedPriceValue := BestPriceLine."Unit List Price";
         end;
 
         exit(Found);
     end;
 
-    local procedure GetCampaignStartDate(
-        CampaignNo: Code[20];
-        ItemNo: Code[20];
-        SalesCode: Code[20];
-        CurrencyCode: Code[10];
-        UoMCode: Code[10];
-        AsOfDate: Date
-    ): Date
+    local procedure TryGetBestCampaignPrice(ItemNo: Code[20]; SourceNo: Code[20]; CurrencyCode: Code[10]; UoMCode: Code[10]; AsOfDate: Date; var CampaignPriceValue: Decimal): Boolean
     var
-        CA: Record "Price List Line";
-        Camp: Record Campaign;
-        Result: Date;
+        CampaignPriceLine: Record "Price List Line";
+        BestCampaignPriceLine: Record "Price List Line";
+        Campaign: Record Campaign;
+        Found: Boolean;
     begin
-        Result := 0D;
+        ApplyCommonPriceFilters(CampaignPriceLine, ItemNo, CurrencyCode, UoMCode, AsOfDate);
+        CampaignPriceLine.SetRange("Source Type", CampaignPriceLine."Source Type"::Campaign);
 
-        CA.SetRange("Asset Type", CA."Asset Type"::Item);
-        CA.SetRange("Asset No.", ItemNo);
-        CA.SetRange("Source Type", CA."Source Type"::Campaign);
-        CA.SetRange("Source No.", CampaignNo);
-        CA.SetRange(Status, CA.Status::Active);
-        CA.SetFilter("Starting Date", '..%1', AsOfDate);
-        CA.SetFilter("Ending Date", '%1..|%2', AsOfDate, 0D);
+        if CampaignPriceLine.FindSet() then
+            repeat
+                if Campaign.Get(CampaignPriceLine."Source No.") then
+                    if Campaign."Customer Price Group NOTO" = SourceNo then
+                        if (not Found) or IsBetterPriceLine(CampaignPriceLine, BestCampaignPriceLine) then begin
+                            BestCampaignPriceLine := CampaignPriceLine;
+                            Found := true;
+                        end;
+            until CampaignPriceLine.Next() = 0;
 
-        if CurrencyCode <> '' then
-            CA.SetRange("Currency Code", CurrencyCode);
-        if UoMCode <> '' then
-            CA.SetRange("Unit of Measure Code", UoMCode);
+        if Found then
+            CampaignPriceValue := BestCampaignPriceLine."Unit Price";
 
-        if CA.FindFirst() then begin
-            if Camp.Get(CA."Source No.") then
-                if Camp."Customer Price Group NOTO" = SalesCode then
-                    Result := CA."Starting Date";
+        exit(Found);
+    end;
+
+    local procedure ApplyCommonPriceFilters(var PriceLine: Record "Price List Line"; ItemNo: Code[20]; CurrencyCode: Code[10]; UoMCode: Code[10]; AsOfDate: Date)
+    begin
+        PriceLine.Reset();
+        PriceLine.SetRange("Asset Type", PriceLine."Asset Type"::Item);
+        PriceLine.SetRange("Asset No.", ItemNo);
+        PriceLine.SetRange(Status, PriceLine.Status::Active);
+        PriceLine.SetFilter("Starting Date", '..%1', AsOfDate);
+        PriceLine.SetFilter("Ending Date", '%1..|%2', AsOfDate, 0D);
+        SetCurrencyCodeFilter(PriceLine, CurrencyCode);
+        PriceLine.SetRange("Unit of Measure Code", UoMCode);
+    end;
+
+    local procedure SetCurrencyCodeFilter(var PriceLine: Record "Price List Line"; CurrencyCode: Code[10])
+    begin
+        if CurrencyCode = 'LCY' then begin
+            PriceLine.SetRange("Currency Code", '');
+            exit;
         end;
 
-        exit(Result);
+        PriceLine.SetRange("Currency Code", CurrencyCode);
+    end;
+
+    local procedure IsBetterPriceLine(Candidate: Record "Price List Line"; Existing: Record "Price List Line"): Boolean
+    begin
+        if Candidate."Minimum Quantity" <> Existing."Minimum Quantity" then
+            exit(Candidate."Minimum Quantity" < Existing."Minimum Quantity");
+
+        if Candidate."Starting Date" <> Existing."Starting Date" then
+            exit(Candidate."Starting Date" > Existing."Starting Date");
+
+        if Existing."Unit Price" = 0 then
+            exit(Candidate."Unit Price" <> 0);
+        if Candidate."Unit Price" = 0 then
+            exit(false);
+
+        exit(Candidate."Unit Price" < Existing."Unit Price");
+    end;
+
+    local procedure IsExposedPriceCombination(SourceNo: Code[20]; CurrencyCode: Code[10]; UoMCode: Code[10]): Boolean
+    begin
+        case SourceNo of
+            'AMAZON.DE':
+                exit((CurrencyCode = 'EUR') and (UoMCode = 'STK'));
+            'AMAZON.ES':
+                exit((CurrencyCode = 'EUR') and (UoMCode = 'STK'));
+            'AU':
+                exit((CurrencyCode = 'USD') and (UoMCode in ['BASE', 'CDU', 'STK']));
+            'AUS':
+                exit((CurrencyCode = 'LCY') and (UoMCode = 'STK'));
+            'DK':
+                exit((CurrencyCode = 'LCY') and (UoMCode = 'STK'));
+            'EXP':
+                exit((CurrencyCode = 'EUR') and (UoMCode in ['BASE', 'STK']));
+            'FOB':
+                exit((CurrencyCode = 'USD') and (UoMCode = 'STK'));
+            'INC':
+                exit((CurrencyCode = 'LCY') and (UoMCode = 'STK'));
+            'RRP':
+                exit((CurrencyCode = 'EUR') and (UoMCode in ['BASE', 'STK']));
+            'SA':
+                exit((CurrencyCode = 'USD') and (UoMCode = 'STK'));
+            'SAP':
+                exit((CurrencyCode = 'EUR') and (UoMCode = 'STK'));
+            'VGROW':
+                exit((CurrencyCode = 'USD') and (UoMCode = 'STK'));
+            'WEB-DE':
+                exit((CurrencyCode = 'EUR') and (UoMCode = 'STK'));
+            'WEB-DK':
+                exit((CurrencyCode = 'LCY') and (UoMCode = 'STK'));
+            'WEB-NL':
+                exit((CurrencyCode = 'EUR') and (UoMCode = 'STK'));
+        end;
+
+        exit(false);
+    end;
+
+    local procedure GetExportCurrencyCode(CurrencyCode: Code[10]): Code[10]
+    begin
+        if CurrencyCode = '' then
+            exit('LCY');
+
+        exit(CurrencyCode);
     end;
 }

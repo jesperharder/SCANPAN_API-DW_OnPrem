@@ -43,17 +43,11 @@
 - Hvis brugeren henviser til databaseprojektet, saa arbejd i databaseprojektets filer og ikke i en lokal placeholder i API-projektet.
 
 ## Perfion API
-- `page 50211 "PerfionItemsAPI"` er en `PageType = API`-side med route baseret paa:
-  - `APIPublisher = 'harder'`
-  - `APIGroup = 'perfion'`
-  - `APIVersion = 'v1.0'`
-  - `EntitySetName = 'perfionItems'`
-- Test den via custom API-endpoint under `.../api/harder/perfion/v1.0/...` og ikke som klassisk `ODataV4` web service fra Web Services-siden.
+- Perfion integrations are exposed only through OData pages in this workspace.
 - Relevante integrationstilladelser findes i permission set `PERFION API READ`.
-- Klassisk `ODataV4` for Perfion Items koerer nu via `page 50226 "PerfionItemsOData"` med service-navnet `PerfionItemsDW`.
-- `DW WS Registrar` rydder gammel publicering for `page 50211` og publicerer `PerfionItemsDW` paa `page 50226`.
-- Klassisk `ODataV4` for Perfion Prices koerer nu via `page 50228 "PerfionPricesOData"` med service-navnet `PerfionPricesDW`.
-- `page 50225 "PerfionPricesAPI"` er beholdt som custom API under `/api/harder/perfion/v1.0/perfionPrices`.
+- Klassisk `ODataV4` for Perfion Items koerer via `page 50226 "PerfionItemsOData"` med service-navnet `PerfionItemsDW`.
+- Klassisk `ODataV4` for Perfion Prices koerer via `page 50228 "PerfionPricesOData"` med service-navnet `PerfionPricesDW`.
+- Custom API pages `PerfionItemsAPI` and `PerfionPricesAPI` are removed from this project.
 
 ## Lager til eCommerce
 - I dette workspace er eksisterende OData-moennster en almindelig `List`-side publiceret som web service, ikke en `PageType = API`-side.
@@ -122,18 +116,19 @@
   - mindst felterne `Sent as Email`, `Last Email Notif Cleared` og `Last Email Sent Status` er ikke sikre at bruge paa BC18 i `Sales Header` og `Sales Invoice Header`
   - publish mod BC18 og BC25 kan derfor ikke antages at virke med identisk kode uden versionsstyring i kildekoden eller separat leverance
 - `PerfionPricesDW` er et kurateret prisfeed og ikke et raadt udtraek:
+  - bygger nu en unik vareliste paa temp-siden
   - kun `Asset Type = Item`
   - kun `Source Type = Customer Price Group` for basispris
   - kun `Status = Active`
   - kun linjer gyldige pr. `Today`
-  - deduplikerer paa `Asset No. + Source No. + Currency Code + Unit of Measure Code`
-  - vaelger seneste `Starting Date`, derefter laveste `Unit Price`
-  - `Minimum Quantity` respekteres som request-filter, men indgaar ikke i dedupe-noeglen
-- `campaignPrice` og `campaignId` i `PerfionPricesDW` beregnes separat:
+  - udstiller faste pivoterede felter for de 19 konfigurerede debitorgruppe/valuta/UoM-kombinationer
+  - hver kombination har `price*`, `recommendedPrice*` og `campaignPrice*`
+  - vaelger laveste `Minimum Quantity`, derefter seneste `Starting Date`, derefter laveste nonzero `Unit Price`
+  - temp-rækker identificeres unikt ved `Asset No.`; `SystemId` bruges kun som OData-nøgle for hver temp-række
+- `campaignPrice*` i `PerfionPricesDW` beregnes pr. kombination:
   - kampagnelinjer hentes fra `Price List Line` med `Source Type = Campaign`
-  - kampagne matcher via `Campaign."Customer Price Group NOTO" = salesCode`
-  - laveste kampagnepris vinder
-  - ved samme pris vinder seneste `Starting Date`
+  - kampagne matcher via `Campaign."Customer Price Group NOTO"` til den aktuelle debitorgruppe
+  - samme laveste-minimumantal regel bruges for campaign lookup
 
 ## Seneste implementering
 - `CU 50042` beregner nu `AUNING Stock Available` som `On Hand - sales-order demand` inden for et rullende 30-dages vindue paa `Shipment Date`.

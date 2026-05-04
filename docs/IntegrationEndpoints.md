@@ -14,7 +14,7 @@ The document covers:
 - the technical design in Business Central
 - the operational model in BC
 - the core filtering and calculation logic
-- the relationship between OData pages and retained custom API pages
+- the OData publication model
 - code examples with explanation
 
 ## Scope
@@ -25,12 +25,7 @@ The operational integration model currently uses three OData V4 web services as 
 2. `page 50226 "PerfionItemsOData"` published as `PerfionItemsDW`
 3. `page 50228 "PerfionPricesOData"` published as `PerfionPricesDW`
 
-The Perfion area also still contains two custom API pages:
-
-- `page 50211 "PerfionItemsAPI"`
-- `page 50225 "PerfionPricesAPI"`
-
-These two custom API pages are retained in the extension, but the current registrar logic publishes the OData pages as the operational endpoints for the DW/Perfion export flow.
+Perfion integrations are exposed only through these OData pages.
 
 ## Architecture Summary
 
@@ -60,8 +55,8 @@ Characteristics:
 
 - the page uses `SourceTableTemporary = true`
 - the dataset is rebuilt in `OnOpenPage()`
-- only the latest valid price rows for today are loaded
-- campaign price lookup is calculated per record in `OnAfterGetRecord()`
+- one temporary row per item is loaded
+- fixed pivot fields are populated per exposed price combination in `OnAfterGetRecord()`
 
 ### Snapshot pattern for stock
 
@@ -234,21 +229,6 @@ as:
 
 - `PerfionItemsDW`
 
-### Retained custom API page
-
-The custom API variant still exists:
-
-- [PerfionItemsAPI.Page.al](/c:/Users/jespe/OneDrive%20-%20Scanpan/Scanpan%20(7.1.2015)/Development/SCANPAN%20API-DW%20OnPrem/src/page/PerfionItemsAPI.Page.al:1)
-
-It uses:
-
-- `APIPublisher = 'harder'`
-- `APIGroup = 'perfion'`
-- `APIVersion = 'v1.0'`
-- `EntitySetName = 'perfionItems'`
-
-This is useful if the custom API route is needed, but the current registrar-driven web service exposure for DW is the OData page.
-
 ### Base filtering logic
 
 The item dataset is filtered by:
@@ -287,9 +267,9 @@ The endpoint returns one row per item and exposes a flattened payload that is co
 
 ### Business purpose
 
-`PerfionPricesDW` exposes valid selling prices for today, with one curated row per logical price combination and optional campaign price information.
+`PerfionPricesDW` exposes a unique item list for today with fixed pivot fields per price combination.
 
-The purpose is to provide a cleaner pricing feed than raw `Price List Line`.
+The purpose is to provide a cleaner item-centric pricing feed than raw `Price List Line`.
 
 ### Operational endpoint
 
@@ -305,53 +285,43 @@ as:
 
 - `PerfionPricesDW`
 
-### Retained custom API page
-
-The custom API variant still exists:
-
-- [PerfionPricesAPI.Page.al](/c:/Users/jespe/OneDrive%20-%20Scanpan/Scanpan%20(7.1.2015)/Development/SCANPAN%20API-DW%20OnPrem/src/page/PerfionPricesAPI.Page.al:1)
-
-It uses:
-
-- `APIPublisher = 'harder'`
-- `APIGroup = 'perfion'`
-- `APIVersion = 'v1.0'`
-- `EntitySetName = 'perfionPrices'`
-
 ### Dataset construction
 
-The page uses a temporary `Price List Line` record set.
+The page uses a temporary `Price List Line` record set and exposes one unique row per item.
 
 Flow:
 
 1. `OnOpenPage()` clears the temporary page record set.
-2. `BuildLatestValidPricesForToday()` reads active `Price List Line` rows.
+2. `BuildItemRowsForToday()` reads active `Price List Line` rows.
 3. Only records valid for `Today` are considered.
-4. Only `Asset Type = Item` and `Source Type = Customer Price Group` are considered for the base price dataset.
-5. The page respects incoming OData filters where relevant.
-6. The page keeps one row per combination of:
-   `Asset No. + Source No. + Currency Code + Unit of Measure Code`
-7. If multiple rows exist, the page keeps the preferred row by:
-   - latest `Starting Date`
-   - then lowest `Unit Price` on equal starting date
+4. Only `Asset Type = Item`, `Source Type = Customer Price Group` and configured source/currency/UoM combinations are considered for the base row set.
+5. The endpoint currently exposes 19 configured source/currency/UoM combinations.
+6. The page respects incoming item filters where relevant.
+7. The page keeps one temporary row per item by deduplicating on `Asset No.` before insertion.
+8. For each exposed combination, the page fills:
+   - `price*`
+   - `recommendedPrice*`
+   - `campaignPrice*`
+9. If multiple rows exist for a combination, the page keeps the preferred row by:
+   - lowest `Minimum Quantity`
+   - then latest `Starting Date`
+   - then lowest nonzero `Unit Price`
 
 ### Campaign price logic
 
-Campaign prices are calculated separately in `OnAfterGetRecord()`.
+Campaign prices are calculated per pivoted price combination.
 
 The page:
 
 - searches `Price List Line` where `Source Type = Campaign`
 - limits to active rows valid on the request date
-- matches campaign to the sales code through `Campaign."Customer Price Group NOTO"`
-- returns the lowest campaign price
-- breaks ties on later `Starting Date`
+- matches campaign to the customer price group through `Campaign."Customer Price Group NOTO"`
+- returns the preferred campaign price for the same item/currency/UoM combination
 
 This means the exported row contains:
 
-- the selected base price row
-- a derived `campaignPrice`
-- a derived `campaignId`
+- `itemNo`
+- `price*`, `recommendedPrice*` and `campaignPrice*` fields for each configured combination
 
 ### Source tables involved
 
@@ -362,14 +332,7 @@ The page reads from:
 
 ### Important design note
 
-The deduplication key does not include `Minimum Quantity`.
-
-That means:
-
-- the page returns one preferred line per item/sales code/currency/UoM combination
-- it does not keep separate rows for multiple minimum quantity breaks within the same combination
-
-This is intentional in the current design and should only be changed if the downstream consumer needs tier-based pricing as separate rows.
+The endpoint deliberately does not expose tier-price rows. It returns the active line with the lowest `Minimum Quantity` for each item and pivoted price combination.
 
 ## Publication Model in BC
 
@@ -389,7 +352,7 @@ Relevant service names are:
 - `PerfionItemsDW`
 - `PerfionPricesDW`
 
-For Perfion, the registrar explicitly removes old publication for the custom API pages and publishes the OData pages as the canonical web-service entries.
+For Perfion, the registrar publishes the OData pages as the canonical web-service entries.
 
 ## Schema Maintenance Note
 
@@ -481,27 +444,29 @@ This is why:
 The following excerpt shows the Perfion price selection pattern:
 
 ```al
-if SP."Starting Date" > Existing."Starting Date" then
-    ReplaceExisting := true
-else
-    if SP."Starting Date" = Existing."Starting Date" then begin
-        if (SP."Unit Price" <> 0) and (Existing."Unit Price" <> 0) then begin
-            if SP."Unit Price" < Existing."Unit Price" then
-                ReplaceExisting := true;
-        end else
-            if (Existing."Unit Price" = 0) and (SP."Unit Price" <> 0) then
-                ReplaceExisting := true;
-    end;
+if Candidate."Minimum Quantity" <> Existing."Minimum Quantity" then
+    exit(Candidate."Minimum Quantity" < Existing."Minimum Quantity");
+
+if Candidate."Starting Date" <> Existing."Starting Date" then
+    exit(Candidate."Starting Date" > Existing."Starting Date");
+
+if Existing."Unit Price" = 0 then
+    exit(Candidate."Unit Price" <> 0);
+if Candidate."Unit Price" = 0 then
+    exit(false);
+
+exit(Candidate."Unit Price" < Existing."Unit Price");
 ```
 
 What this does:
 
 - compares a candidate price row to an already selected row
-- prefers the row with the latest starting date
-- if starting date is the same, prefers the lower unit price
-- avoids returning multiple overlapping active rows for the same logical combination
+- prefers the lowest minimum quantity
+- if minimum quantity is the same, prefers the latest starting date
+- if starting date is also the same, prefers the lower nonzero unit price
+- avoids returning tier-price rows
 
-This is the core of why `PerfionPricesDW` behaves like a curated pricing endpoint rather than a raw `Price List Line` export.
+This is the core of why `PerfionPricesDW` behaves like a curated pivoted pricing endpoint rather than a raw `Price List Line` export.
 
 ## Current Design Boundaries
 
@@ -509,7 +474,7 @@ Important current boundaries:
 
 - `AuningStockDW` is a snapshot, not a live stock computation
 - `PerfionItemsDW` is a live enriched item export
-- `PerfionPricesDW` is a live curated temporary dataset
+- `PerfionPricesDW` is a live curated pivoted temporary dataset
 - stock export is scoped to `AUNING`
 - stock export is scoped to `INTERN|EKSTERN|BRUND`
 - item export is scoped to a narrower curated item population
@@ -526,8 +491,6 @@ Main implementation files:
 - [DWItemCardAuningStock.PageExt.al](/c:/Users/jespe/OneDrive%20-%20Scanpan/Scanpan%20(7.1.2015)/Development/SCANPAN%20API-DW%20OnPrem/src/page/DWItemCardAuningStock.PageExt.al:1)
 - [PerfionItemsOData.Page.al](/c:/Users/jespe/OneDrive%20-%20Scanpan/Scanpan%20(7.1.2015)/Development/SCANPAN%20API-DW%20OnPrem/src/page/PerfionItemsOData.Page.al:1)
 - [PerfionPricesOData.Page.al](/c:/Users/jespe/OneDrive%20-%20Scanpan/Scanpan%20(7.1.2015)/Development/SCANPAN%20API-DW%20OnPrem/src/page/PerfionPricesOData.Page.al:1)
-- [PerfionItemsAPI.Page.al](/c:/Users/jespe/OneDrive%20-%20Scanpan/Scanpan%20(7.1.2015)/Development/SCANPAN%20API-DW%20OnPrem/src/page/PerfionItemsAPI.Page.al:1)
-- [PerfionPricesAPI.Page.al](/c:/Users/jespe/OneDrive%20-%20Scanpan/Scanpan%20(7.1.2015)/Development/SCANPAN%20API-DW%20OnPrem/src/page/PerfionPricesAPI.Page.al:1)
 - [DWWSRegistrar.Codeunit.al](/c:/Users/jespe/OneDrive%20-%20Scanpan/Scanpan%20(7.1.2015)/Development/SCANPAN%20API-DW%20OnPrem/src/codeunit/DWWSRegistrar.Codeunit.al:1)
 - [PERFIONAPIREAD.PermissionSet.al](/c:/Users/jespe/OneDrive%20-%20Scanpan/Scanpan%20(7.1.2015)/Development/SCANPAN%20API-DW%20OnPrem/src/permission/PERFIONAPIREAD.PermissionSet.al:1)
 - [AUNINGSTOCKREAD.PermissionSet.al](/c:/Users/jespe/OneDrive%20-%20Scanpan/Scanpan%20(7.1.2015)/Development/SCANPAN%20API-DW%20OnPrem/src/permission/AUNINGSTOCKREAD.PermissionSet.al:1)

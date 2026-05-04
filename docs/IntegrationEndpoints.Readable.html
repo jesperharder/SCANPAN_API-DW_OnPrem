@@ -181,7 +181,7 @@
       </div>
       <div class="card">
         <h3>Status</h3>
-        <p>Version pr. 2026-04-17. Dokumentet dækker den aktuelle registrering og logik i repoet.</p>
+        <p>Version pr. 2026-05-01. Dokumentet dækker den aktuelle registrering og logik i repoet.</p>
       </div>
     </div>
 
@@ -218,8 +218,7 @@
     </table>
 
     <div class="note">
-      Perfion-området har fortsat de to custom API-sider <code>PerfionItemsAPI</code> og <code>PerfionPricesAPI</code> i appen.
-      Den aktuelle operative publicering til DW-flowet sker dog via OData-siderne.
+      Perfion-integrationerne eksponeres kun gennem OData-siderne i denne løsning.
     </div>
 
     <h2>1. AUNING Stock</h2>
@@ -317,29 +316,29 @@ GenProdPostingGroupFilter=INTERN|EKSTERN|BRUND;AvailableReductionPct=10;Schedule
     <h2>3. Perfion Prices</h2>
     <p>
       <code>PerfionPricesDW</code> er et kurateret prisfeed. Siden bygger et midlertidigt datasæt ved hvert kald og returnerer
-      den foretrukne gyldige prislinje for i dag plus eventuel kampagnepris.
+      én række pr. vare med pivoterede prisfelter pr. prislistekombination.
     </p>
 
     <h3>Udvælgelseslogik</h3>
     <ol>
-      <li>Kun aktive prislinjer for dags dato tages med</li>
-      <li>Kun <code>Asset Type = Item</code> og <code>Source Type = Customer Price Group</code> bruges som basis</li>
-      <li>Der beholdes én række pr. kombination af item, sales code, valuta og UoM</li>
-      <li>Seneste <code>Starting Date</code> vinder</li>
-      <li>Ved samme startdato vinder laveste <code>Unit Price</code></li>
+      <li>Kun aktive prislinjer for dags dato og de konfigurerede debitorgruppe/valuta/UoM-kombinationer tages med</li>
+      <li>Endpointet eksponerer aktuelt 19 faste kombinationer</li>
+      <li>Der beholdes én række pr. vare</li>
+      <li>Laveste <code>Minimum Quantity</code> vinder</li>
+      <li>Seneste <code>Starting Date</code> vinder ved samme minimumantal</li>
+      <li>Laveste nonzero <code>Unit Price</code> vinder ved samme minimumantal og startdato</li>
     </ol>
 
     <h3>Kampagnelogik</h3>
     <ul>
       <li>Søger kampagnelinjer i <code>Price List Line</code> med <code>Source Type = Campaign</code></li>
       <li>Matcher mod salgskode via <code>Campaign."Customer Price Group NOTO"</code></li>
-      <li>Vælger laveste gyldige kampagnepris</li>
-      <li>Ved lighed vinder seneste <code>Starting Date</code></li>
+      <li>Vælger kampagnepris med samme laveste-minimumantal regel som normalpriser</li>
     </ul>
 
     <div class="note">
-      Den nuværende deduplikeringsnøgle inkluderer ikke <code>Minimum Quantity</code>. Derfor er endpointet designet som et
-      kurateret prisfeed og ikke som et fuldt tier-prisudtræk.
+      Hver kombination eksponerer <code>price*</code>, <code>recommendedPrice*</code> og <code>campaignPrice*</code>.
+      Recommended price læses fra <code>Price List Line."Unit List Price"</code>.
     </div>
 
     <h2>Publicering og rettigheder</h2>
@@ -393,8 +392,6 @@ end;</pre>
       <li><code>src/page/DWItemCardAuningStock.PageExt.al</code></li>
       <li><code>src/page/PerfionItemsOData.Page.al</code></li>
       <li><code>src/page/PerfionPricesOData.Page.al</code></li>
-      <li><code>src/page/PerfionItemsAPI.Page.al</code></li>
-      <li><code>src/page/PerfionPricesAPI.Page.al</code></li>
       <li><code>src/codeunit/DWWSRegistrar.Codeunit.al</code></li>
     </ul>
   </div>
