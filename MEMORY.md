@@ -47,6 +47,7 @@
 - Relevante integrationstilladelser findes i permission set `PERFION API READ`.
 - Klassisk `ODataV4` for Perfion Items koerer via `page 50226 "PerfionItemsOData"` med service-navnet `PerfionItemsDW`.
 - Klassisk `ODataV4` for Perfion Prices koerer via `page 50228 "PerfionPricesOData"` med service-navnet `PerfionPricesDW`.
+- Den vedligeholdte feltkontrakt for Perfion Prices ligger i `docs\PerfionPriceFields.md`.
 - Custom API pages `PerfionItemsAPI` and `PerfionPricesAPI` are removed from this project.
 
 ## Lager til eCommerce
@@ -125,6 +126,7 @@
   - hver kombination har `price*`, `recommendedPrice*` og `campaignPrice*`
   - vaelger laveste `Minimum Quantity`, derefter seneste `Starting Date`, derefter laveste nonzero `Unit Price`
   - temp-rækker identificeres unikt ved `Asset No.`; `SystemId` bruges kun som OData-nøgle for hver temp-række
+  - felt-/kolonnenavne i `PerfionPricesOData` er justeret, saa land/kilde nu ligger som suffix i navnet
 - `campaignPrice*` i `PerfionPricesDW` beregnes pr. kombination:
   - kampagnelinjer hentes fra `Price List Line` med `Source Type = Campaign`
   - kampagne matcher via `Campaign."Customer Price Group NOTO"` til den aktuelle debitorgruppe

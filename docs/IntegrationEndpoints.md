@@ -276,6 +276,7 @@ The purpose is to provide a cleaner item-centric pricing feed than raw `Price Li
 The operational OData endpoint is:
 
 - [PerfionPricesOData.Page.al](/c:/Users/jespe/OneDrive%20-%20Scanpan/Scanpan%20(7.1.2015)/Development/SCANPAN%20API-DW%20OnPrem/src/page/PerfionPricesOData.Page.al:1)
+- [PerfionPriceFields.md](/c:/Users/jespe/OneDrive%20-%20Scanpan/Scanpan%20(7.1.2015)/Development/SCANPAN%20API-DW%20OnPrem/docs/PerfionPriceFields.md:1)
 
 Published by:
 
