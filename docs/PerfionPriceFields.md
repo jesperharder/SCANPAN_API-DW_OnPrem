@@ -18,7 +18,8 @@ Model:
 Udvælgelse:
 
 - kun aktive prislinjer gyldige pr. dags dato
-- kun de 19 konfigurerede `Source No.`/currency/UoM-kombinationer nedenfor
+- kun de 20 konfigurerede `Source No.`/currency/UoM-kombinationer nedenfor
+- `WEB_NO` læses fra company `SCANPAN Norge`; øvrige prislister læses fra det aktuelle company
 - laveste `Minimum Quantity` vinder
 - ved samme minimumantal vinder seneste `Starting Date`
 - ved samme minimumantal og startdato vinder laveste nonzero `Unit Price`
@@ -35,22 +36,23 @@ Udvælgelse:
 
 | Source No. | Currency | UoM | Pris | Anbefalet pris | Kampagnepris |
 | --- | --- | --- | --- | --- | --- |
-| `AMAZON.DE` | `EUR` | `STK` | `priceAmazonDeEurStk` | `recommendedPriceAmazonDeEurStk` | `campaignPriceAmazonDeEurStk` |
-| `AMAZON.ES` | `EUR` | `STK` | `priceAmazonEsEurStk` | `recommendedPriceAmazonEsEurStk` | `campaignPriceAmazonEsEurStk` |
-| `AU` | `USD` | `BASE` | `priceAuUsdBase` | `recommendedPriceAuUsdBase` | `campaignPriceAuUsdBase` |
-| `AU` | `USD` | `CDU` | `priceAuUsdCdu` | `recommendedPriceAuUsdCdu` | `campaignPriceAuUsdCdu` |
-| `AU` | `USD` | `STK` | `priceAuUsdStk` | `recommendedPriceAuUsdStk` | `campaignPriceAuUsdStk` |
-| `AUS` | `LCY` | `STK` | `priceAusLcyStk` | `recommendedPriceAusLcyStk` | `campaignPriceAusLcyStk` |
-| `DK` | `LCY` | `STK` | `priceDkLcyStk` | `recommendedPriceDkLcyStk` | `campaignPriceDkLcyStk` |
-| `EXP` | `EUR` | `BASE` | `priceExpEurBase` | `recommendedPriceExpEurBase` | `campaignPriceExpEurBase` |
-| `EXP` | `EUR` | `STK` | `priceExpEurStk` | `recommendedPriceExpEurStk` | `campaignPriceExpEurStk` |
-| `FOB` | `USD` | `STK` | `priceFobUsdStk` | `recommendedPriceFobUsdStk` | `campaignPriceFobUsdStk` |
-| `INC` | `LCY` | `STK` | `priceIncLcyStk` | `recommendedPriceIncLcyStk` | `campaignPriceIncLcyStk` |
-| `RRP` | `EUR` | `BASE` | `priceRrpEurBase` | `recommendedPriceRrpEurBase` | `campaignPriceRrpEurBase` |
-| `RRP` | `EUR` | `STK` | `priceRrpEurStk` | `recommendedPriceRrpEurStk` | `campaignPriceRrpEurStk` |
-| `SA` | `USD` | `STK` | `priceSaUsdStk` | `recommendedPriceSaUsdStk` | `campaignPriceSaUsdStk` |
-| `SAP` | `EUR` | `STK` | `priceSapEurStk` | `recommendedPriceSapEurStk` | `campaignPriceSapEurStk` |
-| `VGROW` | `USD` | `STK` | `priceVgrowUsdStk` | `recommendedPriceVgrowUsdStk` | `campaignPriceVgrowUsdStk` |
-| `WEB-DE` | `EUR` | `STK` | `priceWebDeEurStk` | `recommendedPriceWebDeEurStk` | `campaignPriceWebDeEurStk` |
-| `WEB-DK` | `LCY` | `STK` | `priceWebDkLcyStk` | `recommendedPriceWebDkLcyStk` | `campaignPriceWebDkLcyStk` |
-| `WEB-NL` | `EUR` | `STK` | `priceWebNlEurStk` | `recommendedPriceWebNlEurStk` | `campaignPriceWebNlEurStk` |
+| `AMAZON.DE` | `EUR` | `STK` | `priceAmazonEurStkDe` | `recommendedPriceAmazonEurStkDe` | `campaignPriceAmazonEurStkDe` |
+| `AMAZON.ES` | `EUR` | `STK` | `priceAmazonEurStkEs` | `recommendedPriceAmazonEurStkEs` | `campaignPriceAmazonEurStkEs` |
+| `AU` | `USD` | `BASE` | `priceAuUsdBaseAu` | `recommendedPriceAuUsdBaseAu` | `campaignPriceAuUsdBaseAu` |
+| `AU` | `USD` | `CDU` | `priceAuUsdCduAu` | `recommendedPriceAuUsdCduAu` | `campaignPriceAuUsdCduAu` |
+| `AU` | `USD` | `STK` | `priceAuUsdStkAu` | `recommendedPriceAuUsdStkAu` | `campaignPriceAuUsdStkAu` |
+| `AUS` | `LCY` | `STK` | `priceAusLcyStkAus` | `recommendedPriceAusLcyStkAus` | `campaignPriceAusLcyStkAus` |
+| `DK` | `LCY` | `STK` | `priceDkLcyStkDk` | `recommendedPriceDkLcyStkDk` | `campaignPriceDkLcyStkDk` |
+| `EXP` | `EUR` | `BASE` | `priceExpEurBaseExp` | `recommendedPriceExpEurBaseExp` | `campaignPriceExpEurBaseExp` |
+| `EXP` | `EUR` | `STK` | `priceExpEurStkExp` | `recommendedPriceExpEurStkExp` | `campaignPriceExpEurStkExp` |
+| `FOB` | `USD` | `STK` | `priceFobUsdStkFob` | `recommendedPriceFobUsdStkFob` | `campaignPriceFobUsdStkFob` |
+| `INC` | `LCY` | `STK` | `priceIncLcyStkInc` | `recommendedPriceIncLcyStkInc` | `campaignPriceIncLcyStkInc` |
+| `RRP` | `EUR` | `BASE` | `priceRrpEurBaseRrp` | `recommendedPriceRrpEurBaseRrp` | `campaignPriceRrpEurBaseRrp` |
+| `RRP` | `EUR` | `STK` | `priceRrpEurStkRrp` | `recommendedPriceRrpEurStkRrp` | `campaignPriceRrpEurStkRrp` |
+| `SA` | `USD` | `STK` | `priceSaUsdStkSa` | `recommendedPriceSaUsdStkSa` | `campaignPriceSaUsdStkSa` |
+| `SAP` | `EUR` | `STK` | `priceSapEurStkSap` | `recommendedPriceSapEurStkSap` | `campaignPriceSapEurStkSap` |
+| `VGROW` | `USD` | `STK` | `priceVgrowUsdStkVgrow` | `recommendedPriceVgrowUsdStkVgrow` | `campaignPriceVgrowUsdStkVgrow` |
+| `WEB-DE` | `EUR` | `STK` | `priceWebDeEurStk_DE` | `recommendedPriceWebDeEurStk_DE` | `campaignPriceWebDeEurStk_DE` |
+| `WEB-DK` | `LCY` | `STK` | `priceWebDkLcyStk_DK` | `recommendedPriceWebDkLcyStk_DK` | `campaignPriceWebDkLcyStk_DK` |
+| `WEB_NL` | `EUR` | `STK` | `priceWebNlEurStk_NL` | `recommendedPriceWebNlEurStk_NL` | `campaignPriceWebNlEurStk_NL` |
+| `WEB_NO` | `LCY` | `STK` | `priceWebNoLcyStk_NO` | `recommendedPriceWebNoLcyStk_NO` | `campaignPriceWebNoLcyStk_NO` |

@@ -103,7 +103,7 @@ Yderligere runtime-logik:
 - datasættet bygges i et midlertidigt recordset ved hvert kald
 - OData-filter på `itemNo` respekteres
 - der beholdes én midlertidig række pr. vare
-- de 19 konfigurerede prislistekombinationer udstilles som tre pivoterede felter:
+- de 20 konfigurerede prislistekombinationer udstilles som tre pivoterede felter:
   - `price*`
   - `recommendedPrice*`
   - `campaignPrice*`
@@ -163,12 +163,15 @@ Yderligere runtime-logik:
 | `PerfionPricesDW` | `priceVgrowUsdStkVgrow` | `Price List Line."Unit Price"` | `Source No. = VGROW`, `Currency Code = USD`, `UoM = STK`. |
 | `PerfionPricesDW` | `recommendedPriceVgrowUsdStkVgrow` | `Price List Line."Unit List Price"` | Samme kombination som ovenfor. |
 | `PerfionPricesDW` | `campaignPriceVgrowUsdStkVgrow` | Campaign `Price List Line."Unit Price"` | Campaign matcher `Campaign."Customer Price Group NOTO" = VGROW`. |
-| `PerfionPricesDW` | `priceWebDeEurStkWebDe` | `Price List Line."Unit Price"` | `Source No. = WEB-DE`, `Currency Code = EUR`, `UoM = STK`. |
-| `PerfionPricesDW` | `recommendedPriceWebDeEurStkWebDe` | `Price List Line."Unit List Price"` | Samme kombination som ovenfor. |
-| `PerfionPricesDW` | `campaignPriceWebDeEurStkWebDe` | Campaign `Price List Line."Unit Price"` | Campaign matcher `Campaign."Customer Price Group NOTO" = WEB-DE`. |
-| `PerfionPricesDW` | `priceWebDkLcyStkWebDk` | `Price List Line."Unit Price"` | `Source No. = WEB-DK`, blank BC currency eksponeres som `LCY`, `UoM = STK`. |
-| `PerfionPricesDW` | `recommendedPriceWebDkLcyStkWebDk` | `Price List Line."Unit List Price"` | Samme kombination som ovenfor. |
-| `PerfionPricesDW` | `campaignPriceWebDkLcyStkWebDk` | Campaign `Price List Line."Unit Price"` | Campaign matcher `Campaign."Customer Price Group NOTO" = WEB-DK`. |
-| `PerfionPricesDW` | `priceWebNlEurStkWebNl` | `Price List Line."Unit Price"` | `Source No. = WEB-NL`, `Currency Code = EUR`, `UoM = STK`. |
-| `PerfionPricesDW` | `recommendedPriceWebNlEurStkWebNl` | `Price List Line."Unit List Price"` | Samme kombination som ovenfor. |
-| `PerfionPricesDW` | `campaignPriceWebNlEurStkWebNl` | Campaign `Price List Line."Unit Price"` | Campaign matcher `Campaign."Customer Price Group NOTO" = WEB-NL`. |
+| `PerfionPricesDW` | `priceWebDeEurStk_DE` | `Price List Line."Unit Price"` | `Source No. = WEB-DE`, `Currency Code = EUR`, `UoM = STK`. |
+| `PerfionPricesDW` | `recommendedPriceWebDeEurStk_DE` | `Price List Line."Unit List Price"` | Samme kombination som ovenfor. |
+| `PerfionPricesDW` | `campaignPriceWebDeEurStk_DE` | Campaign `Price List Line."Unit Price"` | Campaign matcher `Campaign."Customer Price Group NOTO" = WEB-DE`. |
+| `PerfionPricesDW` | `priceWebDkLcyStk_DK` | `Price List Line."Unit Price"` | `Source No. = WEB-DK`, blank BC currency eksponeres som `LCY`, `UoM = STK`. |
+| `PerfionPricesDW` | `recommendedPriceWebDkLcyStk_DK` | `Price List Line."Unit List Price"` | Samme kombination som ovenfor. |
+| `PerfionPricesDW` | `campaignPriceWebDkLcyStk_DK` | Campaign `Price List Line."Unit Price"` | Campaign matcher `Campaign."Customer Price Group NOTO" = WEB-DK`. |
+| `PerfionPricesDW` | `priceWebNlEurStk_NL` | `Price List Line."Unit Price"` | `Source No. = WEB_NL`, `Currency Code = EUR`, `UoM = STK`. |
+| `PerfionPricesDW` | `recommendedPriceWebNlEurStk_NL` | `Price List Line."Unit List Price"` | Samme kombination som ovenfor. |
+| `PerfionPricesDW` | `campaignPriceWebNlEurStk_NL` | Campaign `Price List Line."Unit Price"` | Campaign matcher `Campaign."Customer Price Group NOTO" = WEB_NL`. |
+| `PerfionPricesDW` | `priceWebNoLcyStk_NO` | `Price List Line."Unit Price"` | `Source No. = WEB_NO`, blank BC currency eksponeres som `LCY`, `UoM = STK`, laeses fra company `SCANPAN Norge`. |
+| `PerfionPricesDW` | `recommendedPriceWebNoLcyStk_NO` | `Price List Line."Unit List Price"` | Samme kombination som ovenfor. |
+| `PerfionPricesDW` | `campaignPriceWebNoLcyStk_NO` | Campaign `Price List Line."Unit Price"` | Campaign matcher `Campaign."Customer Price Group NOTO" = WEB_NO` i company `SCANPAN Norge`. |

@@ -1,146 +1,96 @@
-# Workspace Memory
+# Project Memory
 
-## Formaal
-- Husk vaesentlige beslutninger, arbejdsmønstre og faldgruber for `SCANPAN API-DW OnPrem`.
-- Opdater denne fil loebende, naar der træffes nye vigtige beslutninger.
+## Current Project State
+- Repository: `SCANPAN API-DW OnPrem`.
+- App: `SCANPAN Data Warehouse API`, version `1.0.0.40`, runtime `7.2`, target `OnPrem`, platform `18.0.31692.0`.
+- Active compile context is BC18-oriented with local symbols around `Base Application 18.18.x`.
+- The maintained operational integration endpoints are:
+  - `AuningStockDW`
+  - `PerfionItemsDW`
+  - `PerfionPricesDW`
+- Stable project rules now live in `AGENTS.md`.
 
-## Arbejdsomraader
-- AL API-kode ligger i `src/`.
-- SQL databaseprojektet ligger ikke i dette workspace, men i:
-  `..\\SQL scripts\\BusinessAnalyticsDB2\\DatabaseProjectBusinessAnalyticsAI\\`
-- SQL schema for BC API staging i databaseprojektet er `[stg_bc_api]`.
+## Active Integrations
+- `PerfionItemsDW` runs through `page 50226 "PerfionItemsOData"`.
+- `PerfionPricesDW` runs through `page 50228 "PerfionPricesOData"`.
+- `AuningStockDW` runs through `page 50233 "AuningStockOData"`.
+- Custom API pages `PerfionItemsAPI` and `PerfionPricesAPI` have been removed from this project.
+- Relevant maintained documentation:
+  - `docs\IntegrationEndpoints.md`
+  - `docs\IntegrationEndpoints.Readable.html`
+  - `docs\IntegrationEndpoints.pdf`
+  - `docs\PerfionAuningFieldOverview.md`
+  - `docs\PerfionAuningFieldOverview.xlsx`
+  - `docs\PerfionPriceFields.md`
 
-## Vigtige regler fra denne opgave
-- Brug ikke `dbo` som standard for nye staging-tabeller til BC API.
-- Match altid eksisterende mønstre i databaseprojektet foer nye SQL-filer laves.
-- Relevante SQL-tabeller skal oprettes i databaseprojektet under:
-  `..\\SQL scripts\\BusinessAnalyticsDB2\\DatabaseProjectBusinessAnalyticsAI\\stg_bc_api\\`
-- Nye `stg_bc_api`-tabeller foelger normalt dette mønster:
-  - `CompanyId` er med i noeglen
-  - pipelinefelter er med:
-    - `PipelineName`
-    - `PipelineRunId`
-    - `PipelineTriggerTime`
-  - schema er `[stg_bc_api]`
+## AUNING Stock State
+- eCommerce stock is scoped to location `AUNING`.
+- `stock-at-hand` means physical stock now from posted inventory.
+- `stock-available` means sellable stock now after the current business demand calculation.
+- Implemented objects:
+  - `tableextension 50231 "DW Item Auning Stock"` adds `AUNING Stock On Hand`, `AUNING Stock Available`, and `AUNING Stock Updated At` to `Item`.
+  - `codeunit 50042 "Auning Stock Update"` updates stock snapshots and is Job Queue-capable through `TableNo = "Job Queue Entry"`.
+  - `page 50233 "AuningStockOData"` exposes `auningStockOnHand`, `auningStockAvailable`, and `auningStockUpdatedAt`.
+  - `page 50237 "AuningStockFactBox"` shows the snapshot fields as a `CardPart`.
+  - `pageextension 50232 "DW Item Card Auning Stock"` adds the FactBox to `Item Card`.
+  - `permissionset 50231 "AUNING STOCK READ"` gives read access for the OData page and relevant `Item` data.
+- Current default item scope is `Gen. Prod. Posting Group` filter `INTERN|EKSTERN|BRUND`.
+- `codeunit 50042` supports these Job Queue parameters:
+  - `GenProdPostingGroupFilter=INTERN|EKSTERN|BRUND`
+  - `AvailableReductionPct=<decimal>`
+  - `ScheduledMinute=<0..59>`
+- If `GenProdPostingGroupFilter` is omitted, the default is `INTERN|EKSTERN|BRUND`.
+- Snapshot and OData stock fields are rounded down to whole numbers and clamped to `0` when negative.
+- `AUNING Stock Available` is currently calculated as `On Hand - sales-order demand`.
+- Sales-order demand is read from `Sales Line."Outstanding Qty. (Base)"` for location `AUNING`.
+- Both `Open` and `Released` sales orders are included.
+- Demand window uses `Shipment Date <= WorkDate + 30D`, including backlog before `WorkDate`.
+- The current demand logic intentionally avoids combining custom sales-order demand with standard warehouse availability for the same demand, to avoid double subtraction.
+- `ScheduledMinute` must not block manual UI runs; the minute guard applies only to background runs without UI.
+- Job Queue normalization must set `Job Queue Entry."Recurring Job" = true` in addition to recurring weekdays and `No. of Minutes between Runs`.
 
-## SalesLine specifikt
-- `page 50262 "SalesLineAPI"` er udvidet markant og skal indeholde:
-  - alle antal-felter
-  - alle beloebsfelter
-  - `Drop Shipment`
-  - centrale reference-, dato-, dimensions- og auditfelter
-- SQL-tabellen for denne API er:
-  `[stg_bc_api].[SalesLine]`
-- Naturlig SQL-noegle for `SalesLine` er:
+## Perfion Prices State
+- `PerfionPricesDW` is a curated price feed, not a raw extract.
+- It builds a unique temporary item list on `Asset No.`.
+- It includes only:
+  - `Asset Type = Item`
+  - base prices with `Source Type = Customer Price Group`
+  - active price lines
+  - lines valid on `Today`
+- It exposes fixed pivoted fields for the configured customer-price-group, currency, and unit-of-measure combinations.
+- Each configured combination has `price*`, `recommendedPrice*`, and `campaignPrice*` fields.
+- Base price selection uses lowest `Minimum Quantity`, then latest `Starting Date`, then lowest nonzero `Unit Price`.
+- `SystemId` is used only as the OData key for each temporary row.
+- Perfion price field source suffixes use an underscore only for web price list country suffixes, for example `WEB-DK` -> `_DK`, `WEB-DE` -> `_DE`, `WEB_NL` -> `_NL`, and `WEB_NO` -> `_NO`.
+- `WEB_NO` is read from company `SCANPAN Norge`; the other configured price combinations are read from the current company.
+- `campaignPrice*` is read from `Price List Line` with `Source Type = Campaign`.
+- Campaign price lookup matches through `Campaign."Customer Price Group NOTO"` and uses the same lowest-minimum-quantity rule.
+
+## SalesLine And SQL State
+- `page 50262 "SalesLineAPI"` is expected to include all quantity fields, all amount fields, `Drop Shipment`, and central reference, date, dimension, and audit fields.
+- The related SQL staging table is `[stg_bc_api].[SalesLine]`.
+- Natural SQL key for `[stg_bc_api].[SalesLine]`:
   - `CompanyId`
   - `documentType`
   - `documentTypeInt`
   - `documentNo`
   - `lineNo`
 
-## Samarbejdsnote
-- Hold altid fokus paa det rigtige arbejdsomraade.
-- Hvis brugeren henviser til databaseprojektet, saa arbejd i databaseprojektets filer og ikke i en lokal placeholder i API-projektet.
+## Verified Findings
+- Local BC18 symbols confirm these relevant standard objects:
+  - `codeunit 5790 "Available to Promise"` has standard availability methods including `CalcAvailableInventory`, `CalcGrossRequirement`, `CalcReservedRequirement`, `CalcScheduledReceipt`, and `QtyAvailabletoPromise`.
+  - `codeunit 5530 "Calc. Item Availability"` can build `Inventory Event Buffer` from supply and demand.
+  - `codeunit 7314 "Warehouse Availability Mgt."` has `CalcInvtAvailQty` for warehouse-aware inventory availability on locations without directed put-away and pick.
+  - `table 472 "Job Queue Entry"` can run codeunits through `codeunit 449 "Job Queue Start Codeunit"`.
+- `page 50234 "ItemLedgerEntryAPI"` already exposes central physical inventory fields including `Quantity`, `Remaining Quantity`, `Reserved Quantity`, `Open`, `Location Code`, and `Variant Code`.
 
-## Perfion API
-- Perfion integrations are exposed only through OData pages in this workspace.
-- Relevante integrationstilladelser findes i permission set `PERFION API READ`.
-- Klassisk `ODataV4` for Perfion Items koerer via `page 50226 "PerfionItemsOData"` med service-navnet `PerfionItemsDW`.
-- Klassisk `ODataV4` for Perfion Prices koerer via `page 50228 "PerfionPricesOData"` med service-navnet `PerfionPricesDW`.
-- Den vedligeholdte feltkontrakt for Perfion Prices ligger i `docs\PerfionPriceFields.md`.
-- Custom API pages `PerfionItemsAPI` and `PerfionPricesAPI` are removed from this project.
+## Blockers And Risks
+- This workspace is version-sensitive between BC18 and BC25.
+- Publish against BC18 and BC25 cannot be assumed to work with identical source unless the code is version-gated or delivered separately.
+- At least `Sales Header` and `Sales Invoice Header` fields `Sent as Email`, `Last Email Notif Cleared`, and `Last Email Sent Status` are not safe to use in BC18 without version handling.
 
-## Lager til eCommerce
-- I dette workspace er eksisterende OData-moennster en almindelig `List`-side publiceret som web service, ikke en `PageType = API`-side.
-- `page 50228 "PerfionPricesOData"` viser et relevant moenster for OData-udtraek med `SourceTableTemporary = true` og opbygning af et curated datasæt i `OnOpenPage`.
-- `page 50234 "ItemLedgerEntryAPI"` viser, at repoet allerede eksponerer de centrale poster for fysisk lager, herunder `Quantity`, `Remaining Quantity`, `Reserved Quantity`, `Open`, `Location Code` og `Variant Code`.
-- Til eCommerce boer `stock-at-hand` og `stock-available` behandles som to forskellige begreber:
-  - `stock-at-hand`: fysisk lager nu baseret paa postede lagerposter.
-  - `stock-available`: salgbart lager nu efter fradrag af reservationer/forpligtelser.
-- Hvis man senere vil vise forventet fremtidig disponibel beholdning, boer det vaere et separat felt eller endpoint og ikke blandes sammen med "available now".
-- Aktuel forretningsafgraensning: lager for eCommerce skal beregnes kun for lokation `AUNING`.
-- Lokale Base App-symboler (BC 18.18) bekraefter relevante standardobjekter:
-  - `codeunit 5790 "Available to Promise"` med standardmetoder til `CalcAvailableInventory`, `CalcGrossRequirement`, `CalcReservedRequirement`, `CalcScheduledReceipt` og `QtyAvailabletoPromise`.
-  - `codeunit 5530 "Calc. Item Availability"` til opbygning af `Inventory Event Buffer` ud fra supply/demand.
-  - `codeunit 7314 "Warehouse Availability Mgt."` med `CalcInvtAvailQty`, som tager hoejde for warehouse-styring paa lokationer uden directed put-away and pick.
-  - Standard schedulering sker via Job Queue; `table 472 "Job Queue Entry"` kan koere `Codeunit`-objekter via `codeunit 449 "Job Queue Start Codeunit"`.
-- Objekt-governance i dette repo skal behandles paa to niveauer:
-  - app-range: `50042-50050` og `50200-50299`
-  - type-specifik praktisk allocation:
-    - `page`: `50200-50290`
-    - nye API-codeunits: `50042-50050`
-    - historiske eksisterende codeunits i repoet ligger stadig i `50200`, `50291`, `50292`
-    - `table`, `tableextension`, `permissionset`: brug ledige slots i den lave del af rangen efter opslag i central inventory
-- Undgaa at placere nye codeunits i page-bandet. Brug `50042-50050` til nye API-codeunits, medmindre governance bevidst aendres.
-- Implementeret model i dette repo:
-  - `tableextension 50231 "DW Item Auning Stock"` tilfoejer felterne `AUNING Stock On Hand`, `AUNING Stock Available` og `AUNING Stock Updated At` paa `Item`.
-  - `codeunit 50042 "Auning Stock Update"` er job queue-egnet (`TableNo = "Job Queue Entry"`) og opdaterer felterne for alle inventory-items.
-  - `codeunit 50042 "Auning Stock Update"` kan nu selv haandhaeve en hourly schedule via job queue-parameteren `ScheduledMinute=<0..59>`.
-  - Naar `ScheduledMinute` er sat, normaliserer `CU 50042` sin Job Queue-opsaetning til hourly recurring paa alle ugens dage, ankrer `Starting Time` til `00:<minute>`, og skipper selve lageropdateringen, hvis dispatcher starter uden for det tilladte minut.
-  - Naar `ScheduledMinute` er sat, beregnes baade initial start og naeste recurring-run i `CU 50042` via subscribers mod `Job Queue Dispatcher`, saa schedule driver tilbage til naeste `XX:<minute>` efter restart eller anden tidsdrift.
-  - Beregningen bruger standard `Warehouse Availability Mgt.` for disponibelt lager og summerer baade blank variant og opsatte item-varianter.
-  - `page 50233 "AuningStockOData"` er den klassiske OData-side, publiceret som service-navn `AuningStockDW`, og eksponerer `auningStockOnHand`, `auningStockAvailable` og `auningStockUpdatedAt`.
-  - `page 50237 "AuningStockFactBox"` viser snapshotfelterne i sidebjælken som `CardPart`.
-  - `pageextension 50232 "DW Item Card Auning Stock"` indsætter FactBox'en paa `Item Card`.
-  - `permissionset 50231 "AUNING STOCK READ"` giver laeseadgang til OData-siden og `Item`-data.
-  - OData-siden er aktuelt afgraenset til `Gen. Prod. Posting Group` = `INTERN|EKSTERN|BRUND`.
-  - Job Queue-parameter til codeunit `50042` kan styre samme filter via:
-    - `GenProdPostingGroupFilter=INTERN|EKSTERN|BRUND`
-    - `AvailableReductionPct=<decimal>`
-  - Hvis parameteren udelades, bruges standardfilteret `INTERN|EKSTERN|BRUND`.
-  - Snapshotfelter og OData-felter rundes ned til hele tal, og negative vaerdier clamps til `0`.
-  - AL-koden holdes paa engelsk for tekniske objekt-, felt-, parameter- og OData-navne; eventuelle lokale brugeroversaettelser haandteres via translationsfiler uden for koden.
-  - Afklaret ny forretningsregel for mulig fremtidig AUNING-beregning:
-    - alle salgsordrer til lokation `AUNING` skal medtages i et loebende 30-dages vindue
-    - baade `Open` og `Released` salgsordrer skal medtages
-    - `Shipment Date` er valgt som datofelt for det loebende 30-dages vindue
-    - disse salgsordrelinjer skal fratraekkes lager i `AUNING`
-    - logikken skal undgaa dobbeltfradrag ved ikke at kombinere egen salgsordre-efterspoergsel med standard warehouse availability for samme demand
-    - oevrig eksisterende parameterlogik i `CU 50042` skal bevares, herunder mindst:
-      - `GenProdPostingGroupFilter`
-      - `AvailableReductionPct`
-      - `ScheduledMinute`
-- Samlet system- og driftsbeskrivelse for de tre operationelle integrationssider ligger i:
-  - `docs\IntegrationEndpoints.md`
-  - laesevenlig HTML/PDF distributionsversion ligger i:
-    - `docs\IntegrationEndpoints.Readable.html`
-    - `docs\IntegrationEndpoints.pdf`
-- Komplet kolonneopdelt feltoversigt for de tre operationelle endpoints ligger i:
-  - `docs\PerfionAuningFieldOverview.md`
-  - `docs\PerfionAuningFieldOverview.xlsx`
-- De operative endpoints for denne integration er:
-  - `AuningStockDW`
-  - `PerfionItemsDW`
-  - `PerfionPricesDW`
-- Dette workspace skal behandles som versionsfoelsomt mellem BC18 og BC25:
-  - lokale symbolpakker og nuvaerende compile-kontekst har vaeret BC18 (`Base Application 18.18.x`)
-  - mindst felterne `Sent as Email`, `Last Email Notif Cleared` og `Last Email Sent Status` er ikke sikre at bruge paa BC18 i `Sales Header` og `Sales Invoice Header`
-  - publish mod BC18 og BC25 kan derfor ikke antages at virke med identisk kode uden versionsstyring i kildekoden eller separat leverance
-- `PerfionPricesDW` er et kurateret prisfeed og ikke et raadt udtraek:
-  - bygger nu en unik vareliste paa temp-siden
-  - kun `Asset Type = Item`
-  - kun `Source Type = Customer Price Group` for basispris
-  - kun `Status = Active`
-  - kun linjer gyldige pr. `Today`
-  - udstiller faste pivoterede felter for de 19 konfigurerede debitorgruppe/valuta/UoM-kombinationer
-  - hver kombination har `price*`, `recommendedPrice*` og `campaignPrice*`
-  - vaelger laveste `Minimum Quantity`, derefter seneste `Starting Date`, derefter laveste nonzero `Unit Price`
-  - temp-rækker identificeres unikt ved `Asset No.`; `SystemId` bruges kun som OData-nøgle for hver temp-række
-  - felt-/kolonnenavne i `PerfionPricesOData` er justeret, saa land/kilde nu ligger som suffix i navnet
-- `campaignPrice*` i `PerfionPricesDW` beregnes pr. kombination:
-  - kampagnelinjer hentes fra `Price List Line` med `Source Type = Campaign`
-  - kampagne matcher via `Campaign."Customer Price Group NOTO"` til den aktuelle debitorgruppe
-  - samme laveste-minimumantal regel bruges for campaign lookup
-
-## Seneste implementering
-- `CU 50042` beregner nu `AUNING Stock Available` som `On Hand - sales-order demand` inden for et rullende 30-dages vindue paa `Shipment Date`.
-- Salgsordrebehovet hentes fra `Sales Line."Outstanding Qty. (Base)"` for lokation `AUNING`, baade `Open` og `Released`.
-- Fortolkningen af 30-dages-vinduet er korrigeret:
-  - alle stadig udestaaende salgslinjer med `Shipment Date <= WorkDate + 30D` skal med
-  - backlog med `Shipment Date` foer `WorkDate` skal altsaa ogsaa medtaelles
-- Eksisterende parameterlogik er bevaret for:
-  - `GenProdPostingGroupFilter`
-  - `AvailableReductionPct`
-  - `ScheduledMinute`
-- `ScheduledMinute` maa ikke blokere manuelle UI-runs; minut-guard'en gaelder kun baggrundskoersel uden UI.
-- `CU 50042` scheduler-normalisering skal ogsaa saette `Job Queue Entry."Recurring Job" = true`; ellers kan BC fejle efter koersel, selv om `No. of Minutes between Runs` og ugedage er sat.
+## Next Checks
+- After current AL source changes, run the available AL compile/package validation for the BC18 context.
+- After any AL object add/delete/rename/ID change, refresh the central BC object inventory.
+- After endpoint field changes, verify that `docs\IntegrationEndpoints.md`, `docs\PerfionAuningFieldOverview.md`, and `docs\PerfionPriceFields.md` remain aligned with the AL source.
+- If SQL staging changes are requested, work in the external database project under `[stg_bc_api]`, not in a placeholder inside this repository.

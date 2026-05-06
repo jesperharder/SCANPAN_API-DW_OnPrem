@@ -5833,20 +5833,25 @@
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">Page PerfionPricesOData - Control campaignPriceVgrowUsdStkVgrow - Property Caption</note>
         </trans-unit>
-        <trans-unit id="Page 1871341380 - Control 1313820623 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
-          <source>campaignPriceWebDeEurStkWebDe</source>
+        <trans-unit id="Page 1871341380 - Control 2551845422 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>campaignPriceWebDeEurStk_DE</source>
           <note from="Developer" annotates="general" priority="2"></note>
-          <note from="Xliff Generator" annotates="general" priority="3">Page PerfionPricesOData - Control campaignPriceWebDeEurStkWebDe - Property Caption</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page PerfionPricesOData - Control campaignPriceWebDeEurStk_DE - Property Caption</note>
         </trans-unit>
-        <trans-unit id="Page 1871341380 - Control 1117311107 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
-          <source>campaignPriceWebDkLcyStkWebDk</source>
+        <trans-unit id="Page 1871341380 - Control 560148618 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>campaignPriceWebDkLcyStk_DK</source>
           <note from="Developer" annotates="general" priority="2"></note>
-          <note from="Xliff Generator" annotates="general" priority="3">Page PerfionPricesOData - Control campaignPriceWebDkLcyStkWebDk - Property Caption</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page PerfionPricesOData - Control campaignPriceWebDkLcyStk_DK - Property Caption</note>
         </trans-unit>
-        <trans-unit id="Page 1871341380 - Control 2289948871 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
-          <source>campaignPriceWebNlEurStkWebNl</source>
+        <trans-unit id="Page 1871341380 - Control 1053185062 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>campaignPriceWebNlEurStk_NL</source>
           <note from="Developer" annotates="general" priority="2"></note>
-          <note from="Xliff Generator" annotates="general" priority="3">Page PerfionPricesOData - Control campaignPriceWebNlEurStkWebNl - Property Caption</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page PerfionPricesOData - Control campaignPriceWebNlEurStk_NL - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Page 1871341380 - Control 2019857626 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>campaignPriceWebNoLcyStk_NO</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page PerfionPricesOData - Control campaignPriceWebNoLcyStk_NO - Property Caption</note>
         </trans-unit>
         <trans-unit id="Page 1871341380 - Control 2930473216 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
           <source>itemNo</source>
@@ -5933,20 +5938,25 @@
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">Page PerfionPricesOData - Control priceVgrowUsdStkVgrow - Property Caption</note>
         </trans-unit>
-        <trans-unit id="Page 1871341380 - Control 2818132509 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
-          <source>priceWebDeEurStkWebDe</source>
+        <trans-unit id="Page 1871341380 - Control 706180800 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>priceWebDeEurStk_DE</source>
           <note from="Developer" annotates="general" priority="2"></note>
-          <note from="Xliff Generator" annotates="general" priority="3">Page PerfionPricesOData - Control priceWebDeEurStkWebDe - Property Caption</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page PerfionPricesOData - Control priceWebDeEurStk_DE - Property Caption</note>
         </trans-unit>
-        <trans-unit id="Page 1871341380 - Control 499424201 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
-          <source>priceWebDkLcyStkWebDk</source>
+        <trans-unit id="Page 1871341380 - Control 3763391620 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>priceWebDkLcyStk_DK</source>
           <note from="Developer" annotates="general" priority="2"></note>
-          <note from="Xliff Generator" annotates="general" priority="3">Page PerfionPricesOData - Control priceWebDkLcyStkWebDk - Property Caption</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page PerfionPricesOData - Control priceWebDkLcyStk_DK - Property Caption</note>
         </trans-unit>
-        <trans-unit id="Page 1871341380 - Control 3341180437 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
-          <source>priceWebNlEurStkWebNl</source>
+        <trans-unit id="Page 1871341380 - Control 705397432 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>priceWebNlEurStk_NL</source>
           <note from="Developer" annotates="general" priority="2"></note>
-          <note from="Xliff Generator" annotates="general" priority="3">Page PerfionPricesOData - Control priceWebNlEurStkWebNl - Property Caption</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page PerfionPricesOData - Control priceWebNlEurStk_NL - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Page 1871341380 - Control 2303682612 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>priceWebNoLcyStk_NO</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page PerfionPricesOData - Control priceWebNoLcyStk_NO - Property Caption</note>
         </trans-unit>
         <trans-unit id="Page 1871341380 - Control 3161232571 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
           <source>recommendedPriceAmazonEurStkDe</source>
@@ -6028,20 +6038,25 @@
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">Page PerfionPricesOData - Control recommendedPriceVgrowUsdStkVgrow - Property Caption</note>
         </trans-unit>
-        <trans-unit id="Page 1871341380 - Control 4159478674 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
-          <source>recommendedPriceWebDeEurStkWebDe</source>
+        <trans-unit id="Page 1871341380 - Control 2075662667 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>recommendedPriceWebDeEurStk_DE</source>
           <note from="Developer" annotates="general" priority="2"></note>
-          <note from="Xliff Generator" annotates="general" priority="3">Page PerfionPricesOData - Control recommendedPriceWebDeEurStkWebDe - Property Caption</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page PerfionPricesOData - Control recommendedPriceWebDeEurStk_DE - Property Caption</note>
         </trans-unit>
-        <trans-unit id="Page 1871341380 - Control 2678777910 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
-          <source>recommendedPriceWebDkLcyStkWebDk</source>
+        <trans-unit id="Page 1871341380 - Control 1093442359 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>recommendedPriceWebDkLcyStk_DK</source>
           <note from="Developer" annotates="general" priority="2"></note>
-          <note from="Xliff Generator" annotates="general" priority="3">Page PerfionPricesOData - Control recommendedPriceWebDkLcyStkWebDk - Property Caption</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page PerfionPricesOData - Control recommendedPriceWebDkLcyStk_DK - Property Caption</note>
         </trans-unit>
-        <trans-unit id="Page 1871341380 - Control 442230234 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
-          <source>recommendedPriceWebNlEurStkWebNl</source>
+        <trans-unit id="Page 1871341380 - Control 3329960307 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>recommendedPriceWebNlEurStk_NL</source>
           <note from="Developer" annotates="general" priority="2"></note>
-          <note from="Xliff Generator" annotates="general" priority="3">Page PerfionPricesOData - Control recommendedPriceWebNlEurStkWebNl - Property Caption</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page PerfionPricesOData - Control recommendedPriceWebNlEurStk_NL - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Page 1871341380 - Control 2940009047 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>recommendedPriceWebNoLcyStk_NO</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page PerfionPricesOData - Control recommendedPriceWebNoLcyStk_NO - Property Caption</note>
         </trans-unit>
         <trans-unit id="Page 1871341380 - Control 3092263724 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
           <source>systemId</source>
