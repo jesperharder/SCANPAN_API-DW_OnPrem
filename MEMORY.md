@@ -61,7 +61,7 @@
 - Each configured combination has `price*`, `recommendedPrice*`, and `campaignPrice*` fields.
 - Base price selection uses lowest `Minimum Quantity`, then latest `Starting Date`, then lowest nonzero `Unit Price`.
 - `SystemId` is used only as the OData key for each temporary row.
-- Perfion price field source suffixes use an underscore only for web price list country suffixes, for example `WEB-DK` -> `_DK`, `WEB-DE` -> `_DE`, `WEB_NL` -> `_NL`, and `WEB_NO` -> `_NO`.
+- Web price list output fields use cleaned base names before the country suffix: `price_DK`, `recommendedPrice_DK`, and `campaignPrice_DK` style across `_DE`, `_DK`, `_NL`, and `_NO`.
 - `WEB_NO` is read from company `SCANPAN Norge`; the other configured price combinations are read from the current company.
 - `campaignPrice*` is read from `Price List Line` with `Source Type = Campaign`.
 - Campaign price lookup matches through `Campaign."Customer Price Group NOTO"` and uses the same lowest-minimum-quantity rule.

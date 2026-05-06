@@ -52,7 +52,7 @@ Udvælgelse:
 | `SA` | `USD` | `STK` | `priceSaUsdStkSa` | `recommendedPriceSaUsdStkSa` | `campaignPriceSaUsdStkSa` |
 | `SAP` | `EUR` | `STK` | `priceSapEurStkSap` | `recommendedPriceSapEurStkSap` | `campaignPriceSapEurStkSap` |
 | `VGROW` | `USD` | `STK` | `priceVgrowUsdStkVgrow` | `recommendedPriceVgrowUsdStkVgrow` | `campaignPriceVgrowUsdStkVgrow` |
-| `WEB-DE` | `EUR` | `STK` | `priceWebDeEurStk_DE` | `recommendedPriceWebDeEurStk_DE` | `campaignPriceWebDeEurStk_DE` |
-| `WEB-DK` | `LCY` | `STK` | `priceWebDkLcyStk_DK` | `recommendedPriceWebDkLcyStk_DK` | `campaignPriceWebDkLcyStk_DK` |
-| `WEB_NL` | `EUR` | `STK` | `priceWebNlEurStk_NL` | `recommendedPriceWebNlEurStk_NL` | `campaignPriceWebNlEurStk_NL` |
-| `WEB_NO` | `LCY` | `STK` | `priceWebNoLcyStk_NO` | `recommendedPriceWebNoLcyStk_NO` | `campaignPriceWebNoLcyStk_NO` |
+| `WEB-DE` | `EUR` | `STK` | `price_DE` | `recommendedPrice_DE` | `campaignPrice_DE` |
+| `WEB-DK` | `LCY` | `STK` | `price_DK` | `recommendedPrice_DK` | `campaignPrice_DK` |
+| `WEB_NL` | `EUR` | `STK` | `price_NL` | `recommendedPrice_NL` | `campaignPrice_NL` |
+| `WEB_NO` | `LCY` | `STK` | `price_NO` | `recommendedPrice_NO` | `campaignPrice_NO` |

@@ -75,18 +75,18 @@ page 50228 "PerfionPricesOData"
                 field(priceVgrowUsdStkVgrow; PriceVgrowUsdStkVgrow) { Caption = 'priceVgrowUsdStkVgrow'; }
                 field(recommendedPriceVgrowUsdStkVgrow; RecommendedPriceVgrowUsdStkVgrow) { Caption = 'recommendedPriceVgrowUsdStkVgrow'; }
                 field(campaignPriceVgrowUsdStkVgrow; CampaignPriceVgrowUsdStkVgrow) { Caption = 'campaignPriceVgrowUsdStkVgrow'; }
-                field(priceWebDeEurStk_DE; PriceWebDeEurStk_DE) { Caption = 'priceWebDeEurStk_DE'; }
-                field(recommendedPriceWebDeEurStk_DE; RecommendedPriceWebDeEurStk_DE) { Caption = 'recommendedPriceWebDeEurStk_DE'; }
-                field(campaignPriceWebDeEurStk_DE; CampaignPriceWebDeEurStk_DE) { Caption = 'campaignPriceWebDeEurStk_DE'; }
-                field(priceWebDkLcyStk_DK; PriceWebDkLcyStk_DK) { Caption = 'priceWebDkLcyStk_DK'; }
-                field(recommendedPriceWebDkLcyStk_DK; RecommendedPriceWebDkLcyStk_DK) { Caption = 'recommendedPriceWebDkLcyStk_DK'; }
-                field(campaignPriceWebDkLcyStk_DK; CampaignPriceWebDkLcyStk_DK) { Caption = 'campaignPriceWebDkLcyStk_DK'; }
-                field(priceWebNlEurStk_NL; PriceWebNlEurStk_NL) { Caption = 'priceWebNlEurStk_NL'; }
-                field(recommendedPriceWebNlEurStk_NL; RecommendedPriceWebNlEurStk_NL) { Caption = 'recommendedPriceWebNlEurStk_NL'; }
-                field(campaignPriceWebNlEurStk_NL; CampaignPriceWebNlEurStk_NL) { Caption = 'campaignPriceWebNlEurStk_NL'; }
-                field(priceWebNoLcyStk_NO; PriceWebNoLcyStk_NO) { Caption = 'priceWebNoLcyStk_NO'; }
-                field(recommendedPriceWebNoLcyStk_NO; RecommendedPriceWebNoLcyStk_NO) { Caption = 'recommendedPriceWebNoLcyStk_NO'; }
-                field(campaignPriceWebNoLcyStk_NO; CampaignPriceWebNoLcyStk_NO) { Caption = 'campaignPriceWebNoLcyStk_NO'; }
+                field(price_DE; Price_DE) { Caption = 'price_DE'; }
+                field(recommendedPrice_DE; RecommendedPrice_DE) { Caption = 'recommendedPrice_DE'; }
+                field(campaignPrice_DE; CampaignPrice_DE) { Caption = 'campaignPrice_DE'; }
+                field(price_DK; Price_DK) { Caption = 'price_DK'; }
+                field(recommendedPrice_DK; RecommendedPrice_DK) { Caption = 'recommendedPrice_DK'; }
+                field(campaignPrice_DK; CampaignPrice_DK) { Caption = 'campaignPrice_DK'; }
+                field(price_NL; Price_NL) { Caption = 'price_NL'; }
+                field(recommendedPrice_NL; RecommendedPrice_NL) { Caption = 'recommendedPrice_NL'; }
+                field(campaignPrice_NL; CampaignPrice_NL) { Caption = 'campaignPrice_NL'; }
+                field(price_NO; Price_NO) { Caption = 'price_NO'; }
+                field(recommendedPrice_NO; RecommendedPrice_NO) { Caption = 'recommendedPrice_NO'; }
+                field(campaignPrice_NO; CampaignPrice_NO) { Caption = 'campaignPrice_NO'; }
             }
         }
     }
@@ -151,18 +151,18 @@ page 50228 "PerfionPricesOData"
         PriceVgrowUsdStkVgrow: Decimal;
         RecommendedPriceVgrowUsdStkVgrow: Decimal;
         CampaignPriceVgrowUsdStkVgrow: Decimal;
-        PriceWebDeEurStk_DE: Decimal;
-        RecommendedPriceWebDeEurStk_DE: Decimal;
-        CampaignPriceWebDeEurStk_DE: Decimal;
-        PriceWebDkLcyStk_DK: Decimal;
-        RecommendedPriceWebDkLcyStk_DK: Decimal;
-        CampaignPriceWebDkLcyStk_DK: Decimal;
-        PriceWebNlEurStk_NL: Decimal;
-        RecommendedPriceWebNlEurStk_NL: Decimal;
-        CampaignPriceWebNlEurStk_NL: Decimal;
-        PriceWebNoLcyStk_NO: Decimal;
-        RecommendedPriceWebNoLcyStk_NO: Decimal;
-        CampaignPriceWebNoLcyStk_NO: Decimal;
+        Price_DE: Decimal;
+        RecommendedPrice_DE: Decimal;
+        CampaignPrice_DE: Decimal;
+        Price_DK: Decimal;
+        RecommendedPrice_DK: Decimal;
+        CampaignPrice_DK: Decimal;
+        Price_NL: Decimal;
+        RecommendedPrice_NL: Decimal;
+        CampaignPrice_NL: Decimal;
+        Price_NO: Decimal;
+        RecommendedPrice_NO: Decimal;
+        CampaignPrice_NO: Decimal;
 
     local procedure BuildItemRowsForToday()
     var
@@ -277,10 +277,10 @@ page 50228 "PerfionPricesOData"
         SetPriceSet(ItemNo, 'SA', 'USD', 'STK', '', PriceSaUsdStkSa, RecommendedPriceSaUsdStkSa, CampaignPriceSaUsdStkSa);
         SetPriceSet(ItemNo, 'SAP', 'EUR', 'STK', '', PriceSapEurStkSap, RecommendedPriceSapEurStkSap, CampaignPriceSapEurStkSap);
         SetPriceSet(ItemNo, 'VGROW', 'USD', 'STK', '', PriceVgrowUsdStkVgrow, RecommendedPriceVgrowUsdStkVgrow, CampaignPriceVgrowUsdStkVgrow);
-        SetPriceSet(ItemNo, 'WEB-DE', 'EUR', 'STK', '', PriceWebDeEurStk_DE, RecommendedPriceWebDeEurStk_DE, CampaignPriceWebDeEurStk_DE);
-        SetPriceSet(ItemNo, 'WEB-DK', 'LCY', 'STK', '', PriceWebDkLcyStk_DK, RecommendedPriceWebDkLcyStk_DK, CampaignPriceWebDkLcyStk_DK);
-        SetPriceSet(ItemNo, 'WEB_NL', 'EUR', 'STK', '', PriceWebNlEurStk_NL, RecommendedPriceWebNlEurStk_NL, CampaignPriceWebNlEurStk_NL);
-        SetPriceSet(ItemNo, 'WEB_NO', 'LCY', 'STK', GetNorwayCompanyName(), PriceWebNoLcyStk_NO, RecommendedPriceWebNoLcyStk_NO, CampaignPriceWebNoLcyStk_NO);
+        SetPriceSet(ItemNo, 'WEB-DE', 'EUR', 'STK', '', Price_DE, RecommendedPrice_DE, CampaignPrice_DE);
+        SetPriceSet(ItemNo, 'WEB-DK', 'LCY', 'STK', '', Price_DK, RecommendedPrice_DK, CampaignPrice_DK);
+        SetPriceSet(ItemNo, 'WEB_NL', 'EUR', 'STK', '', Price_NL, RecommendedPrice_NL, CampaignPrice_NL);
+        SetPriceSet(ItemNo, 'WEB_NO', 'LCY', 'STK', GetNorwayCompanyName(), Price_NO, RecommendedPrice_NO, CampaignPrice_NO);
     end;
 
     local procedure SetPriceSet(ItemNo: Code[20]; SourceNo: Code[20]; CurrencyCode: Code[10]; UoMCode: Code[10]; CompanyName: Text[30]; var PriceValue: Decimal; var RecommendedPriceValue: Decimal; var CampaignPriceValue: Decimal)
