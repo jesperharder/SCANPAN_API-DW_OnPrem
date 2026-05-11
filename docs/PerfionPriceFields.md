@@ -19,7 +19,7 @@ Udvælgelse:
 
 - kun aktive prislinjer gyldige pr. dags dato
 - kun de 20 konfigurerede `Source No.`/currency/UoM-kombinationer nedenfor
-- `WEB_NO` læses fra company `SCANPAN Norge`; øvrige prislister læses fra det aktuelle company
+- `WEB-NO` læses fra company `SCANPAN Norge`; øvrige prislister læses fra det aktuelle company
 - laveste `Minimum Quantity` vinder
 - ved samme minimumantal vinder seneste `Starting Date`
 - ved samme minimumantal og startdato vinder laveste nonzero `Unit Price`
@@ -53,6 +53,6 @@ Udvælgelse:
 | `SAP` | `EUR` | `STK` | `priceSapEurStkSap` | `recommendedPriceSapEurStkSap` | `campaignPriceSapEurStkSap` |
 | `VGROW` | `USD` | `STK` | `priceVgrowUsdStkVgrow` | `recommendedPriceVgrowUsdStkVgrow` | `campaignPriceVgrowUsdStkVgrow` |
 | `WEB-DE` | `EUR` | `STK` | `price_DE` | `recommendedPrice_DE` | `campaignPrice_DE` |
-| `WEB-DK` | `LCY` | `STK` | `price_DK` | `recommendedPrice_DK` | `campaignPrice_DK` |
-| `WEB_NL` | `EUR` | `STK` | `price_NL` | `recommendedPrice_NL` | `campaignPrice_NL` |
-| `WEB_NO` | `LCY` | `STK` | `price_NO` | `recommendedPrice_NO` | `campaignPrice_NO` |
+| `WEB-DK` | `LCY` | `STK` | `price_DAN` | `recommendedPrice_DAN` | `campaignPrice_DAN` |
+| `WEB-NL` | `EUR` | `STK` | `price_NLD` | `recommendedPrice_NLD` | `campaignPrice_NLD` |
+| `WEB-NO` | `LCY` | `STK` | `price_NOR` | `recommendedPrice_NOR` | `campaignPrice_NOR` |

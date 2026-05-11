@@ -78,15 +78,15 @@ page 50228 "PerfionPricesOData"
                 field(price_DE; Price_DE) { Caption = 'price_DE'; }
                 field(recommendedPrice_DE; RecommendedPrice_DE) { Caption = 'recommendedPrice_DE'; }
                 field(campaignPrice_DE; CampaignPrice_DE) { Caption = 'campaignPrice_DE'; }
-                field(price_DK; Price_DK) { Caption = 'price_DK'; }
-                field(recommendedPrice_DK; RecommendedPrice_DK) { Caption = 'recommendedPrice_DK'; }
-                field(campaignPrice_DK; CampaignPrice_DK) { Caption = 'campaignPrice_DK'; }
-                field(price_NL; Price_NL) { Caption = 'price_NL'; }
-                field(recommendedPrice_NL; RecommendedPrice_NL) { Caption = 'recommendedPrice_NL'; }
-                field(campaignPrice_NL; CampaignPrice_NL) { Caption = 'campaignPrice_NL'; }
-                field(price_NO; Price_NO) { Caption = 'price_NO'; }
-                field(recommendedPrice_NO; RecommendedPrice_NO) { Caption = 'recommendedPrice_NO'; }
-                field(campaignPrice_NO; CampaignPrice_NO) { Caption = 'campaignPrice_NO'; }
+                field(price_DAN; Price_DAN) { Caption = 'price_DAN'; }
+                field(recommendedPrice_DAN; RecommendedPrice_DAN) { Caption = 'recommendedPrice_DAN'; }
+                field(campaignPrice_DAN; CampaignPrice_DAN) { Caption = 'campaignPrice_DAN'; }
+                field(price_NLD; Price_NLD) { Caption = 'price_NLD'; }
+                field(recommendedPrice_NLD; RecommendedPrice_NLD) { Caption = 'recommendedPrice_NLD'; }
+                field(campaignPrice_NLD; CampaignPrice_NLD) { Caption = 'campaignPrice_NLD'; }
+                field(price_NOR; Price_NOR) { Caption = 'price_NOR'; }
+                field(recommendedPrice_NOR; RecommendedPrice_NOR) { Caption = 'recommendedPrice_NOR'; }
+                field(campaignPrice_NOR; CampaignPrice_NOR) { Caption = 'campaignPrice_NOR'; }
             }
         }
     }
@@ -154,15 +154,15 @@ page 50228 "PerfionPricesOData"
         Price_DE: Decimal;
         RecommendedPrice_DE: Decimal;
         CampaignPrice_DE: Decimal;
-        Price_DK: Decimal;
-        RecommendedPrice_DK: Decimal;
-        CampaignPrice_DK: Decimal;
-        Price_NL: Decimal;
-        RecommendedPrice_NL: Decimal;
-        CampaignPrice_NL: Decimal;
-        Price_NO: Decimal;
-        RecommendedPrice_NO: Decimal;
-        CampaignPrice_NO: Decimal;
+        Price_DAN: Decimal;
+        RecommendedPrice_DAN: Decimal;
+        CampaignPrice_DAN: Decimal;
+        Price_NLD: Decimal;
+        RecommendedPrice_NLD: Decimal;
+        CampaignPrice_NLD: Decimal;
+        Price_NOR: Decimal;
+        RecommendedPrice_NOR: Decimal;
+        CampaignPrice_NOR: Decimal;
 
     local procedure BuildItemRowsForToday()
     var
@@ -278,9 +278,9 @@ page 50228 "PerfionPricesOData"
         SetPriceSet(ItemNo, 'SAP', 'EUR', 'STK', '', PriceSapEurStkSap, RecommendedPriceSapEurStkSap, CampaignPriceSapEurStkSap);
         SetPriceSet(ItemNo, 'VGROW', 'USD', 'STK', '', PriceVgrowUsdStkVgrow, RecommendedPriceVgrowUsdStkVgrow, CampaignPriceVgrowUsdStkVgrow);
         SetPriceSet(ItemNo, 'WEB-DE', 'EUR', 'STK', '', Price_DE, RecommendedPrice_DE, CampaignPrice_DE);
-        SetPriceSet(ItemNo, 'WEB-DK', 'LCY', 'STK', '', Price_DK, RecommendedPrice_DK, CampaignPrice_DK);
-        SetPriceSet(ItemNo, 'WEB_NL', 'EUR', 'STK', '', Price_NL, RecommendedPrice_NL, CampaignPrice_NL);
-        SetPriceSet(ItemNo, 'WEB_NO', 'LCY', 'STK', GetNorwayCompanyName(), Price_NO, RecommendedPrice_NO, CampaignPrice_NO);
+        SetPriceSet(ItemNo, 'WEB-DK', 'LCY', 'STK', '', Price_DAN, RecommendedPrice_DAN, CampaignPrice_DAN);
+        SetPriceSet(ItemNo, 'WEB-NL', 'EUR', 'STK', '', Price_NLD, RecommendedPrice_NLD, CampaignPrice_NLD);
+        SetPriceSet(ItemNo, 'WEB-NO', 'LCY', 'STK', GetNorwayCompanyName(), Price_NOR, RecommendedPrice_NOR, CampaignPrice_NOR);
     end;
 
     local procedure SetPriceSet(ItemNo: Code[20]; SourceNo: Code[20]; CurrencyCode: Code[10]; UoMCode: Code[10]; CompanyName: Text[30]; var PriceValue: Decimal; var RecommendedPriceValue: Decimal; var CampaignPriceValue: Decimal)
@@ -372,16 +372,16 @@ page 50228 "PerfionPricesOData"
 
     local procedure IsBetterPriceLine(Candidate: Record "Price List Line"; Existing: Record "Price List Line"): Boolean
     begin
+        if Existing."Unit Price" = 0 then
+            exit(Candidate."Unit Price" <> 0);
+        if Candidate."Unit Price" = 0 then
+            exit(false);
+
         if Candidate."Minimum Quantity" <> Existing."Minimum Quantity" then
             exit(Candidate."Minimum Quantity" < Existing."Minimum Quantity");
 
         if Candidate."Starting Date" <> Existing."Starting Date" then
             exit(Candidate."Starting Date" > Existing."Starting Date");
-
-        if Existing."Unit Price" = 0 then
-            exit(Candidate."Unit Price" <> 0);
-        if Candidate."Unit Price" = 0 then
-            exit(false);
 
         exit(Candidate."Unit Price" < Existing."Unit Price");
     end;
@@ -417,7 +417,7 @@ page 50228 "PerfionPricesOData"
                 exit((CurrencyCode = 'EUR') and (UoMCode = 'STK'));
             'WEB-DK':
                 exit((CurrencyCode = 'LCY') and (UoMCode = 'STK'));
-            'WEB_NL':
+            'WEB-NL':
                 exit((CurrencyCode = 'EUR') and (UoMCode = 'STK'));
         end;
 
@@ -427,7 +427,7 @@ page 50228 "PerfionPricesOData"
     local procedure IsNorwayCompanyPriceCombination(SourceNo: Code[20]; CurrencyCode: Code[10]; UoMCode: Code[10]): Boolean
     begin
         case SourceNo of
-            'WEB_NO':
+            'WEB-NO':
                 exit((CurrencyCode = 'LCY') and (UoMCode = 'STK'));
         end;
 

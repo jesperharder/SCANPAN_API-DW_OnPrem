@@ -298,7 +298,7 @@ Flow:
 4. Only `Asset Type = Item`, `Source Type = Customer Price Group` and configured source/currency/UoM combinations are considered for the base row set.
 5. The endpoint currently exposes 20 configured source/currency/UoM combinations.
 
-`WEB_NO` is read from company `SCANPAN Norge`. The other price combinations are read from the current company.
+`WEB-NO` is read from company `SCANPAN Norge`. The other price combinations are read from the current company.
 6. The page respects incoming item filters where relevant.
 7. The page keeps one temporary row per item by deduplicating on `Asset No.` before insertion.
 8. For each exposed combination, the page fills:

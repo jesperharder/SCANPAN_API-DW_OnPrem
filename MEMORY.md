@@ -59,10 +59,10 @@
   - lines valid on `Today`
 - It exposes fixed pivoted fields for the configured customer-price-group, currency, and unit-of-measure combinations.
 - Each configured combination has `price*`, `recommendedPrice*`, and `campaignPrice*` fields.
-- Base price selection uses lowest `Minimum Quantity`, then latest `Starting Date`, then lowest nonzero `Unit Price`.
+- Base price selection prefers nonzero `Unit Price`, then lowest `Minimum Quantity`, then latest `Starting Date`, then lowest `Unit Price`.
 - `SystemId` is used only as the OData key for each temporary row.
-- Web price list output fields use cleaned base names before the country suffix: `price_DK`, `recommendedPrice_DK`, and `campaignPrice_DK` style across `_DE`, `_DK`, `_NL`, and `_NO`.
-- `WEB_NO` is read from company `SCANPAN Norge`; the other configured price combinations are read from the current company.
+- Web price list output fields use cleaned base names before the language suffix: `price_DAN`, `recommendedPrice_DAN`, and `campaignPrice_DAN` style across `_DE`, `_DAN`, `_NLD`, and `_NOR`.
+- `WEB-NO` is read from company `SCANPAN Norge`; the other configured price combinations are read from the current company.
 - `campaignPrice*` is read from `Price List Line` with `Source Type = Campaign`.
 - Campaign price lookup matches through `Campaign."Customer Price Group NOTO"` and uses the same lowest-minimum-quantity rule.
 
