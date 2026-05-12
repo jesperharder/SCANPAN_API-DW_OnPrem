@@ -84,46 +84,38 @@ codeunit 50042 "Auning Stock Update"
 
     local procedure CalculateItemStock(Item: Record Item; Location: Record Location; AvailableReductionPct: Decimal; var OnHandQty: Decimal; var AvailableQty: Decimal)
     var
-        ItemVariant: Record "Item Variant";
         SalesDemandWindowEndDate: Date;
     begin
-        SalesDemandWindowEndDate := CalcDate('<+30D>', WorkDate());
+        SalesDemandWindowEndDate := CalcDate('<+30D>', Today);
 
-        OnHandQty := CalculateVariantOnHand(Item, Location.Code, '');
-        AvailableQty := CalculateVariantAvailable(Item, Location.Code, '', SalesDemandWindowEndDate);
-
-        ItemVariant.SetRange("Item No.", Item."No.");
-        if ItemVariant.FindSet() then
-            repeat
-                OnHandQty += CalculateVariantOnHand(Item, Location.Code, ItemVariant.Code);
-                AvailableQty += CalculateVariantAvailable(Item, Location.Code, ItemVariant.Code, SalesDemandWindowEndDate);
-            until ItemVariant.Next() = 0;
+        OnHandQty := CalculateOnHand(Item, Location.Code);
+        AvailableQty := CalculateAvailable(Item, Location.Code, SalesDemandWindowEndDate);
 
         OnHandQty := NormalizeQuantity(OnHandQty);
         AvailableQty := NormalizeAvailableQuantity(AvailableQty, AvailableReductionPct);
     end;
 
-    local procedure CalculateVariantOnHand(Item: Record Item; LocationCode: Code[10]; VariantCode: Code[10]): Decimal
+    local procedure CalculateOnHand(Item: Record Item; LocationCode: Code[10]): Decimal
     var
         ItemForCalc: Record Item;
     begin
         ItemForCalc.Copy(Item);
         ItemForCalc.SetRange("Location Filter", LocationCode);
-        ItemForCalc.SetRange("Variant Filter", VariantCode);
+        ItemForCalc.SetRange("Variant Filter", '');
         ItemForCalc.CalcFields(Inventory);
 
         exit(ItemForCalc.Inventory);
     end;
 
-    local procedure CalculateVariantAvailable(Item: Record Item; LocationCode: Code[10]; VariantCode: Code[10]; SalesDemandWindowEndDate: Date): Decimal
+    local procedure CalculateAvailable(Item: Record Item; LocationCode: Code[10]; SalesDemandWindowEndDate: Date): Decimal
     var
         SalesDemandQty: Decimal;
     begin
-        SalesDemandQty := CalculateVariantSalesDemand(Item."No.", LocationCode, VariantCode, SalesDemandWindowEndDate);
-        exit(CalculateVariantOnHand(Item, LocationCode, VariantCode) - SalesDemandQty);
+        SalesDemandQty := CalculateSalesDemand(Item."No.", LocationCode, SalesDemandWindowEndDate);
+        exit(CalculateOnHand(Item, LocationCode) - SalesDemandQty);
     end;
 
-    local procedure CalculateVariantSalesDemand(ItemNo: Code[20]; LocationCode: Code[10]; VariantCode: Code[10]; SalesDemandWindowEndDate: Date): Decimal
+    local procedure CalculateSalesDemand(ItemNo: Code[20]; LocationCode: Code[10]; SalesDemandWindowEndDate: Date): Decimal
     var
         SalesHeader: Record "Sales Header";
         SalesLine: Record "Sales Line";
@@ -135,7 +127,7 @@ codeunit 50042 "Auning Stock Update"
         SalesLine.SetRange(Type, SalesLine.Type::Item);
         SalesLine.SetRange("No.", ItemNo);
         SalesLine.SetRange("Location Code", LocationCode);
-        SalesLine.SetRange("Variant Code", VariantCode);
+        SalesLine.SetRange("Variant Code", '');
         SalesLine.SetFilter("Outstanding Qty. (Base)", '>0');
         SalesLine.SetFilter("Shipment Date", '..%1', SalesDemandWindowEndDate);
 

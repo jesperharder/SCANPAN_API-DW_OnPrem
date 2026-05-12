@@ -24,8 +24,8 @@ Grundscope for endpointet:
 | --- | --- | --- | --- |
 | `AuningStockDW` | `itemNo` | `Item."No."` | OData-nøglefelt. |
 | `AuningStockDW` | `description` | `Item.Description` | Direkte felt uden ekstra logik. |
-| `AuningStockDW` | `auningStockOnHand` | `Item."AUNING Stock On Hand"` | Snapshotfelt opdateret af `codeunit 50042`. Beregnes kun for lokation `AUNING`, summeres for blank variant og alle item-varianter, rundes ned til heltal, negative værdier clamps til `0`. |
-| `AuningStockDW` | `auningStockAvailable` | `Item."AUNING Stock Available"` | Snapshotfelt opdateret af `codeunit 50042`. Beregnes via `Warehouse Availability Mgt.` pr. variant og summeres. Kan reduceres med Job Queue-parameteren `AvailableReductionPct`, rundes ned til heltal og clamps til `0`. |
+| `AuningStockDW` | `auningStockOnHand` | `Item."AUNING Stock On Hand"` | Snapshotfelt opdateret af `codeunit 50042`. Beregnes kun for lokation `AUNING` og blank variant, rundes ned til heltal, negative værdier clamps til `0`. |
+| `AuningStockDW` | `auningStockAvailable` | `Item."AUNING Stock Available"` | Snapshotfelt opdateret af `codeunit 50042`. Beregnes som fysisk AUNING-beholdning for blank variant minus salgsordre-demand for blank variant med `Shipment Date <= Today + 30D`, hvor salgsordren er `Open` eller `Released`. Kan reduceres med Job Queue-parameteren `AvailableReductionPct`, rundes ned til heltal og clamps til `0`. |
 | `AuningStockDW` | `auningStockUpdatedAt` | `Item."AUNING Stock Updated At"` | Samme timestamp sættes for hele kørslen. Viser hvornår snapshot sidst blev opdateret, ikke hvornår lageret sidst ændrede sig. |
 
 ## 2. PerfionItemsDW
@@ -103,7 +103,7 @@ Yderligere runtime-logik:
 - datasættet bygges i et midlertidigt recordset ved hvert kald
 - OData-filter på `itemNo` respekteres
 - der beholdes én midlertidig række pr. vare
-- de 20 konfigurerede prislistekombinationer udstilles som tre pivoterede felter:
+- de 4 konfigurerede web-prislistekombinationer udstilles som tre pivoterede felter:
   - `price*`
   - `recommendedPrice*`
   - `campaignPrice*`
@@ -115,54 +115,6 @@ Yderligere runtime-logik:
 | --- | --- | --- | --- |
 | `PerfionPricesDW` | `systemId` | `Price List Line.SystemId` | OData-nøgle for den kuraterede temporære række. |
 | `PerfionPricesDW` | `itemNo` | `Price List Line."Asset No."` | Varenummer for den midlertidige vare-række. |
-| `PerfionPricesDW` | `priceAmazonEurStkDe` | `Price List Line."Unit Price"` | `Source No. = AMAZON.DE`, `Currency Code = EUR`, `UoM = STK`. |
-| `PerfionPricesDW` | `recommendedPriceAmazonEurStkDe` | `Price List Line."Unit List Price"` | Samme kombination som ovenfor. |
-| `PerfionPricesDW` | `campaignPriceAmazonEurStkDe` | Campaign `Price List Line."Unit Price"` | Campaign matcher `Campaign."Customer Price Group NOTO" = AMAZON.DE`. |
-| `PerfionPricesDW` | `priceAmazonEurStkEs` | `Price List Line."Unit Price"` | `Source No. = AMAZON.ES`, `Currency Code = EUR`, `UoM = STK`. |
-| `PerfionPricesDW` | `recommendedPriceAmazonEurStkEs` | `Price List Line."Unit List Price"` | Samme kombination som ovenfor. |
-| `PerfionPricesDW` | `campaignPriceAmazonEurStkEs` | Campaign `Price List Line."Unit Price"` | Campaign matcher `Campaign."Customer Price Group NOTO" = AMAZON.ES`. |
-| `PerfionPricesDW` | `priceAuUsdBaseAu` | `Price List Line."Unit Price"` | `Source No. = AU`, `Currency Code = USD`, `UoM = BASE`. |
-| `PerfionPricesDW` | `recommendedPriceAuUsdBaseAu` | `Price List Line."Unit List Price"` | Samme kombination som ovenfor. |
-| `PerfionPricesDW` | `campaignPriceAuUsdBaseAu` | Campaign `Price List Line."Unit Price"` | Campaign matcher `Campaign."Customer Price Group NOTO" = AU`. |
-| `PerfionPricesDW` | `priceAuUsdCduAu` | `Price List Line."Unit Price"` | `Source No. = AU`, `Currency Code = USD`, `UoM = CDU`. |
-| `PerfionPricesDW` | `recommendedPriceAuUsdCduAu` | `Price List Line."Unit List Price"` | Samme kombination som ovenfor. |
-| `PerfionPricesDW` | `campaignPriceAuUsdCduAu` | Campaign `Price List Line."Unit Price"` | Campaign matcher `Campaign."Customer Price Group NOTO" = AU`. |
-| `PerfionPricesDW` | `priceAuUsdStkAu` | `Price List Line."Unit Price"` | `Source No. = AU`, `Currency Code = USD`, `UoM = STK`. |
-| `PerfionPricesDW` | `recommendedPriceAuUsdStkAu` | `Price List Line."Unit List Price"` | Samme kombination som ovenfor. |
-| `PerfionPricesDW` | `campaignPriceAuUsdStkAu` | Campaign `Price List Line."Unit Price"` | Campaign matcher `Campaign."Customer Price Group NOTO" = AU`. |
-| `PerfionPricesDW` | `priceAusLcyStkAus` | `Price List Line."Unit Price"` | `Source No. = AUS`, blank BC currency eksponeres som `LCY`, `UoM = STK`. |
-| `PerfionPricesDW` | `recommendedPriceAusLcyStkAus` | `Price List Line."Unit List Price"` | Samme kombination som ovenfor. |
-| `PerfionPricesDW` | `campaignPriceAusLcyStkAus` | Campaign `Price List Line."Unit Price"` | Campaign matcher `Campaign."Customer Price Group NOTO" = AUS`. |
-| `PerfionPricesDW` | `priceDkLcyStkDk` | `Price List Line."Unit Price"` | `Source No. = DK`, blank BC currency eksponeres som `LCY`, `UoM = STK`. |
-| `PerfionPricesDW` | `recommendedPriceDkLcyStkDk` | `Price List Line."Unit List Price"` | Samme kombination som ovenfor. |
-| `PerfionPricesDW` | `campaignPriceDkLcyStkDk` | Campaign `Price List Line."Unit Price"` | Campaign matcher `Campaign."Customer Price Group NOTO" = DK`. |
-| `PerfionPricesDW` | `priceExpEurBaseExp` | `Price List Line."Unit Price"` | `Source No. = EXP`, `Currency Code = EUR`, `UoM = BASE`. |
-| `PerfionPricesDW` | `recommendedPriceExpEurBaseExp` | `Price List Line."Unit List Price"` | Samme kombination som ovenfor. |
-| `PerfionPricesDW` | `campaignPriceExpEurBaseExp` | Campaign `Price List Line."Unit Price"` | Campaign matcher `Campaign."Customer Price Group NOTO" = EXP`. |
-| `PerfionPricesDW` | `priceExpEurStkExp` | `Price List Line."Unit Price"` | `Source No. = EXP`, `Currency Code = EUR`, `UoM = STK`. |
-| `PerfionPricesDW` | `recommendedPriceExpEurStkExp` | `Price List Line."Unit List Price"` | Samme kombination som ovenfor. |
-| `PerfionPricesDW` | `campaignPriceExpEurStkExp` | Campaign `Price List Line."Unit Price"` | Campaign matcher `Campaign."Customer Price Group NOTO" = EXP`. |
-| `PerfionPricesDW` | `priceFobUsdStkFob` | `Price List Line."Unit Price"` | `Source No. = FOB`, `Currency Code = USD`, `UoM = STK`. |
-| `PerfionPricesDW` | `recommendedPriceFobUsdStkFob` | `Price List Line."Unit List Price"` | Samme kombination som ovenfor. |
-| `PerfionPricesDW` | `campaignPriceFobUsdStkFob` | Campaign `Price List Line."Unit Price"` | Campaign matcher `Campaign."Customer Price Group NOTO" = FOB`. |
-| `PerfionPricesDW` | `priceIncLcyStkInc` | `Price List Line."Unit Price"` | `Source No. = INC`, blank BC currency eksponeres som `LCY`, `UoM = STK`. |
-| `PerfionPricesDW` | `recommendedPriceIncLcyStkInc` | `Price List Line."Unit List Price"` | Samme kombination som ovenfor. |
-| `PerfionPricesDW` | `campaignPriceIncLcyStkInc` | Campaign `Price List Line."Unit Price"` | Campaign matcher `Campaign."Customer Price Group NOTO" = INC`. |
-| `PerfionPricesDW` | `priceRrpEurBaseRrp` | `Price List Line."Unit Price"` | `Source No. = RRP`, `Currency Code = EUR`, `UoM = BASE`. |
-| `PerfionPricesDW` | `recommendedPriceRrpEurBaseRrp` | `Price List Line."Unit List Price"` | Samme kombination som ovenfor. |
-| `PerfionPricesDW` | `campaignPriceRrpEurBaseRrp` | Campaign `Price List Line."Unit Price"` | Campaign matcher `Campaign."Customer Price Group NOTO" = RRP`. |
-| `PerfionPricesDW` | `priceRrpEurStkRrp` | `Price List Line."Unit Price"` | `Source No. = RRP`, `Currency Code = EUR`, `UoM = STK`. |
-| `PerfionPricesDW` | `recommendedPriceRrpEurStkRrp` | `Price List Line."Unit List Price"` | Samme kombination som ovenfor. |
-| `PerfionPricesDW` | `campaignPriceRrpEurStkRrp` | Campaign `Price List Line."Unit Price"` | Campaign matcher `Campaign."Customer Price Group NOTO" = RRP`. |
-| `PerfionPricesDW` | `priceSaUsdStkSa` | `Price List Line."Unit Price"` | `Source No. = SA`, `Currency Code = USD`, `UoM = STK`. |
-| `PerfionPricesDW` | `recommendedPriceSaUsdStkSa` | `Price List Line."Unit List Price"` | Samme kombination som ovenfor. |
-| `PerfionPricesDW` | `campaignPriceSaUsdStkSa` | Campaign `Price List Line."Unit Price"` | Campaign matcher `Campaign."Customer Price Group NOTO" = SA`. |
-| `PerfionPricesDW` | `priceSapEurStkSap` | `Price List Line."Unit Price"` | `Source No. = SAP`, `Currency Code = EUR`, `UoM = STK`. |
-| `PerfionPricesDW` | `recommendedPriceSapEurStkSap` | `Price List Line."Unit List Price"` | Samme kombination som ovenfor. |
-| `PerfionPricesDW` | `campaignPriceSapEurStkSap` | Campaign `Price List Line."Unit Price"` | Campaign matcher `Campaign."Customer Price Group NOTO" = SAP`. |
-| `PerfionPricesDW` | `priceVgrowUsdStkVgrow` | `Price List Line."Unit Price"` | `Source No. = VGROW`, `Currency Code = USD`, `UoM = STK`. |
-| `PerfionPricesDW` | `recommendedPriceVgrowUsdStkVgrow` | `Price List Line."Unit List Price"` | Samme kombination som ovenfor. |
-| `PerfionPricesDW` | `campaignPriceVgrowUsdStkVgrow` | Campaign `Price List Line."Unit Price"` | Campaign matcher `Campaign."Customer Price Group NOTO" = VGROW`. |
 | `PerfionPricesDW` | `price_DE` | `Price List Line."Unit Price"` | `Source No. = WEB-DE`, `Currency Code = EUR`, `UoM = STK`. |
 | `PerfionPricesDW` | `recommendedPrice_DE` | `Price List Line."Unit List Price"` | Samme kombination som ovenfor. |
 | `PerfionPricesDW` | `campaignPrice_DE` | Campaign `Price List Line."Unit Price"` | Campaign matcher `Campaign."Customer Price Group NOTO" = WEB-DE`. |

@@ -44,7 +44,8 @@
 - `AUNING Stock Available` is currently calculated as `On Hand - sales-order demand`.
 - Sales-order demand is read from `Sales Line."Outstanding Qty. (Base)"` for location `AUNING`.
 - Both `Open` and `Released` sales orders are included.
-- Demand window uses `Shipment Date <= WorkDate + 30D`, including backlog before `WorkDate`.
+- Demand window uses `Shipment Date <= Today + 30D`, including backlog before `Today`.
+- Stock and demand calculations use only blank variant because Scanpan does not use item variants for this feed.
 - The current demand logic intentionally avoids combining custom sales-order demand with standard warehouse availability for the same demand, to avoid double subtraction.
 - `ScheduledMinute` must not block manual UI runs; the minute guard applies only to background runs without UI.
 - Job Queue normalization must set `Job Queue Entry."Recurring Job" = true` in addition to recurring weekdays and `No. of Minutes between Runs`.
@@ -57,11 +58,12 @@
   - base prices with `Source Type = Customer Price Group`
   - active price lines
   - lines valid on `Today`
-- It exposes fixed pivoted fields for the configured customer-price-group, currency, and unit-of-measure combinations.
+- It exposes fixed pivoted fields only for the configured web customer-price-group, currency, and unit-of-measure combinations.
 - Each configured combination has `price*`, `recommendedPrice*`, and `campaignPrice*` fields.
 - Base price selection prefers nonzero `Unit Price`, then lowest `Minimum Quantity`, then latest `Starting Date`, then lowest `Unit Price`.
 - `SystemId` is used only as the OData key for each temporary row.
 - Web price list output fields use cleaned base names before the language suffix: `price_DAN`, `recommendedPrice_DAN`, and `campaignPrice_DAN` style across `_DE`, `_DAN`, `_NLD`, and `_NOR`.
+- Price output fields are text fields so zero values can be exposed as empty text in OData JSON.
 - `WEB-NO` is read from company `SCANPAN Norge`; the other configured price combinations are read from the current company.
 - `campaignPrice*` is read from `Price List Line` with `Source Type = Campaign`.
 - Campaign price lookup matches through `Campaign."Customer Price Group NOTO"` and uses the same lowest-minimum-quantity rule.

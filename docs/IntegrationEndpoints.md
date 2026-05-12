@@ -116,7 +116,7 @@ The codeunit:
 - resolves location `AUNING`
 - filters `Item` by `Type = Inventory`
 - filters `Item` by `Gen. Prod. Posting Group`
-- calculates blank variant and all explicit variants
+- calculates only blank variant because Scanpan does not use item variants for this feed
 - rounds quantities down to integers
 - clamps negative quantities to `0`
 - stores one shared timestamp for the current run
@@ -126,18 +126,17 @@ The codeunit:
 `AUNING Stock On Hand`
 
 - calculated from `Item.Inventory`
-- filtered by location and variant
-- summed across blank variant and all item variants
+- filtered by location and blank variant
 - rounded down to a whole number
 - never stored below `0`
 
 `AUNING Stock Available`
 
 - calculated from `AUNING Stock On Hand`
-- subtracts outstanding sales-order demand with `Shipment Date` up to `WorkDate + 30D`
-- includes overdue demand with `Shipment Date` before `WorkDate`
+- subtracts outstanding sales-order demand with `Shipment Date` up to `Today + 30D`
+- includes overdue demand with `Shipment Date` before `Today`
 - includes both `Open` and `Released` sales orders for location `AUNING`
-- calculated per variant and summed
+- includes only blank sales-line variant code
 - optionally reduced by a configured percentage
 - rounded down to a whole number
 - never stored below `0`
@@ -295,8 +294,8 @@ Flow:
 1. `OnOpenPage()` clears the temporary page record set.
 2. `BuildItemRowsForToday()` reads active `Price List Line` rows.
 3. Only records valid for `Today` are considered.
-4. Only `Asset Type = Item`, `Source Type = Customer Price Group` and configured source/currency/UoM combinations are considered for the base row set.
-5. The endpoint currently exposes 20 configured source/currency/UoM combinations.
+4. Only `Asset Type = Item`, `Source Type = Customer Price Group` and configured web source/currency/UoM combinations are considered for the base row set.
+5. The endpoint currently exposes 4 configured web source/currency/UoM combinations.
 
 `WEB-NO` is read from company `SCANPAN Norge`. The other price combinations are read from the current company.
 6. The page respects incoming item filters where relevant.
@@ -305,6 +304,7 @@ Flow:
    - `price*`
    - `recommendedPrice*`
    - `campaignPrice*`
+   Zero values are exposed as empty text for these price fields.
 9. If multiple rows exist for a combination, the page keeps the preferred row by:
    - lowest `Minimum Quantity`
    - then latest `Starting Date`

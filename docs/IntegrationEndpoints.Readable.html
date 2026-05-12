@@ -253,11 +253,11 @@
 
     <h3>Beregning</h3>
     <p>
-      <code>AUNING Stock On Hand</code> beregnes fra <code>Item.Inventory</code> pr. lokation og variant.
-      <code>AUNING Stock Available</code> beregnes via <code>Warehouse Availability Mgt.</code> og kan reduceres med en bufferprocent.
+      <code>AUNING Stock On Hand</code> beregnes fra <code>Item.Inventory</code> for lokation <code>AUNING</code> og blank variant.
+      <code>AUNING Stock Available</code> beregnes som fysisk AUNING-beholdning for blank variant minus salgsordre-demand for blank variant frem til <code>Today + 30D</code> og kan reduceres med en bufferprocent.
     </p>
     <ul>
-      <li>Blank variant og eksplicitte varianter summeres</li>
+      <li>Kun blank variant indgår, da Scanpan ikke bruger varianter i dette feed</li>
       <li>Alle mængder rundes ned til heltal</li>
       <li>Negative værdier clamps til <code>0</code></li>
       <li>Ét fælles timestamp gemmes for hele kørslen</li>

@@ -7,8 +7,8 @@ AL page: `page 50228 "PerfionPricesOData"`
 Model:
 
 - én OData-række pr. vare
-- alle prisfelter er `Decimal`
-- manglende pris returneres som `0`
+- alle prisfelter er tekstfelter, så nulpriser kan leveres blankt i OData JSON
+- manglende pris eller prisværdi `0` leveres som tom tekst i endpointet
 - `LCY` betyder blank `Currency Code` i Business Central
 - hver prislistekombination har tre felter:
   - `price*` = normalpris fra `Price List Line."Unit Price"`
@@ -18,7 +18,7 @@ Model:
 Udvælgelse:
 
 - kun aktive prislinjer gyldige pr. dags dato
-- kun de 20 konfigurerede `Source No.`/currency/UoM-kombinationer nedenfor
+- kun de 4 konfigurerede web `Source No.`/currency/UoM-kombinationer nedenfor
 - `WEB-NO` læses fra company `SCANPAN Norge`; øvrige prislister læses fra det aktuelle company
 - laveste `Minimum Quantity` vinder
 - ved samme minimumantal vinder seneste `Starting Date`
@@ -36,22 +36,6 @@ Udvælgelse:
 
 | Source No. | Currency | UoM | Pris | Anbefalet pris | Kampagnepris |
 | --- | --- | --- | --- | --- | --- |
-| `AMAZON.DE` | `EUR` | `STK` | `priceAmazonEurStkDe` | `recommendedPriceAmazonEurStkDe` | `campaignPriceAmazonEurStkDe` |
-| `AMAZON.ES` | `EUR` | `STK` | `priceAmazonEurStkEs` | `recommendedPriceAmazonEurStkEs` | `campaignPriceAmazonEurStkEs` |
-| `AU` | `USD` | `BASE` | `priceAuUsdBaseAu` | `recommendedPriceAuUsdBaseAu` | `campaignPriceAuUsdBaseAu` |
-| `AU` | `USD` | `CDU` | `priceAuUsdCduAu` | `recommendedPriceAuUsdCduAu` | `campaignPriceAuUsdCduAu` |
-| `AU` | `USD` | `STK` | `priceAuUsdStkAu` | `recommendedPriceAuUsdStkAu` | `campaignPriceAuUsdStkAu` |
-| `AUS` | `LCY` | `STK` | `priceAusLcyStkAus` | `recommendedPriceAusLcyStkAus` | `campaignPriceAusLcyStkAus` |
-| `DK` | `LCY` | `STK` | `priceDkLcyStkDk` | `recommendedPriceDkLcyStkDk` | `campaignPriceDkLcyStkDk` |
-| `EXP` | `EUR` | `BASE` | `priceExpEurBaseExp` | `recommendedPriceExpEurBaseExp` | `campaignPriceExpEurBaseExp` |
-| `EXP` | `EUR` | `STK` | `priceExpEurStkExp` | `recommendedPriceExpEurStkExp` | `campaignPriceExpEurStkExp` |
-| `FOB` | `USD` | `STK` | `priceFobUsdStkFob` | `recommendedPriceFobUsdStkFob` | `campaignPriceFobUsdStkFob` |
-| `INC` | `LCY` | `STK` | `priceIncLcyStkInc` | `recommendedPriceIncLcyStkInc` | `campaignPriceIncLcyStkInc` |
-| `RRP` | `EUR` | `BASE` | `priceRrpEurBaseRrp` | `recommendedPriceRrpEurBaseRrp` | `campaignPriceRrpEurBaseRrp` |
-| `RRP` | `EUR` | `STK` | `priceRrpEurStkRrp` | `recommendedPriceRrpEurStkRrp` | `campaignPriceRrpEurStkRrp` |
-| `SA` | `USD` | `STK` | `priceSaUsdStkSa` | `recommendedPriceSaUsdStkSa` | `campaignPriceSaUsdStkSa` |
-| `SAP` | `EUR` | `STK` | `priceSapEurStkSap` | `recommendedPriceSapEurStkSap` | `campaignPriceSapEurStkSap` |
-| `VGROW` | `USD` | `STK` | `priceVgrowUsdStkVgrow` | `recommendedPriceVgrowUsdStkVgrow` | `campaignPriceVgrowUsdStkVgrow` |
 | `WEB-DE` | `EUR` | `STK` | `price_DE` | `recommendedPrice_DE` | `campaignPrice_DE` |
 | `WEB-DK` | `LCY` | `STK` | `price_DAN` | `recommendedPrice_DAN` | `campaignPrice_DAN` |
 | `WEB-NL` | `EUR` | `STK` | `price_NLD` | `recommendedPrice_NLD` | `campaignPrice_NLD` |

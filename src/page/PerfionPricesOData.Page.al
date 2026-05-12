@@ -27,54 +27,6 @@ page 50228 "PerfionPricesOData"
                 field(systemId; Rec.SystemId) { Caption = 'systemId'; }
                 field(itemNo; Rec."No.") { Caption = 'itemNo'; }
 
-                field(priceAmazonEurStkDe; PriceAmazonEurStkDe) { Caption = 'priceAmazonEurStkDe'; }
-                field(recommendedPriceAmazonEurStkDe; RecommendedPriceAmazonEurStkDe) { Caption = 'recommendedPriceAmazonEurStkDe'; }
-                field(campaignPriceAmazonEurStkDe; CampaignPriceAmazonEurStkDe) { Caption = 'campaignPriceAmazonEurStkDe'; }
-                field(priceAmazonEurStkEs; PriceAmazonEurStkEs) { Caption = 'priceAmazonEurStkEs'; }
-                field(recommendedPriceAmazonEurStkEs; RecommendedPriceAmazonEurStkEs) { Caption = 'recommendedPriceAmazonEurStkEs'; }
-                field(campaignPriceAmazonEurStkEs; CampaignPriceAmazonEurStkEs) { Caption = 'campaignPriceAmazonEurStkEs'; }
-                field(priceAuUsdBaseAu; PriceAuUsdBaseAu) { Caption = 'priceAuUsdBaseAu'; }
-                field(recommendedPriceAuUsdBaseAu; RecommendedPriceAuUsdBaseAu) { Caption = 'recommendedPriceAuUsdBaseAu'; }
-                field(campaignPriceAuUsdBaseAu; CampaignPriceAuUsdBaseAu) { Caption = 'campaignPriceAuUsdBaseAu'; }
-                field(priceAuUsdCduAu; PriceAuUsdCduAu) { Caption = 'priceAuUsdCduAu'; }
-                field(recommendedPriceAuUsdCduAu; RecommendedPriceAuUsdCduAu) { Caption = 'recommendedPriceAuUsdCduAu'; }
-                field(campaignPriceAuUsdCduAu; CampaignPriceAuUsdCduAu) { Caption = 'campaignPriceAuUsdCduAu'; }
-                field(priceAuUsdStkAu; PriceAuUsdStkAu) { Caption = 'priceAuUsdStkAu'; }
-                field(recommendedPriceAuUsdStkAu; RecommendedPriceAuUsdStkAu) { Caption = 'recommendedPriceAuUsdStkAu'; }
-                field(campaignPriceAuUsdStkAu; CampaignPriceAuUsdStkAu) { Caption = 'campaignPriceAuUsdStkAu'; }
-                field(priceAusLcyStkAus; PriceAusLcyStkAus) { Caption = 'priceAusLcyStkAus'; }
-                field(recommendedPriceAusLcyStkAus; RecommendedPriceAusLcyStkAus) { Caption = 'recommendedPriceAusLcyStkAus'; }
-                field(campaignPriceAusLcyStkAus; CampaignPriceAusLcyStkAus) { Caption = 'campaignPriceAusLcyStkAus'; }
-                field(priceDkLcyStkDk; PriceDkLcyStkDk) { Caption = 'priceDkLcyStkDk'; }
-                field(recommendedPriceDkLcyStkDk; RecommendedPriceDkLcyStkDk) { Caption = 'recommendedPriceDkLcyStkDk'; }
-                field(campaignPriceDkLcyStkDk; CampaignPriceDkLcyStkDk) { Caption = 'campaignPriceDkLcyStkDk'; }
-                field(priceExpEurBaseExp; PriceExpEurBaseExp) { Caption = 'priceExpEurBaseExp'; }
-                field(recommendedPriceExpEurBaseExp; RecommendedPriceExpEurBaseExp) { Caption = 'recommendedPriceExpEurBaseExp'; }
-                field(campaignPriceExpEurBaseExp; CampaignPriceExpEurBaseExp) { Caption = 'campaignPriceExpEurBaseExp'; }
-                field(priceExpEurStkExp; PriceExpEurStkExp) { Caption = 'priceExpEurStkExp'; }
-                field(recommendedPriceExpEurStkExp; RecommendedPriceExpEurStkExp) { Caption = 'recommendedPriceExpEurStkExp'; }
-                field(campaignPriceExpEurStkExp; CampaignPriceExpEurStkExp) { Caption = 'campaignPriceExpEurStkExp'; }
-                field(priceFobUsdStkFob; PriceFobUsdStkFob) { Caption = 'priceFobUsdStkFob'; }
-                field(recommendedPriceFobUsdStkFob; RecommendedPriceFobUsdStkFob) { Caption = 'recommendedPriceFobUsdStkFob'; }
-                field(campaignPriceFobUsdStkFob; CampaignPriceFobUsdStkFob) { Caption = 'campaignPriceFobUsdStkFob'; }
-                field(priceIncLcyStkInc; PriceIncLcyStkInc) { Caption = 'priceIncLcyStkInc'; }
-                field(recommendedPriceIncLcyStkInc; RecommendedPriceIncLcyStkInc) { Caption = 'recommendedPriceIncLcyStkInc'; }
-                field(campaignPriceIncLcyStkInc; CampaignPriceIncLcyStkInc) { Caption = 'campaignPriceIncLcyStkInc'; }
-                field(priceRrpEurBaseRrp; PriceRrpEurBaseRrp) { Caption = 'priceRrpEurBaseRrp'; }
-                field(recommendedPriceRrpEurBaseRrp; RecommendedPriceRrpEurBaseRrp) { Caption = 'recommendedPriceRrpEurBaseRrp'; }
-                field(campaignPriceRrpEurBaseRrp; CampaignPriceRrpEurBaseRrp) { Caption = 'campaignPriceRrpEurBaseRrp'; }
-                field(priceRrpEurStkRrp; PriceRrpEurStkRrp) { Caption = 'priceRrpEurStkRrp'; }
-                field(recommendedPriceRrpEurStkRrp; RecommendedPriceRrpEurStkRrp) { Caption = 'recommendedPriceRrpEurStkRrp'; }
-                field(campaignPriceRrpEurStkRrp; CampaignPriceRrpEurStkRrp) { Caption = 'campaignPriceRrpEurStkRrp'; }
-                field(priceSaUsdStkSa; PriceSaUsdStkSa) { Caption = 'priceSaUsdStkSa'; }
-                field(recommendedPriceSaUsdStkSa; RecommendedPriceSaUsdStkSa) { Caption = 'recommendedPriceSaUsdStkSa'; }
-                field(campaignPriceSaUsdStkSa; CampaignPriceSaUsdStkSa) { Caption = 'campaignPriceSaUsdStkSa'; }
-                field(priceSapEurStkSap; PriceSapEurStkSap) { Caption = 'priceSapEurStkSap'; }
-                field(recommendedPriceSapEurStkSap; RecommendedPriceSapEurStkSap) { Caption = 'recommendedPriceSapEurStkSap'; }
-                field(campaignPriceSapEurStkSap; CampaignPriceSapEurStkSap) { Caption = 'campaignPriceSapEurStkSap'; }
-                field(priceVgrowUsdStkVgrow; PriceVgrowUsdStkVgrow) { Caption = 'priceVgrowUsdStkVgrow'; }
-                field(recommendedPriceVgrowUsdStkVgrow; RecommendedPriceVgrowUsdStkVgrow) { Caption = 'recommendedPriceVgrowUsdStkVgrow'; }
-                field(campaignPriceVgrowUsdStkVgrow; CampaignPriceVgrowUsdStkVgrow) { Caption = 'campaignPriceVgrowUsdStkVgrow'; }
                 field(price_DE; Price_DE) { Caption = 'price_DE'; }
                 field(recommendedPrice_DE; RecommendedPrice_DE) { Caption = 'recommendedPrice_DE'; }
                 field(campaignPrice_DE; CampaignPrice_DE) { Caption = 'campaignPrice_DE'; }
@@ -103,66 +55,18 @@ page 50228 "PerfionPricesOData"
     end;
 
     var
-        PriceAmazonEurStkDe: Decimal;
-        RecommendedPriceAmazonEurStkDe: Decimal;
-        CampaignPriceAmazonEurStkDe: Decimal;
-        PriceAmazonEurStkEs: Decimal;
-        RecommendedPriceAmazonEurStkEs: Decimal;
-        CampaignPriceAmazonEurStkEs: Decimal;
-        PriceAuUsdBaseAu: Decimal;
-        RecommendedPriceAuUsdBaseAu: Decimal;
-        CampaignPriceAuUsdBaseAu: Decimal;
-        PriceAuUsdCduAu: Decimal;
-        RecommendedPriceAuUsdCduAu: Decimal;
-        CampaignPriceAuUsdCduAu: Decimal;
-        PriceAuUsdStkAu: Decimal;
-        RecommendedPriceAuUsdStkAu: Decimal;
-        CampaignPriceAuUsdStkAu: Decimal;
-        PriceAusLcyStkAus: Decimal;
-        RecommendedPriceAusLcyStkAus: Decimal;
-        CampaignPriceAusLcyStkAus: Decimal;
-        PriceDkLcyStkDk: Decimal;
-        RecommendedPriceDkLcyStkDk: Decimal;
-        CampaignPriceDkLcyStkDk: Decimal;
-        PriceExpEurBaseExp: Decimal;
-        RecommendedPriceExpEurBaseExp: Decimal;
-        CampaignPriceExpEurBaseExp: Decimal;
-        PriceExpEurStkExp: Decimal;
-        RecommendedPriceExpEurStkExp: Decimal;
-        CampaignPriceExpEurStkExp: Decimal;
-        PriceFobUsdStkFob: Decimal;
-        RecommendedPriceFobUsdStkFob: Decimal;
-        CampaignPriceFobUsdStkFob: Decimal;
-        PriceIncLcyStkInc: Decimal;
-        RecommendedPriceIncLcyStkInc: Decimal;
-        CampaignPriceIncLcyStkInc: Decimal;
-        PriceRrpEurBaseRrp: Decimal;
-        RecommendedPriceRrpEurBaseRrp: Decimal;
-        CampaignPriceRrpEurBaseRrp: Decimal;
-        PriceRrpEurStkRrp: Decimal;
-        RecommendedPriceRrpEurStkRrp: Decimal;
-        CampaignPriceRrpEurStkRrp: Decimal;
-        PriceSaUsdStkSa: Decimal;
-        RecommendedPriceSaUsdStkSa: Decimal;
-        CampaignPriceSaUsdStkSa: Decimal;
-        PriceSapEurStkSap: Decimal;
-        RecommendedPriceSapEurStkSap: Decimal;
-        CampaignPriceSapEurStkSap: Decimal;
-        PriceVgrowUsdStkVgrow: Decimal;
-        RecommendedPriceVgrowUsdStkVgrow: Decimal;
-        CampaignPriceVgrowUsdStkVgrow: Decimal;
-        Price_DE: Decimal;
-        RecommendedPrice_DE: Decimal;
-        CampaignPrice_DE: Decimal;
-        Price_DAN: Decimal;
-        RecommendedPrice_DAN: Decimal;
-        CampaignPrice_DAN: Decimal;
-        Price_NLD: Decimal;
-        RecommendedPrice_NLD: Decimal;
-        CampaignPrice_NLD: Decimal;
-        Price_NOR: Decimal;
-        RecommendedPrice_NOR: Decimal;
-        CampaignPrice_NOR: Decimal;
+        Price_DE: Text[30];
+        RecommendedPrice_DE: Text[30];
+        CampaignPrice_DE: Text[30];
+        Price_DAN: Text[30];
+        RecommendedPrice_DAN: Text[30];
+        CampaignPrice_DAN: Text[30];
+        Price_NLD: Text[30];
+        RecommendedPrice_NLD: Text[30];
+        CampaignPrice_NLD: Text[30];
+        Price_NOR: Text[30];
+        RecommendedPrice_NOR: Text[30];
+        CampaignPrice_NOR: Text[30];
 
     local procedure BuildItemRowsForToday()
     var
@@ -260,27 +164,37 @@ page 50228 "PerfionPricesOData"
     end;
 
     local procedure SetPriceFieldsForItem(ItemNo: Code[20])
+    var
+        PriceValue: Decimal;
+        RecommendedPriceValue: Decimal;
+        CampaignPriceValue: Decimal;
     begin
-        SetPriceSet(ItemNo, 'AMAZON.DE', 'EUR', 'STK', '', PriceAmazonEurStkDe, RecommendedPriceAmazonEurStkDe, CampaignPriceAmazonEurStkDe);
-        SetPriceSet(ItemNo, 'AMAZON.ES', 'EUR', 'STK', '', PriceAmazonEurStkEs, RecommendedPriceAmazonEurStkEs, CampaignPriceAmazonEurStkEs);
-        SetPriceSet(ItemNo, 'AU', 'USD', 'BASE', '', PriceAuUsdBaseAu, RecommendedPriceAuUsdBaseAu, CampaignPriceAuUsdBaseAu);
-        SetPriceSet(ItemNo, 'AU', 'USD', 'CDU', '', PriceAuUsdCduAu, RecommendedPriceAuUsdCduAu, CampaignPriceAuUsdCduAu);
-        SetPriceSet(ItemNo, 'AU', 'USD', 'STK', '', PriceAuUsdStkAu, RecommendedPriceAuUsdStkAu, CampaignPriceAuUsdStkAu);
-        SetPriceSet(ItemNo, 'AUS', 'LCY', 'STK', '', PriceAusLcyStkAus, RecommendedPriceAusLcyStkAus, CampaignPriceAusLcyStkAus);
-        SetPriceSet(ItemNo, 'DK', 'LCY', 'STK', '', PriceDkLcyStkDk, RecommendedPriceDkLcyStkDk, CampaignPriceDkLcyStkDk);
-        SetPriceSet(ItemNo, 'EXP', 'EUR', 'BASE', '', PriceExpEurBaseExp, RecommendedPriceExpEurBaseExp, CampaignPriceExpEurBaseExp);
-        SetPriceSet(ItemNo, 'EXP', 'EUR', 'STK', '', PriceExpEurStkExp, RecommendedPriceExpEurStkExp, CampaignPriceExpEurStkExp);
-        SetPriceSet(ItemNo, 'FOB', 'USD', 'STK', '', PriceFobUsdStkFob, RecommendedPriceFobUsdStkFob, CampaignPriceFobUsdStkFob);
-        SetPriceSet(ItemNo, 'INC', 'LCY', 'STK', '', PriceIncLcyStkInc, RecommendedPriceIncLcyStkInc, CampaignPriceIncLcyStkInc);
-        SetPriceSet(ItemNo, 'RRP', 'EUR', 'BASE', '', PriceRrpEurBaseRrp, RecommendedPriceRrpEurBaseRrp, CampaignPriceRrpEurBaseRrp);
-        SetPriceSet(ItemNo, 'RRP', 'EUR', 'STK', '', PriceRrpEurStkRrp, RecommendedPriceRrpEurStkRrp, CampaignPriceRrpEurStkRrp);
-        SetPriceSet(ItemNo, 'SA', 'USD', 'STK', '', PriceSaUsdStkSa, RecommendedPriceSaUsdStkSa, CampaignPriceSaUsdStkSa);
-        SetPriceSet(ItemNo, 'SAP', 'EUR', 'STK', '', PriceSapEurStkSap, RecommendedPriceSapEurStkSap, CampaignPriceSapEurStkSap);
-        SetPriceSet(ItemNo, 'VGROW', 'USD', 'STK', '', PriceVgrowUsdStkVgrow, RecommendedPriceVgrowUsdStkVgrow, CampaignPriceVgrowUsdStkVgrow);
-        SetPriceSet(ItemNo, 'WEB-DE', 'EUR', 'STK', '', Price_DE, RecommendedPrice_DE, CampaignPrice_DE);
-        SetPriceSet(ItemNo, 'WEB-DK', 'LCY', 'STK', '', Price_DAN, RecommendedPrice_DAN, CampaignPrice_DAN);
-        SetPriceSet(ItemNo, 'WEB-NL', 'EUR', 'STK', '', Price_NLD, RecommendedPrice_NLD, CampaignPrice_NLD);
-        SetPriceSet(ItemNo, 'WEB-NO', 'LCY', 'STK', GetNorwayCompanyName(), Price_NOR, RecommendedPrice_NOR, CampaignPrice_NOR);
+        SetPriceSet(ItemNo, 'WEB-DE', 'EUR', 'STK', '', PriceValue, RecommendedPriceValue, CampaignPriceValue);
+        SetPriceOutput(PriceValue, RecommendedPriceValue, CampaignPriceValue, Price_DE, RecommendedPrice_DE, CampaignPrice_DE);
+
+        SetPriceSet(ItemNo, 'WEB-DK', 'LCY', 'STK', '', PriceValue, RecommendedPriceValue, CampaignPriceValue);
+        SetPriceOutput(PriceValue, RecommendedPriceValue, CampaignPriceValue, Price_DAN, RecommendedPrice_DAN, CampaignPrice_DAN);
+
+        SetPriceSet(ItemNo, 'WEB-NL', 'EUR', 'STK', '', PriceValue, RecommendedPriceValue, CampaignPriceValue);
+        SetPriceOutput(PriceValue, RecommendedPriceValue, CampaignPriceValue, Price_NLD, RecommendedPrice_NLD, CampaignPrice_NLD);
+
+        SetPriceSet(ItemNo, 'WEB-NO', 'LCY', 'STK', GetNorwayCompanyName(), PriceValue, RecommendedPriceValue, CampaignPriceValue);
+        SetPriceOutput(PriceValue, RecommendedPriceValue, CampaignPriceValue, Price_NOR, RecommendedPrice_NOR, CampaignPrice_NOR);
+    end;
+
+    local procedure SetPriceOutput(PriceValue: Decimal; RecommendedPriceValue: Decimal; CampaignPriceValue: Decimal; var PriceText: Text[30]; var RecommendedPriceText: Text[30]; var CampaignPriceText: Text[30])
+    begin
+        PriceText := FormatPriceValue(PriceValue);
+        RecommendedPriceText := FormatPriceValue(RecommendedPriceValue);
+        CampaignPriceText := FormatPriceValue(CampaignPriceValue);
+    end;
+
+    local procedure FormatPriceValue(PriceValue: Decimal): Text[30]
+    begin
+        if PriceValue = 0 then
+            exit('');
+
+        exit(CopyStr(Format(PriceValue, 0, 9), 1, 30));
     end;
 
     local procedure SetPriceSet(ItemNo: Code[20]; SourceNo: Code[20]; CurrencyCode: Code[10]; UoMCode: Code[10]; CompanyName: Text[30]; var PriceValue: Decimal; var RecommendedPriceValue: Decimal; var CampaignPriceValue: Decimal)
@@ -389,30 +303,6 @@ page 50228 "PerfionPricesOData"
     local procedure IsExposedPriceCombination(SourceNo: Code[20]; CurrencyCode: Code[10]; UoMCode: Code[10]): Boolean
     begin
         case SourceNo of
-            'AMAZON.DE':
-                exit((CurrencyCode = 'EUR') and (UoMCode = 'STK'));
-            'AMAZON.ES':
-                exit((CurrencyCode = 'EUR') and (UoMCode = 'STK'));
-            'AU':
-                exit((CurrencyCode = 'USD') and (UoMCode in ['BASE', 'CDU', 'STK']));
-            'AUS':
-                exit((CurrencyCode = 'LCY') and (UoMCode = 'STK'));
-            'DK':
-                exit((CurrencyCode = 'LCY') and (UoMCode = 'STK'));
-            'EXP':
-                exit((CurrencyCode = 'EUR') and (UoMCode in ['BASE', 'STK']));
-            'FOB':
-                exit((CurrencyCode = 'USD') and (UoMCode = 'STK'));
-            'INC':
-                exit((CurrencyCode = 'LCY') and (UoMCode = 'STK'));
-            'RRP':
-                exit((CurrencyCode = 'EUR') and (UoMCode in ['BASE', 'STK']));
-            'SA':
-                exit((CurrencyCode = 'USD') and (UoMCode = 'STK'));
-            'SAP':
-                exit((CurrencyCode = 'EUR') and (UoMCode = 'STK'));
-            'VGROW':
-                exit((CurrencyCode = 'USD') and (UoMCode = 'STK'));
             'WEB-DE':
                 exit((CurrencyCode = 'EUR') and (UoMCode = 'STK'));
             'WEB-DK':
