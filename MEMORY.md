@@ -26,7 +26,7 @@
 ## AUNING Stock State
 - eCommerce stock is scoped to location `AUNING`.
 - `stock-at-hand` means physical stock now from posted inventory.
-- `stock-available` means sellable stock now after the current business demand calculation.
+- `stock-available` means Business Central item availability at the configured availability date.
 - Implemented objects:
   - `tableextension 50231 "DW Item Auning Stock"` adds `AUNING Stock On Hand`, `AUNING Stock Available`, and `AUNING Stock Updated At` to `Item`.
   - `codeunit 50042 "Auning Stock Update"` updates stock snapshots and is Job Queue-capable through `TableNo = "Job Queue Entry"`.
@@ -41,12 +41,10 @@
   - `ScheduledMinute=<0..59>`
 - If `GenProdPostingGroupFilter` is omitted, the default is `INTERN|EKSTERN|BRUND`.
 - Snapshot and OData stock fields are rounded down to whole numbers and clamped to `0` when negative.
-- `AUNING Stock Available` is currently calculated as `On Hand - sales-order demand`.
-- Sales-order demand is read from `Sales Line."Outstanding Qty. (Base)"` for location `AUNING`.
-- Both `Open` and `Released` sales orders are included.
-- Demand window uses `Shipment Date <= Today + 30D`, including backlog before `Today`.
-- Stock and demand calculations use only blank variant because Scanpan does not use item variants for this feed.
-- The current demand logic intentionally avoids combining custom sales-order demand with standard warehouse availability for the same demand, to avoid double subtraction.
+- `AUNING Stock Available` is currently calculated from Business Central item availability components through `codeunit 5790 "Available to Promise"`.
+- Availability uses location `AUNING`, blank variant, and `Date Filter = ..Today+30D`.
+- Available stock calculation is `available inventory + scheduled receipts - gross requirements`.
+- Stock availability uses only blank variant because Scanpan does not use item variants for this feed.
 - `ScheduledMinute` must not block manual UI runs; the minute guard applies only to background runs without UI.
 - Job Queue normalization must set `Job Queue Entry."Recurring Job" = true` in addition to recurring weekdays and `No. of Minutes between Runs`.
 
@@ -80,7 +78,7 @@
 
 ## Verified Findings
 - Local BC18 symbols confirm these relevant standard objects:
-  - `codeunit 5790 "Available to Promise"` has standard availability methods including `CalcAvailableInventory`, `CalcGrossRequirement`, `CalcReservedRequirement`, `CalcScheduledReceipt`, and `QtyAvailabletoPromise`.
+  - `codeunit 5790 "Available to Promise"` has standard availability methods including `CalcAvailableInventory`, `CalcGrossRequirement`, `CalcReservedRequirement`, and `CalcScheduledReceipt`.
   - `codeunit 5530 "Calc. Item Availability"` can build `Inventory Event Buffer` from supply and demand.
   - `codeunit 7314 "Warehouse Availability Mgt."` has `CalcInvtAvailQty` for warehouse-aware inventory availability on locations without directed put-away and pick.
   - `table 472 "Job Queue Entry"` can run codeunits through `codeunit 449 "Job Queue Start Codeunit"`.

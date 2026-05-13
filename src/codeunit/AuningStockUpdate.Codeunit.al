@@ -109,47 +109,18 @@ codeunit 50042 "Auning Stock Update"
 
     local procedure CalculateAvailable(Item: Record Item; LocationCode: Code[10]; SalesDemandWindowEndDate: Date): Decimal
     var
-        SalesDemandQty: Decimal;
+        AvailableToPromise: Codeunit "Available to Promise";
+        ItemForCalc: Record Item;
     begin
-        SalesDemandQty := CalculateSalesDemand(Item."No.", LocationCode, SalesDemandWindowEndDate);
-        exit(CalculateOnHand(Item, LocationCode) - SalesDemandQty);
-    end;
+        ItemForCalc.Copy(Item);
+        ItemForCalc.SetRange("Location Filter", LocationCode);
+        ItemForCalc.SetRange("Variant Filter", '');
+        ItemForCalc.SetFilter("Date Filter", '..%1', SalesDemandWindowEndDate);
 
-    local procedure CalculateSalesDemand(ItemNo: Code[20]; LocationCode: Code[10]; SalesDemandWindowEndDate: Date): Decimal
-    var
-        SalesHeader: Record "Sales Header";
-        SalesLine: Record "Sales Line";
-        LastSalesDocumentNo: Code[20];
-        SalesDemandQty: Decimal;
-        IncludeSalesDocument: Boolean;
-    begin
-        SalesLine.SetRange("Document Type", SalesLine."Document Type"::Order);
-        SalesLine.SetRange(Type, SalesLine.Type::Item);
-        SalesLine.SetRange("No.", ItemNo);
-        SalesLine.SetRange("Location Code", LocationCode);
-        SalesLine.SetRange("Variant Code", '');
-        SalesLine.SetFilter("Outstanding Qty. (Base)", '>0');
-        SalesLine.SetFilter("Shipment Date", '..%1', SalesDemandWindowEndDate);
-
-        if not SalesLine.FindSet() then
-            exit(0);
-
-        repeat
-            if SalesLine."Document No." <> LastSalesDocumentNo then begin
-                if not SalesHeader.Get(SalesHeader."Document Type"::Order, SalesLine."Document No.") then
-                    Error('Sales header %1 %2 does not exist.', SalesHeader."Document Type"::Order, SalesLine."Document No.");
-
-                LastSalesDocumentNo := SalesLine."Document No.";
-                IncludeSalesDocument :=
-                  (SalesHeader.Status = SalesHeader.Status::Open) or
-                  (SalesHeader.Status = SalesHeader.Status::Released);
-            end;
-
-            if IncludeSalesDocument then
-                SalesDemandQty += SalesLine."Outstanding Qty. (Base)";
-        until SalesLine.Next() = 0;
-
-        exit(SalesDemandQty);
+        exit(
+          AvailableToPromise.CalcAvailableInventory(ItemForCalc) +
+          AvailableToPromise.CalcScheduledReceipt(ItemForCalc) -
+          AvailableToPromise.CalcGrossRequirement(ItemForCalc));
     end;
 
     local procedure GetGenProdPostingGroupFilter(ParameterString: Text): Text

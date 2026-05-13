@@ -117,6 +117,7 @@ The codeunit:
 - filters `Item` by `Type = Inventory`
 - filters `Item` by `Gen. Prod. Posting Group`
 - calculates only blank variant because Scanpan does not use item variants for this feed
+- calculates available stock through Business Central item availability components for the period ending `Today + 30D`
 - rounds quantities down to integers
 - clamps negative quantities to `0`
 - stores one shared timestamp for the current run
@@ -132,11 +133,10 @@ The codeunit:
 
 `AUNING Stock Available`
 
-- calculated from `AUNING Stock On Hand`
-- subtracts outstanding sales-order demand with `Shipment Date` up to `Today + 30D`
-- includes overdue demand with `Shipment Date` before `Today`
-- includes both `Open` and `Released` sales orders for location `AUNING`
-- includes only blank sales-line variant code
+- calculated as Business Central item availability for location `AUNING`
+- uses `Date Filter = ..Today+30D`
+- uses blank variant because Scanpan does not use item variants for this feed
+- calculates `available inventory + scheduled receipts - gross requirements`
 - optionally reduced by a configured percentage
 - rounded down to a whole number
 - never stored below `0`
@@ -429,7 +429,7 @@ end;
 
 What this does:
 
-- starts from the calculated AUNING stock after 30-day sales-order demand has been subtracted
+- starts from the calculated AUNING stock availability at `Today + 30D`
 - applies a percentage reduction only when the parameter is above `0`
 - sends the result through `NormalizeQuantity(...)`
 

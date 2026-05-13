@@ -25,7 +25,7 @@ Grundscope for endpointet:
 | `AuningStockDW` | `itemNo` | `Item."No."` | OData-nøglefelt. |
 | `AuningStockDW` | `description` | `Item.Description` | Direkte felt uden ekstra logik. |
 | `AuningStockDW` | `auningStockOnHand` | `Item."AUNING Stock On Hand"` | Snapshotfelt opdateret af `codeunit 50042`. Beregnes kun for lokation `AUNING` og blank variant, rundes ned til heltal, negative værdier clamps til `0`. |
-| `AuningStockDW` | `auningStockAvailable` | `Item."AUNING Stock Available"` | Snapshotfelt opdateret af `codeunit 50042`. Beregnes som fysisk AUNING-beholdning for blank variant minus salgsordre-demand for blank variant med `Shipment Date <= Today + 30D`, hvor salgsordren er `Open` eller `Released`. Kan reduceres med Job Queue-parameteren `AvailableReductionPct`, rundes ned til heltal og clamps til `0`. |
+| `AuningStockDW` | `auningStockAvailable` | `Item."AUNING Stock Available"` | Snapshotfelt opdateret af `codeunit 50042`. Beregnes som Business Central varedisponering for lokation `AUNING`, blank variant og `Date Filter = ..Today+30D`: disponibel beholdning plus planlagte modtagelser minus bruttobehov. Kan reduceres med Job Queue-parameteren `AvailableReductionPct`, rundes ned til heltal og clamps til `0`. |
 | `AuningStockDW` | `auningStockUpdatedAt` | `Item."AUNING Stock Updated At"` | Samme timestamp sættes for hele kørslen. Viser hvornår snapshot sidst blev opdateret, ikke hvornår lageret sidst ændrede sig. |
 
 ## 2. PerfionItemsDW
