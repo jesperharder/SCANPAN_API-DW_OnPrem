@@ -136,7 +136,8 @@ The codeunit:
 - calculated as Business Central item availability for location `AUNING`
 - uses `Date Filter = ..Today+30D`
 - uses blank variant because Scanpan does not use item variants for this feed
-- calculates `available inventory + scheduled receipts - gross requirements`
+- default model calculates `available inventory + scheduled receipts - gross requirements`
+- legacy model calculates physical AUNING stock minus open/released sales order demand through `Today+30D`
 - optionally reduced by a configured percentage
 - rounded down to a whole number
 - never stored below `0`
@@ -147,6 +148,7 @@ The codeunit supports the following parameter tokens:
 
 - `GenProdPostingGroupFilter`
 - `AvailableReductionPct`
+- `AvailabilityModel`
 - `ScheduledMinute`
 
 Examples:
@@ -160,13 +162,20 @@ GenProdPostingGroupFilter=INTERN|EKSTERN|BRUND;AvailableReductionPct=10
 ```
 
 ```text
-GenProdPostingGroupFilter=INTERN|EKSTERN|BRUND;AvailableReductionPct=10;ScheduledMinute=50
+GenProdPostingGroupFilter=INTERN|EKSTERN|BRUND;AvailableReductionPct=10;ScheduledMinute=50;AvailabilityModel=AvailableToPromise
+```
+
+```text
+GenProdPostingGroupFilter=INTERN|EKSTERN|BRUND;AvailableReductionPct=10;ScheduledMinute=50;AvailabilityModel=LegacySalesDemand
 ```
 
 Interpretation:
 
 - `AvailableReductionPct=0` means no additional reduction
 - `AvailableReductionPct=10` means reduce calculated available stock by 10%
+- `AvailabilityModel=AvailableToPromise` uses Business Central availability components and includes scheduled receipts
+- `AvailabilityModel=LegacySalesDemand` uses the previous model: physical stock minus open/released sales order demand
+- if `AvailabilityModel` is omitted, `AvailableToPromise` is used
 - `ScheduledMinute=50` means the job self-normalizes to an hourly recurring schedule for all days and only performs the stock update when the dispatcher starts it during minute `50`
 - if the job is restarted or otherwise drifts away from the configured minute, the next calculated run is aligned back to the next `XX:50`
 
@@ -429,7 +438,7 @@ end;
 
 What this does:
 
-- starts from the calculated AUNING stock availability at `Today + 30D`
+- starts from the selected AUNING stock availability model at `Today + 30D`
 - applies a percentage reduction only when the parameter is above `0`
 - sends the result through `NormalizeQuantity(...)`
 
@@ -442,6 +451,8 @@ This is why:
 
 - `AvailableReductionPct=0` means no extra reduction
 - `AvailableReductionPct=10` reduces available stock by 10%
+- `AvailabilityModel=AvailableToPromise` includes scheduled receipts
+- `AvailabilityModel=LegacySalesDemand` excludes scheduled receipts and uses only stock minus sales demand
 - a negative or fractional raw result will never be stored as a negative stock value
 
 The following excerpt shows the Perfion price selection pattern:

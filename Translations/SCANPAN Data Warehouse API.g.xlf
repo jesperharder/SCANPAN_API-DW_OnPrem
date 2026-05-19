@@ -43,6 +43,11 @@
           <note from="Developer" annotates="general" priority="2">%1=parameter name, %2=value</note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Auning Stock Update - NamedType InvalidIntegerParameterErr</note>
         </trans-unit>
+        <trans-unit id="Codeunit 1753673349 - NamedType 2180833524" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Parameter %1 has invalid value %2.</source>
+          <note from="Developer" annotates="general" priority="2">%1=parameter name, %2=value</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Auning Stock Update - NamedType InvalidTextParameterErr</note>
+        </trans-unit>
         <trans-unit id="Page 2461855921 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
           <source>AUNING stock</source>
           <note from="Developer" annotates="general" priority="2"></note>

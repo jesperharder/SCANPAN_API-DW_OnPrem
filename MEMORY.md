@@ -2,6 +2,11 @@
 
 ## Current Project State
 - Repository: `SCANPAN API-DW OnPrem`.
+- Project split:
+  - `SCANPAN API-DW OnPrem` remains the on-prem API-DW project.
+  - `SCANPAN API-DW Cloud` is the Denmark/Norway BC Cloud API-DW project created from this OnPrem baseline.
+  - `SCANPAN API-DW Cloud International` is the Cloud API-DW project for USA, Singapore, China, and Japan.
+- Future Codex work should use newly created threads opened directly in the matching project folder after the split.
 - App: `SCANPAN Data Warehouse API`, version `1.0.0.40`, runtime `7.2`, target `OnPrem`, platform `18.0.31692.0`.
 - Active compile context is BC18-oriented with local symbols around `Base Application 18.18.x`.
 - The maintained operational integration endpoints are:
@@ -38,12 +43,16 @@
 - `codeunit 50042` supports these Job Queue parameters:
   - `GenProdPostingGroupFilter=INTERN|EKSTERN|BRUND`
   - `AvailableReductionPct=<decimal>`
+  - `AvailabilityModel=AvailableToPromise|LegacySalesDemand`
   - `ScheduledMinute=<0..59>`
 - If `GenProdPostingGroupFilter` is omitted, the default is `INTERN|EKSTERN|BRUND`.
+- If `AvailabilityModel` is omitted, the default is `AvailableToPromise`.
 - Snapshot and OData stock fields are rounded down to whole numbers and clamped to `0` when negative.
-- `AUNING Stock Available` is currently calculated from Business Central item availability components through `codeunit 5790 "Available to Promise"`.
+- `AUNING Stock Available` can be calculated by two models:
+  - `AvailableToPromise`: Business Central item availability components through `codeunit 5790 "Available to Promise"`.
+  - `LegacySalesDemand`: physical AUNING stock minus open/released sales order demand through `Today+30D`.
 - Availability uses location `AUNING`, blank variant, and `Date Filter = ..Today+30D`.
-- Available stock calculation is `available inventory + scheduled receipts - gross requirements`.
+- `AvailableToPromise` calculation is `available inventory + scheduled receipts - gross requirements`.
 - Stock availability uses only blank variant because Scanpan does not use item variants for this feed.
 - `ScheduledMinute` must not block manual UI runs; the minute guard applies only to background runs without UI.
 - Job Queue normalization must set `Job Queue Entry."Recurring Job" = true` in addition to recurring weekdays and `No. of Minutes between Runs`.

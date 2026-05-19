@@ -18,11 +18,15 @@ codeunit 50042 "Auning Stock Update"
     var
         AuningLocationCodeLbl: Label 'AUNING', Locked = true;
         DefaultGenProdPostingGroupFilterLbl: Label 'INTERN|EKSTERN|BRUND', Locked = true;
+        DefaultAvailabilityModelLbl: Label 'AvailableToPromise', Locked = true;
+        LegacySalesDemandAvailabilityModelLbl: Label 'LegacySalesDemand', Locked = true;
         GenProdPostingGroupFilterTokLbl: Label 'GenProdPostingGroupFilter', Locked = true;
         AvailableReductionPctTokLbl: Label 'AvailableReductionPct', Locked = true;
+        AvailabilityModelTokLbl: Label 'AvailabilityModel', Locked = true;
         ScheduledMinuteTokLbl: Label 'ScheduledMinute', Locked = true;
         InvalidDecimalParameterErr: Label 'Parameter %1 has invalid value %2.', Comment = '%1=parameter name, %2=value';
         InvalidIntegerParameterErr: Label 'Parameter %1 has invalid value %2.', Comment = '%1=parameter name, %2=value';
+        InvalidTextParameterErr: Label 'Parameter %1 has invalid value %2.', Comment = '%1=parameter name, %2=value';
         ProgressDialog: Dialog;
         ProgressDialogLbl: Label 'Updating AUNING stock\\Total items: #1#########\\Processed:   #2#########\\Current item: #3############################', Locked = true;
         ProgressTotalItemCount: Integer;
@@ -35,6 +39,7 @@ codeunit 50042 "Auning Stock Update"
         Location: Record Location;
         GenProdPostingGroupFilter: Text;
         AvailableReductionPct: Decimal;
+        AvailabilityModel: Text;
         UpdatedAt: DateTime;
         TotalItemCount: Integer;
         ProcessedItemCount: Integer;
@@ -44,6 +49,7 @@ codeunit 50042 "Auning Stock Update"
 
         GenProdPostingGroupFilter := GetGenProdPostingGroupFilter(ParameterString);
         AvailableReductionPct := GetAvailableReductionPct(ParameterString);
+        AvailabilityModel := GetAvailabilityModel(ParameterString);
         UpdatedAt := CurrentDateTime;
 
         Item.Reset();
@@ -58,17 +64,17 @@ codeunit 50042 "Auning Stock Update"
         repeat
             ProcessedItemCount += 1;
             UpdateProgressDialog(TotalItemCount, ProcessedItemCount, Item."No.");
-            UpdateItemStock(Item, Location, AvailableReductionPct, UpdatedAt);
+            UpdateItemStock(Item, Location, AvailableReductionPct, AvailabilityModel, UpdatedAt);
         until Item.Next() = 0;
         CloseProgressDialog();
     end;
 
-    local procedure UpdateItemStock(var Item: Record Item; Location: Record Location; AvailableReductionPct: Decimal; UpdatedAt: DateTime)
+    local procedure UpdateItemStock(var Item: Record Item; Location: Record Location; AvailableReductionPct: Decimal; AvailabilityModel: Text; UpdatedAt: DateTime)
     var
         OnHandQty: Decimal;
         AvailableQty: Decimal;
     begin
-        CalculateItemStock(Item, Location, AvailableReductionPct, OnHandQty, AvailableQty);
+        CalculateItemStock(Item, Location, AvailableReductionPct, AvailabilityModel, OnHandQty, AvailableQty);
 
         if (Item."AUNING Stock On Hand" = OnHandQty) and
            (Item."AUNING Stock Available" = AvailableQty) and
@@ -82,14 +88,14 @@ codeunit 50042 "Auning Stock Update"
         Item.Modify();
     end;
 
-    local procedure CalculateItemStock(Item: Record Item; Location: Record Location; AvailableReductionPct: Decimal; var OnHandQty: Decimal; var AvailableQty: Decimal)
+    local procedure CalculateItemStock(Item: Record Item; Location: Record Location; AvailableReductionPct: Decimal; AvailabilityModel: Text; var OnHandQty: Decimal; var AvailableQty: Decimal)
     var
         SalesDemandWindowEndDate: Date;
     begin
         SalesDemandWindowEndDate := CalcDate('<+30D>', Today);
 
         OnHandQty := CalculateOnHand(Item, Location.Code);
-        AvailableQty := CalculateAvailable(Item, Location.Code, SalesDemandWindowEndDate);
+        AvailableQty := CalculateAvailable(Item, Location.Code, SalesDemandWindowEndDate, AvailabilityModel);
 
         OnHandQty := NormalizeQuantity(OnHandQty);
         AvailableQty := NormalizeAvailableQuantity(AvailableQty, AvailableReductionPct);
@@ -107,7 +113,15 @@ codeunit 50042 "Auning Stock Update"
         exit(ItemForCalc.Inventory);
     end;
 
-    local procedure CalculateAvailable(Item: Record Item; LocationCode: Code[10]; SalesDemandWindowEndDate: Date): Decimal
+    local procedure CalculateAvailable(Item: Record Item; LocationCode: Code[10]; SalesDemandWindowEndDate: Date; AvailabilityModel: Text): Decimal
+    begin
+        if AvailabilityModel = LegacySalesDemandAvailabilityModelLbl then
+            exit(CalculateLegacySalesDemandAvailable(Item, LocationCode, SalesDemandWindowEndDate));
+
+        exit(CalculateAvailableToPromise(Item, LocationCode, SalesDemandWindowEndDate));
+    end;
+
+    local procedure CalculateAvailableToPromise(Item: Record Item; LocationCode: Code[10]; SalesDemandWindowEndDate: Date): Decimal
     var
         AvailableToPromise: Codeunit "Available to Promise";
         ItemForCalc: Record Item;
@@ -121,6 +135,51 @@ codeunit 50042 "Auning Stock Update"
           AvailableToPromise.CalcAvailableInventory(ItemForCalc) +
           AvailableToPromise.CalcScheduledReceipt(ItemForCalc) -
           AvailableToPromise.CalcGrossRequirement(ItemForCalc));
+    end;
+
+    local procedure CalculateLegacySalesDemandAvailable(Item: Record Item; LocationCode: Code[10]; SalesDemandWindowEndDate: Date): Decimal
+    var
+        SalesDemandQty: Decimal;
+    begin
+        SalesDemandQty := CalculateSalesDemand(Item."No.", LocationCode, SalesDemandWindowEndDate);
+        exit(CalculateOnHand(Item, LocationCode) - SalesDemandQty);
+    end;
+
+    local procedure CalculateSalesDemand(ItemNo: Code[20]; LocationCode: Code[10]; SalesDemandWindowEndDate: Date): Decimal
+    var
+        SalesHeader: Record "Sales Header";
+        SalesLine: Record "Sales Line";
+        LastSalesDocumentNo: Code[20];
+        SalesDemandQty: Decimal;
+        IncludeSalesDocument: Boolean;
+    begin
+        SalesLine.SetRange("Document Type", SalesLine."Document Type"::Order);
+        SalesLine.SetRange(Type, SalesLine.Type::Item);
+        SalesLine.SetRange("No.", ItemNo);
+        SalesLine.SetRange("Location Code", LocationCode);
+        SalesLine.SetRange("Variant Code", '');
+        SalesLine.SetFilter("Outstanding Qty. (Base)", '>0');
+        SalesLine.SetFilter("Shipment Date", '..%1', SalesDemandWindowEndDate);
+
+        if not SalesLine.FindSet() then
+            exit(0);
+
+        repeat
+            if SalesLine."Document No." <> LastSalesDocumentNo then begin
+                if not SalesHeader.Get(SalesHeader."Document Type"::Order, SalesLine."Document No.") then
+                    Error('Sales header %1 %2 does not exist.', SalesHeader."Document Type"::Order, SalesLine."Document No.");
+
+                LastSalesDocumentNo := SalesLine."Document No.";
+                IncludeSalesDocument :=
+                  (SalesHeader.Status = SalesHeader.Status::Open) or
+                  (SalesHeader.Status = SalesHeader.Status::Released);
+            end;
+
+            if IncludeSalesDocument then
+                SalesDemandQty += SalesLine."Outstanding Qty. (Base)";
+        until SalesLine.Next() = 0;
+
+        exit(SalesDemandQty);
     end;
 
     local procedure GetGenProdPostingGroupFilter(ParameterString: Text): Text
@@ -156,6 +215,25 @@ codeunit 50042 "Auning Stock Update"
             Error(InvalidDecimalParameterErr, AvailableReductionPctTokLbl, ParameterValue);
 
         exit(ReductionPct);
+    end;
+
+    local procedure GetAvailabilityModel(ParameterString: Text): Text
+    var
+        ParameterValue: Text;
+    begin
+        if ParameterString = '' then
+            exit(DefaultAvailabilityModelLbl);
+
+        ParameterValue := GetParameterValue(ParameterString, AvailabilityModelTokLbl);
+        if ParameterValue = '' then
+            exit(DefaultAvailabilityModelLbl);
+
+        if (ParameterValue <> DefaultAvailabilityModelLbl) and
+           (ParameterValue <> LegacySalesDemandAvailabilityModelLbl)
+        then
+            Error(InvalidTextParameterErr, AvailabilityModelTokLbl, ParameterValue);
+
+        exit(ParameterValue);
     end;
 
     local procedure TryGetScheduledMinute(ParameterString: Text; var ScheduledMinute: Integer): Boolean
@@ -335,17 +413,26 @@ codeunit 50042 "Auning Stock Update"
 
     local procedure GetNextAlignedRunTimeAfter(BaseMoment: DateTime; ScheduledMinute: Integer): DateTime
     var
-        JobQueueDispatcher: Codeunit "Job Queue Dispatcher";
+        CurrentDate: Date;
         CurrentTime: Time;
-        Candidate: DateTime;
+        CurrentHour: Integer;
     begin
+        CurrentDate := DT2Date(BaseMoment);
         CurrentTime := DT2Time(BaseMoment);
-        Candidate := CreateDateTime(DT2Date(BaseMoment), CreateHourMinuteTime(GetTimeHour(CurrentTime), ScheduledMinute));
+        CurrentHour := GetTimeHour(CurrentTime);
 
         if GetTimeMinute(CurrentTime) >= ScheduledMinute then
-            exit(JobQueueDispatcher.AddMinutesToDateTime(Candidate, 60));
+            exit(GetAlignedRunTimeNextHour(CurrentDate, CurrentHour, ScheduledMinute));
 
-        exit(Candidate);
+        exit(CreateDateTime(CurrentDate, CreateHourMinuteTime(CurrentHour, ScheduledMinute)));
+    end;
+
+    local procedure GetAlignedRunTimeNextHour(CurrentDate: Date; CurrentHour: Integer; ScheduledMinute: Integer): DateTime
+    begin
+        if CurrentHour = 23 then
+            exit(CreateDateTime(CalcDate('<+1D>', CurrentDate), CreateHourMinuteTime(0, ScheduledMinute)));
+
+        exit(CreateDateTime(CurrentDate, CreateHourMinuteTime(CurrentHour + 1, ScheduledMinute)));
     end;
 
     local procedure CreateHourMinuteTime(HourValue: Integer; MinuteValue: Integer): Time
