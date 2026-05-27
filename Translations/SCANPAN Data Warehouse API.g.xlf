@@ -48,6 +48,11 @@
           <note from="Developer" annotates="general" priority="2">%1=parameter name, %2=value</note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Auning Stock Update - NamedType InvalidTextParameterErr</note>
         </trans-unit>
+        <trans-unit id="Codeunit 1753673349 - NamedType 45518370" size-unit="char" translate="yes" xml:space="preserve">
+          <source>AUNING stock parameters:\GenProdPostingGroupFilter=&lt;filter&gt; (default %1)\AvailabilityModel=%2|%3|%4 (default %2)\AvailableReductionPct=&lt;decimal percent, &gt;=0&gt; (default 0)\ScheduledMinute=&lt;0..59&gt; for background hourly alignment\Current Parameter String: %5</source>
+          <note from="Developer" annotates="general" priority="2">%1=default posting group filter, %2=default availability model, %3=legacy model 1, %4=legacy model 2, %5=current parameter string</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Auning Stock Update - NamedType ManualRunParameterInfoLbl</note>
+        </trans-unit>
         <trans-unit id="Page 2461855921 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
           <source>AUNING stock</source>
           <note from="Developer" annotates="general" priority="2"></note>

@@ -1,3 +1,4 @@
+// Updates AUNING stock snapshot fields on Item using parameterized availability models and Job Queue scheduling.
 codeunit 50042 "Auning Stock Update"
 {
     TableNo = "Job Queue Entry";
@@ -6,19 +7,24 @@ codeunit 50042 "Auning Stock Update"
     var
         ScheduledMinute: Integer;
     begin
-        if TryGetScheduledMinute("Parameter String", ScheduledMinute) then begin
+        if GuiAllowed then
+            ShowManualRunParameterDialog(Rec."Parameter String");
+
+        if TryGetScheduledMinute(Rec."Parameter String", ScheduledMinute) then begin
             EnsureRecurringSchedule(Rec, ScheduledMinute);
             if (not GuiAllowed) and (not IsScheduledExecutionMinute(CurrentDateTime, ScheduledMinute)) then
                 exit;
         end;
 
-        UpdateAllItems("Parameter String");
+        UpdateAllItems(Rec."Parameter String");
     end;
 
     var
         AuningLocationCodeLbl: Label 'AUNING', Locked = true;
         DefaultGenProdPostingGroupFilterLbl: Label 'INTERN|EKSTERN|BRUND', Locked = true;
-        DefaultAvailabilityModelLbl: Label 'AvailableToPromise', Locked = true;
+        DefaultAvailabilityModelLbl: Label 'WarehouseShipment', Locked = true;
+        WarehouseShipmentAvailabilityModelLbl: Label 'WarehouseShipment', Locked = true;
+        AvailableToPromiseAvailabilityModelLbl: Label 'AvailableToPromise', Locked = true;
         LegacySalesDemandAvailabilityModelLbl: Label 'LegacySalesDemand', Locked = true;
         GenProdPostingGroupFilterTokLbl: Label 'GenProdPostingGroupFilter', Locked = true;
         AvailableReductionPctTokLbl: Label 'AvailableReductionPct', Locked = true;
@@ -27,6 +33,7 @@ codeunit 50042 "Auning Stock Update"
         InvalidDecimalParameterErr: Label 'Parameter %1 has invalid value %2.', Comment = '%1=parameter name, %2=value';
         InvalidIntegerParameterErr: Label 'Parameter %1 has invalid value %2.', Comment = '%1=parameter name, %2=value';
         InvalidTextParameterErr: Label 'Parameter %1 has invalid value %2.', Comment = '%1=parameter name, %2=value';
+        ManualRunParameterInfoLbl: Label 'AUNING stock parameters:\GenProdPostingGroupFilter=<filter> (default %1)\AvailabilityModel=%2|%3|%4 (default %2)\AvailableReductionPct=<decimal percent, >=0> (default 0)\ScheduledMinute=<0..59> for background hourly alignment\Current Parameter String: %5', Comment = '%1=default posting group filter, %2=default availability model, %3=legacy model 1, %4=legacy model 2, %5=current parameter string';
         ProgressDialog: Dialog;
         ProgressDialogLbl: Label 'Updating AUNING stock\\Total items: #1#########\\Processed:   #2#########\\Current item: #3############################', Locked = true;
         ProgressTotalItemCount: Integer;
@@ -77,8 +84,7 @@ codeunit 50042 "Auning Stock Update"
         CalculateItemStock(Item, Location, AvailableReductionPct, AvailabilityModel, OnHandQty, AvailableQty);
 
         if (Item."AUNING Stock On Hand" = OnHandQty) and
-           (Item."AUNING Stock Available" = AvailableQty) and
-           (Item."AUNING Stock Updated At" = UpdatedAt)
+           (Item."AUNING Stock Available" = AvailableQty)
         then
             exit;
 
@@ -115,10 +121,18 @@ codeunit 50042 "Auning Stock Update"
 
     local procedure CalculateAvailable(Item: Record Item; LocationCode: Code[10]; SalesDemandWindowEndDate: Date; AvailabilityModel: Text): Decimal
     begin
+        if AvailabilityModel = WarehouseShipmentAvailabilityModelLbl then
+            exit(CalculateWarehouseShipmentAvailable(Item, LocationCode));
+
         if AvailabilityModel = LegacySalesDemandAvailabilityModelLbl then
             exit(CalculateLegacySalesDemandAvailable(Item, LocationCode, SalesDemandWindowEndDate));
 
         exit(CalculateAvailableToPromise(Item, LocationCode, SalesDemandWindowEndDate));
+    end;
+
+    local procedure CalculateWarehouseShipmentAvailable(Item: Record Item; LocationCode: Code[10]): Decimal
+    begin
+        exit(CalculateOnHand(Item, LocationCode) - CalculateWarehouseShipmentDemand(Item."No.", LocationCode));
     end;
 
     local procedure CalculateAvailableToPromise(Item: Record Item; LocationCode: Code[10]; SalesDemandWindowEndDate: Date): Decimal
@@ -143,6 +157,19 @@ codeunit 50042 "Auning Stock Update"
     begin
         SalesDemandQty := CalculateSalesDemand(Item."No.", LocationCode, SalesDemandWindowEndDate);
         exit(CalculateOnHand(Item, LocationCode) - SalesDemandQty);
+    end;
+
+    local procedure CalculateWarehouseShipmentDemand(ItemNo: Code[20]; LocationCode: Code[10]): Decimal
+    var
+        WarehouseShipmentLine: Record "Warehouse Shipment Line";
+    begin
+        WarehouseShipmentLine.SetRange("Item No.", ItemNo);
+        WarehouseShipmentLine.SetRange("Location Code", LocationCode);
+        WarehouseShipmentLine.SetRange("Variant Code", '');
+        WarehouseShipmentLine.SetFilter("Qty. Outstanding (Base)", '>0');
+        WarehouseShipmentLine.CalcSums("Qty. Outstanding (Base)");
+
+        exit(WarehouseShipmentLine."Qty. Outstanding (Base)");
     end;
 
     local procedure CalculateSalesDemand(ItemNo: Code[20]; LocationCode: Code[10]; SalesDemandWindowEndDate: Date): Decimal
@@ -228,7 +255,8 @@ codeunit 50042 "Auning Stock Update"
         if ParameterValue = '' then
             exit(DefaultAvailabilityModelLbl);
 
-        if (ParameterValue <> DefaultAvailabilityModelLbl) and
+        if (ParameterValue <> WarehouseShipmentAvailabilityModelLbl) and
+           (ParameterValue <> AvailableToPromiseAvailabilityModelLbl) and
            (ParameterValue <> LegacySalesDemandAvailabilityModelLbl)
         then
             Error(InvalidTextParameterErr, AvailabilityModelTokLbl, ParameterValue);
@@ -396,6 +424,23 @@ codeunit 50042 "Auning Stock Update"
             exit;
 
         ProgressDialog.Close();
+    end;
+
+    local procedure ShowManualRunParameterDialog(ParameterString: Text)
+    var
+        EffectiveParameterString: Text;
+    begin
+        EffectiveParameterString := ParameterString;
+        if EffectiveParameterString = '' then
+            EffectiveParameterString := '(empty)';
+
+        Message(
+          ManualRunParameterInfoLbl,
+          DefaultGenProdPostingGroupFilterLbl,
+          DefaultAvailabilityModelLbl,
+          AvailableToPromiseAvailabilityModelLbl,
+          LegacySalesDemandAvailabilityModelLbl,
+          EffectiveParameterString);
     end;
 
     local procedure IsScheduledExecutionMinute(RunAt: DateTime; ScheduledMinute: Integer): Boolean
